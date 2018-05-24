@@ -21,5 +21,8 @@ class PoisonBoss extends Type{
     }
 
     public void move(){
+        //if he is close to the player, he will melee attack
+        //if he is farther from the player, he will used a ranged attack
+        //only ranged attack applies poison effect
     }
 }
