@@ -1,7 +1,15 @@
-class NPC extends Character{
+class NPC extends NonCombatCharacter{
 
-    NPC(int health, int strength, int intelligence, int defence, int level, int accuracy){
-
+    NPC(String name){
+        //super(whatever
+        this.name=name;
     }
-  
+
+    public void giveQuest(){
+        // construct the appropriate quest object and then somehow attribute it to the character
+    }
+
+    public void speak(){
+        //print out the proper speech
+    }
 }
