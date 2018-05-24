@@ -1,6 +1,6 @@
-class NPC extends NonCombatCharacter{
+abstract class NPC extends NonCombatCharacter{
 
-    NPC(String name){
+    NPC(int health, String name){
         //super(whatever
         this.name=name;
     }
