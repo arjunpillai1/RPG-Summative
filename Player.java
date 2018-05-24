@@ -13,11 +13,11 @@ class Player extends Character {
     
   }
   
-  void attack(int strength, int intelligence) {
+  public void attack(int strength, int intelligence) {
     
   }
   
-  void move() { 
+  public void move() { 
     
   }
   
