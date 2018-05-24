@@ -4,28 +4,27 @@
  * May 24 2018
  */ 
 
-class Player extends Character {
-  private String name;
+class Player extends CombatChar {
+    private int exp;
   
   Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
-    super(health, strength, intelligence, defence, level, accuracy);
-    this.name = name; 
+    super(health, strength, intelligence, defence, level, accuracy, name);
   }
-  
+
   public void attack(int strength, int intelligence) {
     
   }
   
-  public void move() { 
+  public void move() {
     
   }
   
-  public String getName() {
-    return name;
+  public int getExp(){
+    return exp;
   }
   
-  public void setName(String charName) {
-    this.name = charName;
+  public void setExp(int newExp){
+    this.exp = newExp;
   }
   
   public void interact (Object interObj) {
