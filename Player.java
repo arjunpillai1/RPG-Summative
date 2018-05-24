@@ -9,8 +9,7 @@ class Player extends Character {
   
   Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
     super(health, strength, intelligence, defence, level, accuracy);
-    this.name = name;
-    
+    this.name = name; 
   }
   
   public void attack(int strength, int intelligence) {
@@ -27,6 +26,14 @@ class Player extends Character {
   
   public void setName(String charName) {
     this.name = charName;
+  }
+  
+  public void interact (Object interObj) {
+//    if (interObj instanceof Chest) {
+//    
+//    } else if (interObj instanceof NPC) {
+//      
+//    }
   }
   
 }
