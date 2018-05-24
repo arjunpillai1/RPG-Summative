@@ -7,9 +7,10 @@
 class Player extends Character {
   private String name;
   
-  Player (int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
-    this.name = name;
+  Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
     super(health, strength, intelligence, defence, level, accuracy);
+    this.name = name;
+    
   }
   
   void attack(int strength, int intelligence) {
@@ -20,11 +21,11 @@ class Player extends Character {
     
   }
   
-  String getName() {
+  public String getName() {
     return name;
   }
   
-  String setName(String charName) {
+  public void setName(String charName) {
     this.name = charName;
   }
   
