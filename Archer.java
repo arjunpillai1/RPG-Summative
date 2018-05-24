@@ -17,3 +17,4 @@ class Archer extends Normal{
         //enemy stops(Tentative) to shoot at the player
       }
 }
+//arjun's edit
