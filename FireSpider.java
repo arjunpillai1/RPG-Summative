@@ -2,8 +2,8 @@ class FireSpider extends Type{
   
   private String newType;
   
-      FireSpider(int health, int strength, int intelligence, int defence, int level, int accuracy){
-    super(health, strength, intelligence, defence, level, accuracy);
+      FireSpider(int health, int strength, int intelligence, int defence, int level, int accuracy, String name){
+    super(health, strength, intelligence, defence, level, accuracy, name);
      newType = "fire";
     setType(newType);
   }

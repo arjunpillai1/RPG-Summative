@@ -8,8 +8,7 @@ abstract class CombatCharacter extends Character {
 
 
   CombatCharacter (int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
-    super (health, name);
-    this.health = health;
+    super (health, strength, intelligence, defence, level, accuracy);
     this.strength = strength;
     this.intelligence = intelligence;
     this.defence = defence;

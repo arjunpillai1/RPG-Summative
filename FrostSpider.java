@@ -2,8 +2,8 @@ class FrostSpider extends Type{
   
   private String newType;
   
-      FrostSpider(int health, int strength, int intelligence, int defence, int level, int accuracy){
-    super(health, strength, intelligence, defence, level, accuracy);
+      FrostSpider(int health, int strength, int intelligence, int defence, int level, int accuracy, String name){
+    super(health, strength, intelligence, defence, level, accuracy, name);
         newType = "frost";
     setType(newType);
   }
