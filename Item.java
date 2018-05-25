@@ -9,12 +9,19 @@ abstract class Item{
 
   int cost;
   
+  int inventoryNum;
   
-  Item(int cost){ //Constructor
+  
+  Item(int cost, int inventoryNum){ //Constructor
     this.cost = cost; 
+    this.inventoryNum = inventoryNum;
   }
   
   public int getCost(){
     return this.cost;
+  }
+  
+  public int getInventoryNum(){
+    return this.inventoryNum;
   }
 }

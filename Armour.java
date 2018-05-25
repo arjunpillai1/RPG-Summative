@@ -4,13 +4,16 @@ abstract class Armour extends Item{
   
   double speed;
   
+  boolean equipped;
+  
   Armour(int cost, int defenseBoost, double speed){
-    super(cost);
+    super(cost, 2);
     
     this.defenseBoost=defenseBoost;
     
     this.speed=speed;
     
+    this.equipped=false;
   }
   
   /* getDefenseBoost()
@@ -28,5 +31,17 @@ abstract class Armour extends Item{
   
   public void setSpeed(int value){
     this.speed = value;
+  }
+  
+  public boolean getEquipped(){
+    return equipped;
+  }
+  
+  public void equipArmour(){
+    equipped=true;
+  }
+  
+  public void unequipArmour(){
+    equipped = false;
   }
 }

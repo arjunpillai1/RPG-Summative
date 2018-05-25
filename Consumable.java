@@ -7,7 +7,7 @@ abstract class Consumable extends Item{
   boolean used;
   
   Consumable(int cost){
-  super(cost);
+  super(cost, 3);
   
   used = false;
   }

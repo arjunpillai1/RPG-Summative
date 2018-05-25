@@ -12,14 +12,18 @@ abstract class Weapon extends Item{
   
   int range;
   
+  boolean equipped;
+  
   Weapon(int cost, int attackBoost, double speed, int range){
-    super(cost);
+    super(cost, 1);
     
     this.attackBoost=attackBoost;
     
     this.speed=speed;
     
     this.range=range;
+    
+    this.equipped=false;
   }
   
   /* getAttackBoost()
@@ -45,5 +49,17 @@ abstract class Weapon extends Item{
   
   public void setRange(int value){
     this.range=value;
+  }
+  
+  public boolean getEquipped(){
+    return equipped;
+  }
+  
+  public void equipWeapon(){
+    equipped=true;
+  }
+  
+  public void unequipWeapon(){
+    equipped = false;
   }
 }

@@ -10,6 +10,4 @@ abstract class Sword extends ShortRangeWeapon{
     super(cost, attackBoost, speed, 1); //range is 1
   }
   
-  public void attack(int strength){ //attack method
-  }
 }

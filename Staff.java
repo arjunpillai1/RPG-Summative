@@ -8,4 +8,6 @@ abstract class Staff extends LongRangeWeapon{
   Staff(int cost, int attackBoost, double speed, int range){
     super(cost, attackBoost, speed, range);
   }
+  
+
 }
