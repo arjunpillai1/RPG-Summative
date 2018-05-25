@@ -1,0 +1,4 @@
+class Chest {
+  Chest(){}
+  
+}
