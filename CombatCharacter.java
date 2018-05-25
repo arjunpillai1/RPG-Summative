@@ -1,6 +1,5 @@
 abstract class CombatCharacter extends Character {
 
-  private int health;
   private int strength;
   private int intelligence;
   private int defence;
@@ -8,7 +7,7 @@ abstract class CombatCharacter extends Character {
   private int accuracy;
 
 
-  CombatChar (int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
+  CombatCharacter (int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
     super (health, name);
     this.health = health;
     this.strength = strength;
