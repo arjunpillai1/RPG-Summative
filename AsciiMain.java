@@ -8,7 +8,7 @@ import java.io.File;
 
 
 class AsciiMain { 
-
+  
   
   public static void main(String[] args) throws Exception { 
     
@@ -17,20 +17,47 @@ class AsciiMain {
     Scanner fileIn = new Scanner(map);
     
     String value = fileIn.nextLine();
-    String[][] world = new String[100][100];
+    Object[][] world = new Object[106][106];
     
-    for (int a = 0; a < world.length; a++) { // draws first row of the map to avoid errors
-      world[0][a]= value.substring(a,a+1);
-      
+    for (int a = 0; a < world.length - 1; a++) { // draws first row of the map to avoid errors
+      if (value.substring(a, a + 1).equals("S")) {
+        world[0][a] = new Water();
+      }
     }
     
-    for (int i = 1; i < world.length; i++) { // draws the rest of the map in the array
+    for (int i = 1; i < world.length - 1; i++) { // draws the rest of the map in the array
       value = fileIn.nextLine();
-      for (int j = 0; j < world.length; j++) {
-        world[i][j] = value.substring(j,j+1);
-        
+      for (int j = 0; j < world.length - 1; j++) {
+        if (value.substring(j, j + 1).equals("S") || (value.substring(j, j + 1).equals("r"))) { 
+          world[i][j] = new Water();
+        } else if (value.substring(j, j + 1).equals("E")) {
+          world[i][j] = new Grass();
+        } else if (value.substring(j, j + 1).equals("M")) {
+          world[i][j] = new FireGrass();
+        } else if (value.substring(j, j + 1).equals("D")) {
+          world[i][j] = new PoisonGrass();
+        } else if (value.substring(j, j + 1).equals("I")) {
+          world[i][j] = new FrostGrass();
+        } else if (value.substring(j, j + 1).equals("B")) {
+          world[i][j] = new Bridge();
+        } else if (value.substring(j, j + 1).equals("c")) {
+          world[i][j] = new CaveWall();
+        } else if (value.substring(j, j + 1).equals("T")) {
+          world[i][j] = new Tree();
+        } else if (value.substring(j, j + 1).equals("H")) {
+          world[i][j] = new Wall();
+        } else if (value.substring(j, j + 1).equals("C")) {
+          world[i][j] = new CastleWall();
+        } else if (value.substring(j, j + 1).equals("F")) {
+          world[i][j] = new HouseFloor();
+        } else if (value.substring(j, j + 1).equals("-")) {
+          world[i][j] = new Dirt();
+        } else if (value.substring(j, j + 1).equals("E")) {
+          world[i][j] = new Grass();
+        } else if (value.substring(j, j + 1).equals("L")) {
+          world[i][j] = new Chest();
+        }  
       }
-      
     }
     
     
@@ -44,40 +71,7 @@ class AsciiMain {
     //Set up Grid Panel
     AsciiTest grid = new AsciiTest(world);
     
-    //Display the grid on a Panel
-//    while (true) {
-//      grid.refresh();
-//      
-//      
-//      //Small delay
-//      try{ Thread.sleep(1000); }catch(Exception e) {};
-//      
-//      
-//      // Initialize Map (Making changes to map)
-//      moveItemsOnGrid(map);
-//      
-//      //Display the grid on a Panel
-//      grid.refresh();
-//    }
   }
   
-  // Method to simulate grid movement
-  public static void moveItemsOnGrid(String[][] map) { 
-    
-    for(int i = 0; i<map[0].length;i++)        
-      for(int j = 0; j<map.length;j++) 
-    { 
-      
-      map[i][j]=((int)(Math.random()* 3))+"";
-    }
-  }
   
-  //method to display grid a text for debugging
-  public static void DisplayGridOnConsole(String[][] map) { 
-    for(int i = 0; i<map.length;i++){        
-      for(int j = 0; j<map[0].length;j++) 
-        System.out.print(map[i][j]+" ");
-      System.out.println("");
-    }
-  }
 }

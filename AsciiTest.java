@@ -13,12 +13,12 @@ class AsciiTest {
   
   private static JFrame frame;
   private static int maxX,maxY, GridToScreenRatio;
-  String[][] world;
+  Object[][] world;
   
   
   
   
-  AsciiTest(String[][] world) { 
+  AsciiTest(Object[][] world) { 
     this.world = world;
     
     maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -69,47 +69,53 @@ class AsciiTest {
           
           
           
-          if (world[i][j].equals("E")) {  
+          if (world[i][j] instanceof Grass) {  
             g.setColor(myGreen); //sets colour for printing organism
             g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
-          } else if (world[i][j].equals("I")) {
+          } else if (world[i][j] instanceof FrostGrass) {
             g.setColor(Color.RED); //sets colour for printing organism
             g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
-          } else if (world[i][j].equals("M")) {
+          } else if (world[i][j] instanceof FireGrass) {
             g.setColor(Color.GREEN); //sets colour for printing organism
             g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
-          } else if (world[i][j].equals("-")) {
+          } else if (world[i][j] instanceof Dirt) {
             g.setColor(myBrown); //sets colour for printing organism
             g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
-          } else if (world[i][j].equals("D")) {
+          } else if (world[i][j] instanceof PoisonGrass) {
             g.setColor(mySaddleBrown); //sets colour for printing organism
             g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
-          } else if (world[i][j].equals("r")) {
+          } else if (world[i][j] instanceof Water) {
             g.setColor(myBlue); //sets colour for printing organism
             g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
-          } else if (world[i][j].equals("S")) {
-            g.setColor(myBlue); //sets colour for printing organism
+          } else if (world[i][j] instanceof Chest) {
+            g.setColor(Color.YELLOW); //sets colour for printing organism
             g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
-          } else if (world[i][j].equals("C")) {
+          } else if (world[i][j] instanceof CastleWall) {
             g.setColor(Color.BLACK); //sets colour for printing organism
             g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);   
-          } else if (world[i][j].equals("H")) {
+          
+          } else if (world[i][j] instanceof Wall) {
             g.setColor(floor); //sets colour for printing organism
             g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
-          } else if (world[i][j].equals("F")) {
+         
+          } else if (world[i][j] instanceof HouseFloor) {
             g.setColor(wood); //sets colour for printing organism
             g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);  
-          } else if (world[i][j].equals("T")) {
+          
+          } else if (world[i][j] instanceof Tree) {
             g.setColor(tree); //sets colour for printing organism
             g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
-          } 
+          } else if (world[i][j] instanceof CaveWall) {
+            g.setColor(Color.BLACK); //sets colour for printing organism
+            g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
+          }
           
         }
       }
