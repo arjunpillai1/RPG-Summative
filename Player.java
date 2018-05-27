@@ -11,7 +11,7 @@ class Player extends CombatCharacter {
     super(health, strength, intelligence, defence, level, accuracy, name);
   }
 
-  public void attack(int strength, int intelligence) {
+  public void attack(Object enemy) {
 
   }
 
