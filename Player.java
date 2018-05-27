@@ -16,11 +16,10 @@ class Player extends CombatCharacter {
   
   public void attack(int strength, int intelligence) {
     
-=======
+}
 
   public void attack(Object enemy) {
 
->>>>>>> b5b0377b64d9b8fcde083551d91b336d305b3963
   }
   
   public void move(Object[][] world, int coordX, int coordY, int value) {
