@@ -12,9 +12,15 @@ class Player extends CombatCharacter {
   Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
     super(health, strength, intelligence, defence, level, accuracy, name);
   }
+<<<<<<< HEAD
   
   public void attack(int strength, int intelligence) {
     
+=======
+
+  public void attack(Object enemy) {
+
+>>>>>>> b5b0377b64d9b8fcde083551d91b336d305b3963
   }
   
   public void move(Object[][] world, int coordX, int coordY, int value) {

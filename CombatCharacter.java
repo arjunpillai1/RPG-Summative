@@ -16,7 +16,7 @@ abstract class CombatCharacter extends Character {
     this.accuracy = accuracy;
   }
 
-  abstract void attack(int strength, int intelligence);
+  abstract void attack(Object enemy);
 
 
   public int getStr(){
