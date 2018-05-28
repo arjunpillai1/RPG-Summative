@@ -49,8 +49,6 @@ class AsciiTest {
       //super.repaint();
       maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
       maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
-      int playerX = 0;
-      int playerY = 0;
       
       setDoubleBuffered(true); 
       Color myGreen = new Color(11, 215, 72);
@@ -63,19 +61,10 @@ class AsciiTest {
       Color floor = new Color(20, 80, 40); 
       Color tree = new Color(20, 51, 6);
       
-      for (int a = 0; a < world.length; a++) {
-        for (int b = 0; b < world.length; b++) {
-          if (world[a][b] instanceof Player) {
-            playerX = a;
-            playerY = b;
-          }
-        }
-      }
       
-      
-      for(int i = playerX - 4; i <= playerX + 4;i=i+1)
+      for(int i = 0; i < world.length;i=i+1)
       { 
-        for(int j = playerY -  4; j <= playerY + 4;j=j+1) 
+        for(int j = 0; j<world.length;j=j+1) 
         { 
           
           
@@ -126,9 +115,6 @@ class AsciiTest {
           } else if (world[i][j] instanceof CaveWall) {
             g.setColor(Color.BLACK); //sets colour for printing organism
             g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
-          } else if (world[i][j] instanceof Player) {
-            g.setColor(Color.BLACK); //sets colour for printing organism
-            g.fillRect(j*GridToScreenRatio,i*GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
           }
           
         }

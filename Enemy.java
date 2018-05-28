@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> 2285a2e972a1d5f371a6135ff265e95fef3def94
   // imports
 import java.util.Random;
 
@@ -18,7 +14,7 @@ abstract class Enemy extends CombatCharacter{
   void move(Object[][] map) {
     Random rand = new Random();
     int decision;
-    map[1][1] = null; // different coordinates based on the size of the array (must be the middle array)
+    map[1][1] = null;
     // for now enemies are stationary
     for (int i=0; i < map.length; i++) {
       for (int j=0; j < map.length; j++) {

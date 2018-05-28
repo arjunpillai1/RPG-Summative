@@ -16,5 +16,8 @@ class FireSnake extends Type{
   }
       
       
-
+      public void move(){
+        //enemy moves in a random way until it sees the player
+        //the enemy chases after the player and attacks them
+      }
 }

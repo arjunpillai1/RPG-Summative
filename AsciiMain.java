@@ -6,8 +6,6 @@
 import java.util.Scanner;
 import java.io.File;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 class AsciiMain { 
   
@@ -64,9 +62,6 @@ class AsciiMain {
     
     
     
-    
-    
-    
     // Initialize Map
     //moveItemsOnGrid(map);
     
@@ -75,32 +70,6 @@ class AsciiMain {
     
     //Set up Grid Panel
     AsciiTest grid = new AsciiTest(world);
-    world[4][4] = new Player (100,100,100,100,100,100, "guy");
-    int cordx = 4;
-    int cordy = 4;
-    int rand;
-    do {
-      grid.refresh();
-      
-      
-      
-      //Small delay
-      try{ Thread.sleep(1000); }catch(Exception e) {};
-      
-      for (int m = 0; m < world.length; m++) {
-        for (int n = 0; n < world.length; n++) {
-          if (world[m][n] instanceof Player) {
-            rand = ((int)(Math.random() * 4)) + 1;
-            ((Player)world[m][n]).move(world, m, n, rand);
-          }
-        }
-      }
-      
-      
-      grid.refresh();
-      
-      
-    } while (true);
     
   }
   

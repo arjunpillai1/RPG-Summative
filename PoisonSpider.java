@@ -14,4 +14,10 @@ class PoisonSpider extends Type{
       //deal a poison effect causing 1 damage over time for 5 hits
       //once it attacks it will wait 1 second to attack again
   }
+      
+      
+      public void move(){
+        //enemy moves in a random way until it sees the player
+        //enemy stops(Tentative) to shoot at the player
+      }
 }

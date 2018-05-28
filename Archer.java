@@ -13,4 +13,10 @@ class Archer extends Normal{
       //if enemy hits the player at range, deal 10% damage to player(Tentative)
       //once it attacks it will wait 0.5 second to attack again
   }
+      
+      
+      public void move(){
+        //enemy moves in a random way until it sees the player
+        //enemy stops(Tentative) to shoot at the player
+      }
 }
