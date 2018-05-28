@@ -1,11 +1,14 @@
 class FrostSpider extends Type{
   
   private String newType;
+  private int newLvl;
   
       FrostSpider(int health, int strength, int intelligence, int defence, int level, int accuracy, String name){
     super(health, strength, intelligence, defence, level, accuracy, name);
         newType = "frost";
     setType(newType);
+    newLvl = ((int)(Math.random()*4)+6);
+    setLvl(newLvl);
   }
       
       
@@ -14,10 +17,5 @@ class FrostSpider extends Type{
       //deal a burn effect causing  1 damage over time for 5 hits
       //once it attacks once it will wait 1 second to attack again
   }
-      
-      
-      public void move(){
-        //enemy moves in a random way until it sees the player
-        //enemy stops(Tentative) to shoot at the player
-      }
+
 }

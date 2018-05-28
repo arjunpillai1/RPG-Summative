@@ -1,11 +1,14 @@
 class PoisonSnake extends Type{
   
  private String newType;
+ private int newLvl;
   
       PoisonSnake(int health, int strength, int intelligence, int defence, int level, int accuracy, String name){
     super(health, strength, intelligence, defence, level, accuracy, name);
     newType = "poison";
     setType(newType);
+    newLvl = ((int)(Math.random()*3)+3);
+    setLvl(newLvl);
   }
       
       
@@ -16,8 +19,5 @@ class PoisonSnake extends Type{
   }
       
       
-      public void move(){
-        //enemy moves in a random way until it sees the player
-        //the enemy chases after the player and attacks them
-      }
+
 }

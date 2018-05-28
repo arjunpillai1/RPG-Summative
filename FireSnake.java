@@ -1,11 +1,14 @@
 class FireSnake extends Type{
   
   private String newType;
+  private int newLvl;
   
       FireSnake(int health, int strength, int intelligence, int defence, int level, int accuracy, String name){
     super(health, strength, intelligence, defence, level, accuracy, name);
      newType = "fire";
     setType(newType);
+    newLvl = ((int)(Math.random()*5)+10);
+    setLvl(newLvl);
   }
       
       
@@ -16,8 +19,5 @@ class FireSnake extends Type{
   }
       
       
-      public void move(){
-        //enemy moves in a random way until it sees the player
-        //the enemy chases after the player and attacks them
-      }
+
 }

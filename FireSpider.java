@@ -1,11 +1,14 @@
 class FireSpider extends Type{
   
   private String newType;
+  private int newLvl;
   
       FireSpider(int health, int strength, int intelligence, int defence, int level, int accuracy, String name){
     super(health, strength, intelligence, defence, level, accuracy, name);
      newType = "fire";
     setType(newType);
+    newLvl = ((int)(Math.random()*5)+10);
+    setLvl(newLvl);
   }
       
       
@@ -16,10 +19,6 @@ class FireSpider extends Type{
   }
       
       
-      public void move(){
-        //enemy moves in a random way until it sees the player
-        //enemy stops(Tentative) to shoot at the player
-      }
 }
       
       
