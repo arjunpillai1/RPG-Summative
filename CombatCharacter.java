@@ -5,6 +5,7 @@ abstract class CombatCharacter extends Character {
   private int defence;
   private int level;
   private int accuracy;
+  private int posX, posY;
 
 
   CombatCharacter (int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
@@ -66,8 +67,24 @@ abstract class CombatCharacter extends Character {
   public void setAccuracy(int newAccuracy){
     this.accuracy = newAccuracy;
   }
+  
+  public int getX(){
+    return posX;
+  }
 
 
+  public void setX(int posX){
+    this.posX = posX;
+  }
+  
+  public int getY(){
+    return posY;
+  }
+
+
+  public void setY(int posX){
+    this.posY = posY;
+  }
 
 
 
