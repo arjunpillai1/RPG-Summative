@@ -1,0 +1,27 @@
+abstract class CombatChar {
+  
+  private int health;
+  private int strength;
+  private int intelligence;
+  private int defence;
+  private int level;
+  private int accuracy;
+  private int exp;
+  
+  CombatChar (int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
+    super(name);
+    this.health = health;
+    this.strength = strength;
+    this.intelligence = intelligence;
+    this.defence = defence;
+    this.level = level;
+    this.accuracy = accuracy;
+  }
+  
+  
+  
+  
+  
+  
+  
+}

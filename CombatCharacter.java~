@@ -19,7 +19,6 @@ abstract class CombatCharacter extends Character {
   abstract void attack(int strength, int intelligence);
 
   abstract void move();
-  //takes in array and return int
 
   public int getStr(){
     return strength;

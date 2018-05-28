@@ -1,0 +1,17 @@
+/**
+ * Player Class
+ * Guy and Arjun
+ * May 24 2018
+ */ 
+
+class Player extends Character {
+  
+  Player (int health, int strength, int intelligence, int defence, int level, int accuracy) {
+    
+    
+    
+  }
+  
+  
+  
+}
