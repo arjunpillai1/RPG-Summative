@@ -1,6 +1,6 @@
-/* [DisplayGrid.java]
- * A Small program for Display a 2D String Array graphically
- * @author Mangat
+/* []
+ * 
+ * 
  */
 
 // Graphics Imports

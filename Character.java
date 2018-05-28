@@ -23,8 +23,8 @@ public String getName() {
   return name;
 }
 
-public void setName(String charName) {
-  this.name = charName;
+public void setName(String newName) {
+  this.name = newName;
 }
 
 }
