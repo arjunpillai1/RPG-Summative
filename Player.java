@@ -12,7 +12,7 @@ class Player extends CombatCharacter {
   Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
     super(health, strength, intelligence, defence, level, accuracy, name);
   }
-<<<<<<< HEAD
+
   
   public void attack(int strength, int intelligence) {
     
@@ -23,7 +23,7 @@ class Player extends CombatCharacter {
   }
   
   public void move(Object[][] world, int coordX, int coordY, int value) {
-    
+    System.out.println("works");
     if (value == 1) {
       if (world[coordX - 1][coordY] instanceof Grass || world[coordX - 1][coordY] instanceof Floor) { //checks if spot is walkable
         futureStep = world[coordX - 1][coordY];
@@ -32,7 +32,7 @@ class Player extends CombatCharacter {
         previousStep = futureStep;
       }
     } 
-    else if (value == 2) {
+    else if (value == 4) {
       if (world[coordX][coordY + 1] instanceof Grass || world[coordX][coordY + 1] instanceof Floor) {
         futureStep = world[coordX][coordY + 1];
         world[coordX][coordY + 1] = world[coordX][coordY];
@@ -40,7 +40,7 @@ class Player extends CombatCharacter {
         previousStep = futureStep;
       }
     }  
-    else if (value == 3) {
+    else if (value == 2) {
       if (world[coordX + 1][coordY] instanceof Grass || world[coordX + 1][coordY] instanceof Floor) {
         futureStep = world[coordX + 1][coordY];
         world[coordX + 1][coordY] = world[coordX][coordY];
@@ -48,7 +48,7 @@ class Player extends CombatCharacter {
         previousStep = futureStep;
       }
     }
-    else if (value == 4) {
+    else if (value == 3) {
       if (world[coordX][coordY - 1] instanceof Grass || world[coordX][coordY - 1] instanceof Floor) {
         futureStep = world[coordX][coordY - 1];
         world[coordX][coordY - 1] = world[coordX][coordY];
