@@ -2,8 +2,8 @@ class FrostBoss extends Type{
     private final static String name= "The King of Winter";
     private String newType;
 
-    FrostBoss(int health, int strength, int intelligence, int defence, int level, int accuracy){
-        super(health, strength, intelligence, defence, level, accuracy);
+    FrostBoss(int health, int strength, int intelligence, int defence, int level, int accuracy, String name,  int posX, int posY){
+        super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
         newType = "fire";
         setType(newType);
     }

@@ -3,8 +3,8 @@ class FrostSpider extends Type{
   private String newType;
   private int newLvl;
   
-      FrostSpider(int health, int strength, int intelligence, int defence, int level, int accuracy, String name){
-    super(health, strength, intelligence, defence, level, accuracy, name);
+      FrostSpider(int health, int strength, int intelligence, int defence, int level, int accuracy, String name,  int posX, int posY){
+    super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
         newType = "frost";
     setType(newType);
     newLvl = ((int)(Math.random()*4)+6);

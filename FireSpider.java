@@ -3,8 +3,8 @@ class FireSpider extends Type{
   private String newType;
   private int newLvl;
   
-      FireSpider(int health, int strength, int intelligence, int defence, int level, int accuracy, String name){
-    super(health, strength, intelligence, defence, level, accuracy, name);
+      FireSpider(int health, int strength, int intelligence, int defence, int level, int accuracy, String name,  int posX, int posY){
+    super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
      newType = "fire";
     setType(newType);
     newLvl = ((int)(Math.random()*5)+10);
