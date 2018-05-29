@@ -4,8 +4,8 @@ import java.util.Random;
 abstract class Enemy extends CombatCharacter{
     
   
-  Enemy(int health, int strength, int intelligence, int defence, int level, int accuracy, String name){
-    super(health, strength, intelligence, defence, level, accuracy, name);
+  Enemy(int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY){
+    super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
   }
   void attack(Object player) {
     int damage = getStr() + getInt();
