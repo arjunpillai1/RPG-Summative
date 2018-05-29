@@ -34,9 +34,9 @@ class AsciiMain {
           if ((enemyChance == 1) && (noobEnemyCount > 0)) {
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new Bandit(1,1,1,1,1,1,"Bandit");
+              world[i][j] = new Bandit(1,1,1,1,1,1,"Bandit", i, j);
             }else {
-              world[i][j] = new Archer(1,1,1,1,1,1,"Archer");
+              world[i][j] = new Archer(1,1,1,1,1,1,"Archer", i, j);
             }
             noobEnemyCount--;
           }
@@ -46,9 +46,9 @@ class AsciiMain {
           if ((enemyChance == 1) && (fireEnemyCount > 0)) {
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new FireSnake(1,1,1,1,1,1,"Fire Snake");
+              world[i][j] = new FireSnake(1,1,1,1,1,1,"Fire Snake", i, j);
             }else {
-              world[i][j] = new FireSpider(1,1,1,1,1,1,"Fire Spider");
+              world[i][j] = new FireSpider(1,1,1,1,1,1,"Fire Spider", i, j);
             }
             fireEnemyCount--;
           }
@@ -58,9 +58,9 @@ class AsciiMain {
           if ((enemyChance == 1) && (poisonEnemyCount > 0)) {
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new PoisonSnake(1,1,1,1,1,1,"Venom Snake");
+              world[i][j] = new PoisonSnake(1,1,1,1,1,1,"Venom Snake", i, j);
             }else {
-              world[i][j] = new PoisonSpider(1,1,1,1,1,1,"Venom Spider");
+              world[i][j] = new PoisonSpider(1,1,1,1,1,1,"Venom Spider", i, j);
             }
             poisonEnemyCount--;
           }
@@ -70,9 +70,9 @@ class AsciiMain {
           if ((enemyChance == 1) && (frostEnemyCount > 0)) {
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new FrostSpider(1,1,1,1,1,1,"Frost Spider");
+              world[i][j] = new FrostSpider(1,1,1,1,1,1,"Frost Spider", i, j);
             }else {
-              world[i][j] = new FrostSnake(1,1,1,1,1,1,"Frost Snake");
+              world[i][j] = new FrostSnake(1,1,1,1,1,1,"Frost Snake", i, j);
             }
             frostEnemyCount--;
           }
@@ -102,9 +102,10 @@ class AsciiMain {
     //Set up Grid Panel
     AsciiTest grid = new AsciiTest(world);
     world[4][4] = new Player (100,100,100,100,100,100, "guy");
-    int cordx = 4;
-    int cordy = 4;
+    int playX = 4;
+    int playY = 4;
     int rand;
+    fileIn.close();
     do {
       grid.refresh();
 
@@ -113,6 +114,19 @@ class AsciiMain {
           if (world[m][n] instanceof Player) {
             rand = ((int)(Math.random() * 4)) + 1;
             ((Player)world[m][n]).move(world, m, n, rand);
+          }
+          // this is for when enemies are in vision range
+          
+          if (world[m][n] instanceof Enemy) {
+            int radX = ((Enemy)world[m][n]).getX();
+            int radY = ((Enemy)world[m][n]).getY();
+            Object[][] moveRadius = new Object[5][5];
+            for (int x = radX - 2; l <= radX + 2; x++) {
+              for (int y = radY - 2; y <= radY + 2; y++) {
+                moveRadius[x][y] = world[x][y];
+              }
+            }
+            //((Enemy)world[m][n]).move(moveRadius);
           }
         }
       }
