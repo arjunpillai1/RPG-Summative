@@ -1,8 +1,7 @@
 abstract class NPC extends NonCombatCharacter{
 
     NPC(int health, String name){
-        //super(whatever
-        this.name=name;
+        super(health,name);
     }
 
     public void giveQuest(){

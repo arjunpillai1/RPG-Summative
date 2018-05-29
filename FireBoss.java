@@ -1,12 +1,7 @@
 class FireBoss extends Type{
-  
-  private String newType;
-  private final String NAME = "The Volcano";
-  
+    
   FireBoss(int health, int strength, int intelligence, int defence, int level, int accuracy, String name,  int posX, int posY){
-    super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
-    newType = "fire";
-    setType(newType);
+    super(health, strength, intelligence, defence, level, accuracy,"fire"/*type*/, "The Volcano"/*name*/, posX, posY);
   }
   
   
