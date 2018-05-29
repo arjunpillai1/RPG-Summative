@@ -7,6 +7,7 @@ abstract class CombatCharacter extends Character {
   private int accuracy;
 
 
+
   CombatCharacter (int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
     super (health, name);
     this.strength = strength;
@@ -17,6 +18,7 @@ abstract class CombatCharacter extends Character {
   }
 
   abstract void attack(Object enemy);
+  
 
 
   public int getStr(){

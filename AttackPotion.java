@@ -13,12 +13,12 @@ abstract class AttackPotion extends Potion{
   this.attackMultiplier=attackMultiplier;
   }
   
-  public double getAttackBoost(){
+  public double getAttackMultiplier(){
     return attackMultiplier;
   }
   
-  public void use(){
-    //player.setStrenth((player.getStrength) * (attackMultiplier))
+  public void use(Player user){
+    user.setStr((int)(Math.floor((user.getStr()) * (attackMultiplier))));
     used = true;
   }
 }

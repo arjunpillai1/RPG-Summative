@@ -6,13 +6,13 @@
 
 abstract class Weapon extends Item{
   
-  int attackBoost;
+  private int attackBoost;
   
-  double speed;
+  private double speed;
   
-  int range;
+  private  int range;
   
-  boolean equipped;
+  private  boolean equipped;
   
   Weapon(int cost, int attackBoost, double speed, int range){
     super(cost, 1);
@@ -55,11 +55,19 @@ abstract class Weapon extends Item{
     return equipped;
   }
   
-  public void equipWeapon(){
+  public void equipWeapon(Player user){
+    if (user.getEquippedWeapon() == false){
     equipped=true;
+    user.setStr(user.getStr()+attackBoost);
+    user.setEquippedWeapon(false);
+    }
   }
   
-  public void unequipWeapon(){
-    equipped = false;
+  public void unequipWeapon(Player user){
+    if (user.getEquippedWeapon() == true){
+    equipped=false;
+    user.setStr(user.getStr()-attackBoost);
+    user.setEquippedWeapon(false);
+    }
   }
 }
