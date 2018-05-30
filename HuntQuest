@@ -1,0 +1,6 @@
+class HuntQuest extends Quest {
+  int kills;
+  HuntQuest() {
+    super();
+  }
+}

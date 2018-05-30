@@ -11,11 +11,11 @@ abstract class Enemy extends CombatCharacter{
     int damage = getStr() + getInt();
     ((Character)player).setHealth(((Character)player).getHealth()-damage);
   }
-  void move(Object[][] map) {
+  int move(Object[][] map) {
     Random rand = new Random();
     int decision;
     map[1][1] = null;
-    
+
     for (int i=0; i < map.length; i++) {
       for (int j=0; j < map.length; j++) {
         if (map[i][j] instanceof Player) {
