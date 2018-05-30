@@ -110,6 +110,7 @@ class AsciiMain {
     sideQuests = createSide(sideQuests);
     Object[] questLog = new Object[10]; // all quests in here
     int rand;
+    ((Quest)mainStory[1]).initialize(world); 
     fileIn.close();
     do {
       grid.refresh();
@@ -142,13 +143,15 @@ class AsciiMain {
     } while (true);
 
     public Quest[] createStory(Object[] questline) {
-      questline[1] = new Quest();
-      questline[2] = new Quest();
-      questline[3] = new Quest();
+      String[] quest1 = {"Speak", "Walk", "Talk"}
+      Item weakSword = new Item();
+      questline[1] = new Quest(1, "a new beginning", quest1, weakSword);
+      //questline[2] = new Quest();
+      //questline[3] = new Quest();
     }
     public Quest[] createSide(Object[] quests) {
-      quests[1] = new FetchQuest;
-      quests[2] = new HuntQuest;
+      quests[1] = new FetchQuest(1, "a new beginning", quest1, weakSword);
+      quests[2] = new HuntQuest(1, "a new beginning", quest1, weakSword);
     }
   }
 }

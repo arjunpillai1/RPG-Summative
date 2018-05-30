@@ -2,13 +2,13 @@ abstract class Quest {
   private int xpReward;
   private Item itemReward;
   private String name;
-  private String[][] objectives;
+  private String[] objectives;
 
-  Quest(int experience, String name, String[][] objectives, Item itemReward) {
+  Quest(int experience, String name, String[] objectives, Item itemReward) {
     this.xpReward = experience;
     this.name = name;
     this.objectives = objectives;
-    this.itemReward;
+    this.itemReward = itemReward;
   }
 
   abstract void initializeQuest(/*Object[][] world*/);
