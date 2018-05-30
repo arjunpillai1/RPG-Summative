@@ -4,29 +4,29 @@ import java.util.Random;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-class AsciiMain { 
-  
-  
-  public static void main(String[] args) throws Exception { 
-    
-    
+class AsciiMain {
+
+
+  public static void main(String[] args) throws Exception {
+
+
     File map = new File("map.txt");
     Scanner fileIn = new Scanner(map);
     Random rand = new Random();
     String value = fileIn.nextLine();
     Object[][] world = new Object[106][106];
     int noobEnemyCount = 10, poisonEnemyCount = 20, frostEnemyCount = 30, fireEnemyCount = 15;
-    
+
     for (int a = 0; a < world.length - 1; a++) { // draws first row of the map to avoid errors
       if (value.substring(a, a + 1).equals("S")) {
         world[0][a] = new Water();
       }
     }
-    
+
     for (int i = 1; i < world.length - 1; i++) { // draws the rest of the map in the array
       value = fileIn.nextLine();
       for (int j = 0; j < world.length - 1; j++) {
-        if (value.substring(j, j + 1).equals("S") || (value.substring(j, j + 1).equals("r"))) { 
+        if (value.substring(j, j + 1).equals("S") || (value.substring(j, j + 1).equals("r"))) {
           world[i][j] = new Water();
         } else if (value.substring(j, j + 1).equals("E")) {
           world[i][j] = new Grass();
@@ -94,17 +94,23 @@ class AsciiMain {
           world[i][j] = new Grass();
         } else if (value.substring(j, j + 1).equals("L")) {
           world[i][j] = new Chest();
-        }  
+        }
       }
     }
-    
-    
+
+
     //Set up Grid Panel
     AsciiTest grid = new AsciiTest(world);
     world[4][4] = new Player (100,100,100,100,100,100, "guy");
     int playX = 4;
     int playY = 4;
+    Object[] mainStory = new Object[5];\
+    mainStory = createStory(mainStory);
+    Object[] sideQuests = new Object[5];
+    sideQuests = createSide(sideQuests);
+    Object[] questLog = new Object[10]; // all quests in here
     int rand;
+    ((Quest)mainStory[1]).initialize(world); 
     fileIn.close();
     do {
       grid.refresh();
@@ -116,14 +122,14 @@ class AsciiMain {
             ((Player)world[m][n]).move(world, m, n, rand);
           }
           // this is for when enemies are in vision range
-          
+
           if (world[m][n] instanceof Enemy) {
             int radX = ((Enemy)world[m][n]).getX();
             int radY = ((Enemy)world[m][n]).getY();
             Object[][] moveRadius = new Object[5][5];
             for (int x = radX - 2; l <= radX + 2; x++) {
               for (int y = radY - 2; y <= radY + 2; y++) {
-                moveRadius[x][y] = world[x][y];
+                moveRadius[x%5][y%5] = world[x][y];
               }
             }
             //((Enemy)world[m][n]).move(moveRadius);
@@ -132,9 +138,20 @@ class AsciiMain {
       }
 
       grid.refresh();
-      
-      
+
+
     } while (true);
-    
+
+    public Quest[] createStory(Object[] questline) {
+      String[] quest1 = {"Speak", "Walk", "Talk"}
+      Item weakSword = new Item();
+      questline[1] = new Quest(1, "a new beginning", quest1, weakSword);
+      //questline[2] = new Quest();
+      //questline[3] = new Quest();
+    }
+    public Quest[] createSide(Object[] quests) {
+      quests[1] = new FetchQuest(1, "a new beginning", quest1, weakSword);
+      quests[2] = new HuntQuest(1, "a new beginning", quest1, weakSword);
+    }
   }
 }
