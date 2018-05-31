@@ -108,9 +108,16 @@ class AsciiMain {
     mainStory = createStory(mainStory);
     Object[] sideQuests = new Object[5];
     sideQuests = createSide(sideQuests);
-    Object[] questLog = new Object[10]; // all quests in here
+    //Object[] questLog = new Object[10]; // all quests in here
     int rand;
-    ((Quest)mainStory[1]).initialize(world); 
+    ((Quest)mainStory[1]).initialize(world);
+    Boolean addedQuest = false;
+    for (int i = 0; i < questLog.length; i++) {
+      if (!addedQuest && questLog[i]!=null) {
+        questLog[i] = mainStory[i];
+        addedQuest = true;
+      }
+    }
     fileIn.close();
     do {
       grid.refresh();
@@ -134,6 +141,9 @@ class AsciiMain {
             }
             //((Enemy)world[m][n]).move(moveRadius);
           }
+          //implement inventory here
+          // if item picked up, inventory.add(name of item)
+          // if item is to be dropped or deleted, inventory.delete(name of item)
         }
       }
 
@@ -142,10 +152,14 @@ class AsciiMain {
 
     } while (true);
 
-    public Quest[] createStory(Object[] questline) {
-      String[] quest1 = {"Speak", "Walk", "Talk"}
-      Item weakSword = new Item();
-      questline[1] = new Quest(1, "a new beginning", quest1, weakSword);
+    // quests can either be initialized all at once or initialized after
+    public Quest[] createStory(Object[] questline, int quest) {
+      if (quest == 1) {
+        String[] quest1 = {"Speak", "Walk", "Talk"};
+        Item weakSword = new Item();
+        questline[1] = new MainQuestA(1, "a new beginning", quest1, weakSword);
+      }
+      questline[1] = new MainQuestA(1, "a new beginning", quest1, weakSword);
       //questline[2] = new Quest();
       //questline[3] = new Quest();
     }
