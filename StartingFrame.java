@@ -16,6 +16,9 @@ import javax.swing.SwingUtilities;
 import java.io.File;
 import java.util.Scanner;
 import java.util.Random;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 class StartingFrame extends JFrame { 
   
@@ -28,25 +31,50 @@ class StartingFrame extends JFrame {
     this.thisFrame = this; //lol  
     
     //configure the window
-    this.setSize(400,700);    
+    this.setSize(500,650);    
     this.setLocationRelativeTo(null); //start the frame in the center of the screen
     //this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
     this.setResizable (false);
     
     //Create a Panel for stuff
     JPanel mainPanel = new JPanel();
-    mainPanel.setLayout(new BorderLayout());
+    ImageIcon newGame = new ImageIcon( "New Game.png" );
+    ImageIcon loadGame = new ImageIcon ( "LoadGame.png" );
+    ImageIcon exitGame = new ImageIcon ( "ExitGame.png" );
+    ImageIcon welcome = new ImageIcon ( "Medieval Fantasy.png" );
+    ImageIcon background = new ImageIcon ( "backgorund.png" );
+ //JPanel startPanel = new JPanel();
+    BoxLayout mainLayout = new BoxLayout(mainPanel,BoxLayout.Y_AXIS);
+    mainPanel.setLayout(mainLayout);
+    mainPanel.setBackground(Color.WHITE);
     
     //Create a JButton for the centerPanel
-    JButton startButton = new JButton("START");
+    JButton startButton = new JButton(newGame);
+    startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    startButton.setBackground(new Color(0, 0, 0, 0));
+    startButton.setBorder(BorderFactory.createEmptyBorder());
+    startButton.setFocusPainted(false);
+    JButton loadButton = new JButton(loadGame);
+    loadButton.setAlignmentX(Component.CENTER_ALIGNMENT);    
+    loadButton.setBackground(new Color(0, 0, 0, 0));
+    loadButton.setBorder(BorderFactory.createEmptyBorder());
+    loadButton.setFocusPainted(false);
+    JButton exitButton = new JButton(exitGame);
+    exitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    exitButton.setBackground(new Color(0, 0, 0, 0));
+    exitButton.setBorder(BorderFactory.createEmptyBorder());
+    exitButton.setFocusPainted(false);
     startButton.addActionListener(new StartButtonListener());
     
     //Create a JButton for the centerPanel
-    JLabel startLabel = new JLabel("Welome to some game or something");
-    
+    JLabel startLabel = new JLabel(welcome);
+    startLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     //Add all panels to the mainPanel according to border layout
-    mainPanel.add(startButton,BorderLayout.SOUTH);
-    mainPanel.add(startLabel,BorderLayout.CENTER);
+    mainPanel.add(startLabel);
+    mainPanel.add(startButton);
+    mainPanel.add(loadButton);
+    mainPanel.add(exitButton);
+    
     
     //add the main panel to the frame
     this.add(mainPanel);
