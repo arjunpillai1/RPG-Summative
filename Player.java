@@ -4,55 +4,59 @@
  * May 24 2018
  */
 
+import java.util.Random;
+
 class Player extends CombatCharacter {
   private int exp;
   private Object futureStep;
   private Object previousStep;
+  Random rand = new Random();
   
-  Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
-    super(health, strength, intelligence, defence, level, accuracy, name);
+  
+  Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY) {
+    super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
   }
 
   
-  public void attack(int strength, int intelligence) {
-    
-}
+
 
   public void attack(Object enemy) {
+    int critPoint = rand.nextInt(9);                             
+    int damage = getStr() + getInt() + critPoint;
+    ((Enemy)enemy).setHealth(((Enemy)enemy).getHealth()-damage);
 
   }
   
-  public void move(Object[][] world, int coordX, int coordY, int value) {
-    System.out.println("works");
+  public void move(Object[][] world, int value) {
     if (value == 1) {
-      if (world[coordX - 1][coordY] instanceof Grass || world[coordX - 1][coordY] instanceof Floor) { //checks if spot is walkable
-        futureStep = world[coordX - 1][coordY];
-        world[coordX - 1][coordY] = world[coordX][coordY];
-        world[coordX][coordY] = previousStep;
+      if (world[getX() - 1][getY()] instanceof Grass || world[getX() - 1][getY()] instanceof Floor) { //checks if spot is walkable
+        futureStep = world[getX() - 1][getY()];
+        world[getX() - 1][getY()] = world[getX()][getY()];
+        world[getX()][getY()] = previousStep;
         previousStep = futureStep;
       }
     } 
     else if (value == 4) {
-      if (world[coordX][coordY + 1] instanceof Grass || world[coordX][coordY + 1] instanceof Floor) {
-        futureStep = world[coordX][coordY + 1];
-        world[coordX][coordY + 1] = world[coordX][coordY];
-        world[coordX][coordY] = previousStep;
+      if (world[getX()][getY() + 1] instanceof Grass || world[getX()][getY() + 1] instanceof Floor) {
+        futureStep = world[getX()][getY() + 1];
+        world[getX()][getY() + 1] = world[getX()][getY()];
+        world[getX()][getY()] = previousStep;
         previousStep = futureStep;
       }
     }  
     else if (value == 2) {
-      if (world[coordX + 1][coordY] instanceof Grass || world[coordX + 1][coordY] instanceof Floor) {
-        futureStep = world[coordX + 1][coordY];
-        world[coordX + 1][coordY] = world[coordX][coordY];
-        world[coordX][coordY] = previousStep;
+      if (world[getX() + 1][getY()] instanceof Grass || world[getX() + 1][getY()] instanceof Floor) {
+        futureStep = world[getX() + 1][getY()];
+        world[getX() + 1][getY()] = world[getX()][getY()];
+        world[getX()][getY()] = previousStep;
         previousStep = futureStep;
       }
     }
     else if (value == 3) {
-      if (world[coordX][coordY - 1] instanceof Grass || world[coordX][coordY - 1] instanceof Floor) {
-        futureStep = world[coordX][coordY - 1];
-        world[coordX][coordY - 1] = world[coordX][coordY];
-        world[coordX][coordY] = previousStep;
+      if (world[getX()][getY() - 1] instanceof Grass || world[getX()][getY() - 1] instanceof Floor) {
+        futureStep = world[getX()][getY() - 1];
+        world[getX()][getY() - 1] = world[getX()][getY()];
+        world[getX()][getY()] = previousStep;
         previousStep = futureStep;
       }
     }
