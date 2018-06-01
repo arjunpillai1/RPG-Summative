@@ -31,7 +31,10 @@ class GameFrame extends JFrame {
   static GameAreaPanel gamePanel;
   
   
+
   
+
+
   //Constructor - this runs first
   GameFrame(Object[][] world) { 
     super("My Game");  
@@ -139,9 +142,10 @@ class GameFrame extends JFrame {
         for (int b = 0; b < world.length; b++) {
           if (world[a][b] instanceof Player) {
             playerX = a;
+
             ((Player)world[a][b]).setX(playerX);
             playerY = b;
-            ((Player)world[a][b]).setY(playerY);
+
           }
         }
       }
@@ -233,6 +237,7 @@ class GameFrame extends JFrame {
       }
       
       if (KeyEvent.getKeyText(e.getKeyCode()).equals("W")) {  //If 'W' is pressed
+
         ((Player)world[playerX][playerY]).move(world,1);
       } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("S")) {  //If 'S' is pressed
         ((Player)world[playerX][playerY]).move(world, 2);
@@ -240,6 +245,15 @@ class GameFrame extends JFrame {
         ((Player)world[playerX][playerY]).move(world, 3);      
       } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("D")) {
         ((Player)world[playerX][playerY]).move(world, 4);
+
+        ((Player)world[playerX][playerY]).move(world,1);
+      } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("S")) {  //If 'S' is pressed
+        ((Player)world[playerX][playerY]).move(world, 2);
+      } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("A")) {
+        ((Player)world[playerX][playerY]).move(world, 3);      
+      } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("D")) {
+        ((Player)world[playerX][playerY]).move(world, 4);
+
       }
     }   
     
@@ -256,9 +270,14 @@ class GameFrame extends JFrame {
     }
     
     public void mousePressed(MouseEvent e) {
+
       int mouseX = e.getX();
       int mouseY = e.getY();
       
+
+        int mouseX = e.getX();
+      int mouseY = e.getY();
+
     }
     
     public void mouseReleased(MouseEvent e) {

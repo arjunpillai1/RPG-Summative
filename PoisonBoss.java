@@ -1,11 +1,7 @@
 class PoisonBoss extends Type{
-    private final static String name= "Venom";
-    private String newType;
-
-    PoisonBoss(int health, int strength, int intelligence, int defence, int level, int accuracy){
-        super(health, strength, intelligence, defence, level, accuracy);
-        newType = "poison";
-        setType(newType);
+   
+    PoisonBoss(int health, int strength, int intelligence, int defence, int level, int accuracy, String name,  int posX, int posY){
+        super(health, strength, intelligence, defence, level, accuracy,"poison"/*type*/, "Venom"/*name*/, posX, posY);
     }
 
     /*attack

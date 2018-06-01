@@ -1,3 +1,11 @@
+
+
+/** 
+ * this template can be used for a start menu
+ * for your final project
+ **/
+
+
 //Imports
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -191,4 +199,8 @@ class StartingFrame extends JFrame {
     mapInitialize();
   }
   
+
 }
+
+
+
