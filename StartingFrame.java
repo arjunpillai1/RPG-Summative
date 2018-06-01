@@ -1,5 +1,3 @@
-
-
 /** 
  * this template can be used for a start menu
  * for your final project
@@ -186,7 +184,7 @@ class StartingFrame extends JFrame {
     
     
     //Set up Grid Panel
-    world[4][4] = new Player (100,100,100,100,100,100, "guy", 4, 4);
+    world[4][4] = new Player(100,100,100,100,100,100, "guy", 4, 4);
     int playX = 4;
     int playY = 4;
     fileIn.close();
@@ -199,8 +197,4 @@ class StartingFrame extends JFrame {
     mapInitialize();
   }
   
-
 }
-
-
-

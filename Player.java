@@ -29,35 +29,48 @@ class Player extends CombatCharacter {
   
   public void move(Object[][] world, int value) {
     if (value == 1) {
-      if (world[getX() - 1][getY()] instanceof Grass || world[getX() - 1][getY()] instanceof Floor) { //checks if spot is walkable
+
+      if (world[getX() - 1][getY()] instanceof Floor) { //checks if spot is walkable
         futureStep = world[getX() - 1][getY()];
         world[getX() - 1][getY()] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
+        setX(getX()-1);
+
       }
     } 
     else if (value == 4) {
-      if (world[getX()][getY() + 1] instanceof Grass || world[getX()][getY() + 1] instanceof Floor) {
+
+      if (world[getX()][getY() + 1] instanceof Floor) {
+
         futureStep = world[getX()][getY() + 1];
         world[getX()][getY() + 1] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
+        setY(getY()+1);
+
       }
     }  
     else if (value == 2) {
-      if (world[getX() + 1][getY()] instanceof Grass || world[getX() + 1][getY()] instanceof Floor) {
+
+      if (world[getX() + 1][getY()] instanceof Floor) {
         futureStep = world[getX() + 1][getY()];
         world[getX() + 1][getY()] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
+        setX(getX()+1);
+
       }
     }
     else if (value == 3) {
-      if (world[getX()][getY() - 1] instanceof Grass || world[getX()][getY() - 1] instanceof Floor) {
+
+      if (world[getX()][getY() - 1] instanceof Floor) {
         futureStep = world[getX()][getY() - 1];
         world[getX()][getY() - 1] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
+        setY(getY()-1);
+
       }
     }
   }
@@ -79,6 +92,5 @@ class Player extends CombatCharacter {
   }
   
 }
-
 
 
