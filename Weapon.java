@@ -55,19 +55,10 @@ abstract class Weapon extends Item{
     return equipped;
   }
   
-  public void equipWeapon(Player user){
-    if (user.getEquippedWeapon() == false){
-    equipped=true;
-    user.setStr(user.getStr()+attackBoost);
-    user.setEquippedWeapon(false);
-    }
+  public void setEquipped(boolean value){
+    equipped = value;
   }
   
-  public void unequipWeapon(Player user){
-    if (user.getEquippedWeapon() == true){
-    equipped=false;
-    user.setStr(user.getStr()-attackBoost);
-    user.setEquippedWeapon(false);
-    }
+  
+
   }
-}

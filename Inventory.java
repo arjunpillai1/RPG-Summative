@@ -11,9 +11,13 @@ class Inventory{
   
   public void equip(int placement, Player user){
     if ( (inventory.get(placement)).getInventoryNum() == 1){ //it's a weapon
-      ((Weapon)(inventory.get(placement))).equipWeapon(user);
+      Weapon weapon = (Weapon)(inventory.get(placement));
+      user.unequipWeapon(weapon);
+      user.equipWeapon(weapon);
     } else if ( (inventory.get(placement)).getInventoryNum() == 2){// it's armour
-      ((Armour)(inventory.get(placement))).equipArmour(user);
+      Armour armour = (Armour)(inventory.get(placement));
+      user.unequipArmour(armour);
+      user.equipArmour(armour);
     }
   }
   
@@ -23,4 +27,17 @@ class Inventory{
       inventory.remove(placement);
     }
   }
+  
+  public void pickUpItem(Item found, Object[][] map, int xSpot, int ySpot){
+    int invNum = found.getInventoryNum();
+    for (int i=0; i <= inventory.size(); i++){
+      if (invNum == (inventory.get(i)).getInventoryNum()){
+        inventory.add(i, found);
+        return;
+      }
+    }
+    map[xSpot][ySpot] = map[xSpot+1][ySpot];
+  }
+  
+  
 }
