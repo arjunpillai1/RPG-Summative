@@ -11,11 +11,11 @@ abstract class Quest {
     this.itemReward = itemReward;
   }
 
-  abstract void initializeQuest(/*Object[][] world*/);
-  public Item giveItemReward{
+  abstract void initialize(Object[][] world);
+  public Item giveItemReward(){
     return this.itemReward;
   }
-  public int giveXPReward{
+  public int giveXPReward(){
     return this.xpReward;
   }
 }
