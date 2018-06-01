@@ -84,7 +84,7 @@ abstract class CombatCharacter extends Character {
   }
 
 
-  public void setY(int posX){
+  public void setY(int posY){
     this.posY = posY;
   }
 
