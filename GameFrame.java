@@ -26,9 +26,11 @@ class GameFrame extends JFrame {
   private static int maxX,maxY, GridToScreenRatio;
   Object[][] world;
   
+  
   //class variable (non-static)
   static double x, y;
   static GameAreaPanel gamePanel;
+  
   
   
   
@@ -83,28 +85,27 @@ class GameFrame extends JFrame {
   //the main gameloop - this is where the game state is updated
   public void animate() { 
     
-    while(true){
-      int randomInt;
-      for (int m = 0; m < world.length; m++) {
-        for (int n = 0; n < world.length; n++) {
+     while(true){
+      for (int i = 0; i < world.length; i++) {
+        for (int j = 0; j < world.length; j++) {
           // this is for when enemies are in vision range
-          
-          if (world[m][n] instanceof Enemy) {
-            int radX = ((Enemy)world[m][n]).getX();
-            int radY = ((Enemy)world[m][n]).getY();
-            Object[][] moveRadius = new Object[5][5];
-            for (int x = radX - 2; x <= radX + 2; x++) {
-              for (int y = radY - 2; y <= radY + 2; y++) {
-                moveRadius[x%5][y%5] = world[x][y];
+
+          if (world[i][j] instanceof Player) {
+            int playX = ((Player)world[i][j]).getX();
+            int playY = ((Player)world[i][j]).getY();
+            for (int m = playX - 4; m < playX+5; m++) {
+              for (int n = playY - 4; n < playY+5; n++) {
+                if (world[m][n] instanceof Enemy) {
+                  ((Enemy)world[m][n]).move(world, m, n);
+                }
               }
             }
-            ((Enemy)world[m][n]).move(moveRadius);
           }
         }
       }
       try{ Thread.sleep(500);} catch (Exception exc){}  //delay
       this.repaint();
-    }    
+    }
   }
   
   /** --------- INNER CLASSES ------------- **/
@@ -156,50 +157,50 @@ class GameFrame extends JFrame {
           
           if (world[i][j] instanceof Grass) {  
             g.setColor(myGreen); //sets colour for printing organism
-              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
           } else if (world[i][j] instanceof FrostGrass) {
             g.setColor(Color.RED); //sets colour for printing organism
-              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
           } else if (world[i][j] instanceof FireGrass) {
             g.setColor(Color.GREEN); //sets colour for printing organism
-              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
           } else if (world[i][j] instanceof Dirt) {
             g.setColor(myBrown); //sets colour for printing organism
-              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
           } else if (world[i][j] instanceof PoisonGrass) {
             g.setColor(mySaddleBrown); //sets colour for printing organism
-              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
           } else if (world[i][j] instanceof Water) {
             g.setColor(myBlue); //sets colour for printing organism
-              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
           } else if (world[i][j] instanceof Chest) {
             g.setColor(Color.YELLOW); //sets colour for printing organism
-              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
           } else if (world[i][j] instanceof CastleWall) {
             g.setColor(Color.BLACK); //sets colour for printing organism
-              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);   
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);   
             
           } else if (world[i][j] instanceof Wall) {
             g.setColor(floor); //sets colour for printing organism
-              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
             
           } else if (world[i][j] instanceof HouseFloor) {
             g.setColor(wood); //sets colour for printing organism
-              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);  
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);  
             
           } else if (world[i][j] instanceof Tree) {
             g.setColor(tree); //sets colour for printing organism
-              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
           } else if (world[i][j] instanceof CaveWall) {
             g.setColor(Color.BLACK); //sets colour for printing organism
-              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
           } else if (world[i][j] instanceof Player) {
             g.setColor(Color.BLACK); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
@@ -250,15 +251,33 @@ class GameFrame extends JFrame {
   private class MyMouseListener implements MouseListener {
     
     public void mouseClicked(MouseEvent e) {
-      System.out.println("Mouse Clicked");
-      System.out.println("X:"+e.getX() + " y:"+e.getY());
+      int playerX = 0;
+      int playerY = 0;
+      int mouseX = e.getX();
+      int mouseY = e.getY();
+      int yToTile = ((mouseX / GridToScreenRatio) - 4) + playerX;
+      int xToTile = ((mouseY / GridToScreenRatio) - 4) + playerY;
+      
+      for (int i = 0; i < world.length; i++) {
+        for (int j = 0; j < world.length; j++) {
+          if (world[i][j] instanceof Player) {
+            playerX = i;
+            playerY = j;
+          }
+        }
+      }
+      
+      yToTile = ((mouseX / GridToScreenRatio) - 4) + playerY;
+      xToTile = ((mouseY / GridToScreenRatio) - 4) + playerX;
+      
+      if (world[xToTile][yToTile] instanceof Enemy) {
+        ((Player)world[playerX][playerY]).attack(((Enemy)world[xToTile][yToTile])); 
+
+      }
+      System.out.println(xToTile + " " + yToTile);
     }
     
     public void mousePressed(MouseEvent e) {
-      int mouseX = e.getX();
-      int mouseY = e.getY();
-
-      
       
       
       
