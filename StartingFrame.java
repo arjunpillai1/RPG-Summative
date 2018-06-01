@@ -1,3 +1,5 @@
+
+
 /** 
  * this template can be used for a start menu
  * for your final project
@@ -197,4 +199,8 @@ class StartingFrame extends JFrame {
     mapInitialize();
   }
   
+
 }
+
+
+
