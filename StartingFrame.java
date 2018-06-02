@@ -99,7 +99,8 @@ class StartingFrame extends JFrame {
     Scanner fileIn = new Scanner(map);
     Random rand = new Random();
     String value = fileIn.nextLine();
-    int noobEnemyCount = 10, poisonEnemyCount = 20, frostEnemyCount = 30, fireEnemyCount = 15;
+    int noobEnemyCount = 1, poisonEnemyCount = 1, frostEnemyCount = 1, fireEnemyCount = 1;
+    int totalNoob = 4, totalPoison = 6, totalFrost = 8, totalFire = 2;
     
     for (int a = 0; a < world.length - 1; a++) { // draws first row of the map to avoid errors
       if (value.substring(a, a + 1).equals("S")) {
@@ -118,9 +119,9 @@ class StartingFrame extends JFrame {
           if ((enemyChance == 1) && (noobEnemyCount > 0)) {
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new Bandit(1,1,1,1,1,1,"Bandit", i, j);
+              world[i][j] = new Bandit(100,1,1,1,1,1,"Bandit", i, j);
             }else {
-              world[i][j] = new Archer(1,1,1,1,1,1,"Archer", i, j);
+              world[i][j] = new Archer(100,1,1,1,1,1,"Archer", i, j);
             }
             noobEnemyCount--;
           }

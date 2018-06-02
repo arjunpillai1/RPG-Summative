@@ -85,18 +85,22 @@ class GameFrame extends JFrame {
   //the main gameloop - this is where the game state is updated
   public void animate() { 
     
-     while(true){
+    while(true){
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
           // this is for when enemies are in vision range
-
+          
           if (world[i][j] instanceof Player) {
             int playX = ((Player)world[i][j]).getX();
             int playY = ((Player)world[i][j]).getY();
             for (int m = playX - 4; m < playX+5; m++) {
               for (int n = playY - 4; n < playY+5; n++) {
                 if (world[m][n] instanceof Enemy) {
-                  ((Enemy)world[m][n]).move(world, m, n);
+                  if (((Enemy)world[m][n]).getHealth() <= 0) {
+                    ((Enemy)world[m][n]).death(world, world[m][n]);
+                  } else {
+                    ((Enemy)world[m][n]).move(world, m, n);
+                  }
                 }
               }
             }
@@ -257,6 +261,8 @@ class GameFrame extends JFrame {
       int mouseY = e.getY();
       int yToTile = ((mouseX / GridToScreenRatio) - 4) + playerX;
       int xToTile = ((mouseY / GridToScreenRatio) - 4) + playerY;
+      int spaceX; //elon musk??
+      int spaceY;
       
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
@@ -271,8 +277,13 @@ class GameFrame extends JFrame {
       xToTile = ((mouseY / GridToScreenRatio) - 4) + playerX;
       
       if (world[xToTile][yToTile] instanceof Enemy) {
-        ((Player)world[playerX][playerY]).attack(((Enemy)world[xToTile][yToTile])); 
-
+        spaceX = Math.abs(xToTile - playerX);
+        System.out.println(spaceX);
+        spaceY = Math.abs(yToTile - playerY);
+        System.out.println(spaceY);
+        if (spaceX == 1 && spaceY == 1) {
+          ((Player)world[playerX][playerY]).attack(((Enemy)world[xToTile][yToTile])); 
+        }
       }
       System.out.println(xToTile + " " + yToTile);
     }
