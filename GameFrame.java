@@ -89,18 +89,13 @@ class GameFrame extends JFrame {
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
           // this is for when enemies are in vision range
-          
           if (world[i][j] instanceof Player) {
             int playX = ((Player)world[i][j]).getX();
             int playY = ((Player)world[i][j]).getY();
             for (int m = playX - 4; m < playX+5; m++) {
               for (int n = playY - 4; n < playY+5; n++) {
                 if (world[m][n] instanceof Enemy) {
-                  if (((Enemy)world[m][n]).getHealth() <= 0) {
-                    ((Enemy)world[m][n]).death(world, world[m][n]);
-                  } else {
-                    ((Enemy)world[m][n]).move(world, m, n);
-                  }
+                  ((Enemy)world[m][n]).move(world, m, n);
                 }
               }
             }
@@ -278,14 +273,14 @@ class GameFrame extends JFrame {
       
       if (world[xToTile][yToTile] instanceof Enemy) {
         spaceX = Math.abs(xToTile - playerX);
-        System.out.println(spaceX);
         spaceY = Math.abs(yToTile - playerY);
-        System.out.println(spaceY);
-        if (spaceX == 1 && spaceY == 1) {
-          ((Player)world[playerX][playerY]).attack(((Enemy)world[xToTile][yToTile])); 
+        System.out.println(world[xToTile][yToTile]);
+        if (spaceX * spaceY == 1 || spaceY * spaceX == 0) {
+          ((Player)world[playerX][playerY]).attack(((Enemy)world[xToTile][yToTile]), world); 
         }
       }
       System.out.println(xToTile + " " + yToTile);
+      System.out.println(world[xToTile][yToTile]);
     }
     
     public void mousePressed(MouseEvent e) {
@@ -303,5 +298,4 @@ class GameFrame extends JFrame {
     public void mouseExited(MouseEvent e) {
     }
   } //end of mouselistener
-  
 }

@@ -78,18 +78,23 @@ abstract class Enemy extends CombatCharacter{
   
   void death (Object[][] world, Object object) {
     if (object instanceof FrostSpider || object instanceof FrostSnake) {
+      System.out.println(world[getX()][getY()]);
       world[getX()][getY()] = new FrostGrass();
       System.out.println("dead");
     } else if (object instanceof FireSpider || object instanceof FireSnake) {
+      System.out.println(world[getX()][getY()]);
       world[getX()][getY()] = new FireGrass();
       System.out.println("dead");
     } else if (object instanceof Bandit || object instanceof Archer) {
+      System.out.println(world[getX()][getY()]);
       world[getX()][getY()] = new Grass();
       System.out.println("dead");
     }else if (object instanceof PoisonSpider || object instanceof PoisonSnake) {
+      System.out.println(world[getX()][getY()]);
       world[getX()][getY()] = new PoisonGrass();
       System.out.println("dead");
     }
+    return;
   }
   
 }

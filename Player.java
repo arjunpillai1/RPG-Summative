@@ -20,11 +20,16 @@ class Player extends CombatCharacter {
   
 
 
-  public void attack(Object enemy) {
+  public void attack(Object enemy, Object[][] world) {
     int critPoint = rand.nextInt(9);                             
     int damage = getStr() + getInt() + critPoint;
     System.out.println(damage);
+    System.out.println("attack");
     ((Enemy)enemy).setHealth(((Enemy)enemy).getHealth()-damage);
+    System.out.println(enemy);
+    if (((Enemy)enemy).getHealth() <= 0) {
+      ((Enemy)enemy).death(world, enemy);
+    }
 
 
   }
