@@ -4,7 +4,7 @@
  * base level sword
  */
 
-abstract class RustySword extends Sword{
+class RustySword extends Sword{
   
   RustySword(){
     super(50, 10, 1); //cost, attackBoost, speed

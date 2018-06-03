@@ -2,8 +2,9 @@ class Bandit extends Normal{
   
   private int newLvl;
   
-      Bandit(int health, int strength, int intelligence, int defence, int level, int accuracy, String name,  int posX, int posY){
-    super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
+    Bandit(int health, int strength, int intelligence, int defence, int level, int accuracy, 
+           String name,  int posX, int posY, Object initialGround){
+    super(health, strength, intelligence, defence, level, accuracy, name, posX, posY, initialGround);
         newLvl = ((int)(Math.random()*2)+1);
     setLvl(newLvl);
   }

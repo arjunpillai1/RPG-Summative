@@ -6,9 +6,11 @@
  */
 
 class Peasant extends NPC {
-  Peasant(int health, String name) {
-    NPC(health, name);
+  Peasant(int health, String name, Boolean isQuestGiver, Object quest) {
+    super(health, name, isQuestGiver, quest);
   }
-  
+  Peasant(int health, String name, Boolean isQuestGiver) {
+    super(health, name, isQuestGiver);
+  }
   
 }

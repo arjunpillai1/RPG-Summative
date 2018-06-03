@@ -4,8 +4,12 @@ class MainQuestB extends Quest {
     super(experience, name, objectives, itemReward);
   }
 
+  @Override
+  void spawn(Object[][] world) {
+    
+  }
+  @Override
   void initialize(Object[][] world) {
-    world[6][6] = new Peasant(10, "bob");
-    //if (objective complete)
+    
   }
 }

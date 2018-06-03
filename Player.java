@@ -9,7 +9,7 @@ import java.util.Random;
 class Player extends CombatCharacter {
   private int exp;
   private Object futureStep;
-  private Object previousStep;
+  private Object previousStep = new Grass();
   Random rand = new Random();
   
   

@@ -85,11 +85,11 @@ class GameFrame extends JFrame {
   //the main gameloop - this is where the game state is updated
   public void animate() { 
     
-     while(true){
+    while(true){
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
           // this is for when enemies are in vision range
-
+          
           if (world[i][j] instanceof Player) {
             int playX = ((Player)world[i][j]).getX();
             int playY = ((Player)world[i][j]).getY();
@@ -134,6 +134,9 @@ class GameFrame extends JFrame {
       Color wood = new Color(102, 51, 0);
       Color floor = new Color(20, 80, 40); 
       Color tree = new Color(20, 51, 6);
+      Color bandit = new Color(139, 60, 100);
+      Color archer = new Color(11, 110, 80);
+      Color farmer = new Color(176, 102, 84);
       
       for (int a = 0; a < world.length; a++) {
         for (int b = 0; b < world.length; b++) {
@@ -154,7 +157,7 @@ class GameFrame extends JFrame {
         for(int j =playerY - 4; j <= playerY + 4;j=j+1) 
         { 
           
-          
+          // Environment
           if (world[i][j] instanceof Grass) {  
             g.setColor(myGreen); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
@@ -201,11 +204,30 @@ class GameFrame extends JFrame {
           } else if (world[i][j] instanceof CaveWall) {
             g.setColor(Color.BLACK); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
-          } else if (world[i][j] instanceof Player) {
+          
+          //NPCs  
+          } else if (world[i][j] instanceof NPC) {
+            g.setColor(farmer); //sets colour for printing organism
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+          
+          //Enemies
+          } else if (world[i][j] instanceof Bandit) {
+            g.setColor(bandit); //sets colour for printing organism
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            
+          }
+          else if (world[i][j] instanceof Archer) {
+            g.setColor(archer); //sets colour for printing organism
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            
+          }
+          //Player
+          else if (world[i][j] instanceof Player) {
             g.setColor(Color.BLACK); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
           }
+          
           countY++;
         }
         countX++;
@@ -270,13 +292,24 @@ class GameFrame extends JFrame {
       yToTile = ((mouseX / GridToScreenRatio) - 4) + playerY;
       xToTile = ((mouseY / GridToScreenRatio) - 4) + playerX;
       
-      if (world[xToTile][yToTile] instanceof Enemy) {
-        ((Player)world[playerX][playerY]).attack(((Enemy)world[xToTile][yToTile])); 
-
-      }
-      System.out.println(xToTile + " " + yToTile);
+      interact(world[playerX][playerY], world[xToTile][yToTile], world);
+      
+      
+      //System.out.println(xToTile + " " + yToTile);
     }
     
+    public void interact(Object player, Object interactable, Object[][] world) {
+      if (interactable instanceof Enemy) {
+        ((Player)player).attack(((Enemy)interactable)); 
+      }
+      else if (interactable instanceof NPC) {
+        ((NPC)interactable).speak();
+        if (((NPC)interactable).getQuestGiver()) {
+          Object newQuest = ((NPC)interactable).getQuest();
+          ((Quest)newQuest).initialize(world);
+        }
+      }
+    }
     public void mousePressed(MouseEvent e) {
       
       
