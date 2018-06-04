@@ -29,7 +29,8 @@ class HuntQuest extends Quest {
           remaining+=1;
         }
       }
-    }
+    } 
+    //or kills += 1; , if kills = enemyCount, complete quest
     enemyCount = enemyCount - (enemyCount - remaining);
     if (enemyCount == 0) {
       setComplete();

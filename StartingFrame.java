@@ -203,7 +203,7 @@ class StartingFrame extends JFrame {
     Object[] questLog = new Object[20]; // all quests in here
     
     //start all quests
-    ((Quest)mainStory[1]).spawn(world);
+    ((Quest)mainStory[0]).spawn(world);
     for(int i = 0; i < sideQuests.length; i++) {
       if (sideQuests[i] != null) {
         ((Quest)sideQuests[i]).spawn(world);
@@ -253,6 +253,7 @@ class StartingFrame extends JFrame {
   //Main method starts this application
   public static void main(String[] args) throws Exception { 
     Scanner keyInput = new Scanner(System.in);
+    System.out.println("enter player name");
     String playerName = keyInput.nextLine();
     new StartingFrame();
     mapInitialize(playerName);
