@@ -16,10 +16,10 @@ class Player extends CombatCharacter {
   Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY) {
     super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
   }
-
   
-
-
+  
+  
+  
   public void attack(Object enemy, Object[][] world) {
     int critPoint = rand.nextInt(9);                             
     int damage = getStr() + getInt() + critPoint;
@@ -27,11 +27,12 @@ class Player extends CombatCharacter {
     System.out.println("attack");
     ((Enemy)enemy).setHealth(((Enemy)enemy).getHealth()-damage);
     System.out.println(enemy);
+    System.out.println(((Enemy)enemy).getX() + " " + ((Enemy)enemy).getY());
     if (((Enemy)enemy).getHealth() <= 0) {
       ((Enemy)enemy).death(world, enemy);
     }
-
-
+    
+    
   }
   
   public void move(Object[][] world, int value) {

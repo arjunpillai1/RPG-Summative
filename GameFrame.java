@@ -95,6 +95,8 @@ class GameFrame extends JFrame {
             for (int m = playX - 4; m < playX+5; m++) {
               for (int n = playY - 4; n < playY+5; n++) {
                 if (world[m][n] instanceof Enemy) {
+                  ((Enemy)world[m][n]).setX(m);
+                  ((Enemy)world[m][n]).setY(n);
                   ((Enemy)world[m][n]).move(world, m, n);
                 }
               }
@@ -274,13 +276,15 @@ class GameFrame extends JFrame {
       if (world[xToTile][yToTile] instanceof Enemy) {
         spaceX = Math.abs(xToTile - playerX);
         spaceY = Math.abs(yToTile - playerY);
-        System.out.println(world[xToTile][yToTile]);
+//        System.out.println(world[xToTile][yToTile]);
         if (spaceX * spaceY == 1 || spaceY * spaceX == 0) {
+          ((Enemy)world[xToTile][yToTile]).setX(xToTile);
+          ((Enemy)world[xToTile][yToTile]).setY(yToTile);
           ((Player)world[playerX][playerY]).attack(((Enemy)world[xToTile][yToTile]), world); 
         }
       }
-      System.out.println(xToTile + " " + yToTile);
-      System.out.println(world[xToTile][yToTile]);
+//      System.out.println(xToTile + " " + yToTile);
+//      System.out.println(world[xToTile][yToTile]);
     }
     
     public void mousePressed(MouseEvent e) {

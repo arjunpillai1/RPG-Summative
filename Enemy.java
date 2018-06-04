@@ -4,7 +4,7 @@ import java.util.Random;
 abstract class Enemy extends CombatCharacter{
   
   private Object futureStep;
-  private Object previousStep;
+  private Object previousStep = new Grass();
   
   Enemy(int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY){
     super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
@@ -36,6 +36,15 @@ abstract class Enemy extends CombatCharacter{
     
     // this code is for random movement
     decision = rand.nextInt(5);
+    
+    /*
+     * 
+     * 
+     * MAKE THE INITIALIZATION THING BOII
+     * 
+     * 
+     */ 
+    
     
     if (decision == 1 && coordX >= getX()) { // up
       
@@ -78,20 +87,22 @@ abstract class Enemy extends CombatCharacter{
   
   void death (Object[][] world, Object object) {
     if (object instanceof FrostSpider || object instanceof FrostSnake) {
+      System.out.println(getX() + " " + getY());
       System.out.println(world[getX()][getY()]);
-      world[getX()][getY()] = new FrostGrass();
+      world[((Enemy)object).getX()][((Enemy)object).getY()] = new FrostGrass();
       System.out.println("dead");
     } else if (object instanceof FireSpider || object instanceof FireSnake) {
       System.out.println(world[getX()][getY()]);
-      world[getX()][getY()] = new FireGrass();
+      world[((Enemy)object).getX()][((Enemy)object).getY()] = new FireGrass();
       System.out.println("dead");
     } else if (object instanceof Bandit || object instanceof Archer) {
-      System.out.println(world[getX()][getY()]);
-      world[getX()][getY()] = new Grass();
+      System.out.println(((Enemy)object).getX() + " " + ((Enemy)object).getY());
+      System.out.println(world[((Enemy)object).getX()][((Enemy)object).getY()]);
+      world[((Enemy)object).getX()][((Enemy)object).getY()] = new Grass();
       System.out.println("dead");
     }else if (object instanceof PoisonSpider || object instanceof PoisonSnake) {
       System.out.println(world[getX()][getY()]);
-      world[getX()][getY()] = new PoisonGrass();
+      world[((Enemy)object).getX()][((Enemy)object).getY()] = new PoisonGrass();
       System.out.println("dead");
     }
     return;
