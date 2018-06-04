@@ -23,7 +23,7 @@ abstract class Quest {
   public void setComplete(){
     this.complete = true;
   }
-  public String giveTask(int index) {
+  public String getTask(int index) {
     return this.objectives[index];
   }
   

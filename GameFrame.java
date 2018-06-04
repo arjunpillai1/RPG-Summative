@@ -96,7 +96,11 @@ class GameFrame extends JFrame {
             for (int m = playX - 4; m < playX+5; m++) {
               for (int n = playY - 4; n < playY+5; n++) {
                 if (world[m][n] instanceof Enemy) {
-                  ((Enemy)world[m][n]).move(world, m, n);
+                  if (((Enemy)world[m][n]).getHealth() <= 0) {
+                    ((Enemy)world[m][n]).death(world, m, n);
+                  } else {
+                    ((Enemy)world[m][n]).move(world, m, n);
+                  }
                 }
               }
             }
@@ -209,23 +213,24 @@ class GameFrame extends JFrame {
           } else if (world[i][j] instanceof NPC) {
             g.setColor(farmer); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
-          
+            g.setColor(Color.WHITE);
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           //Enemies
           } else if (world[i][j] instanceof Bandit) {
             g.setColor(bandit); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
-            
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           else if (world[i][j] instanceof Archer) {
             g.setColor(archer); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
-            
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           //Player
           else if (world[i][j] instanceof Player) {
             g.setColor(Color.BLACK); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
-            
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           
           countY++;

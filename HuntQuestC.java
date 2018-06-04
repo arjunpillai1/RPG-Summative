@@ -1,6 +1,6 @@
-class HuntQuest extends Quest {
+class HuntQuestC extends Quest {
   int kills, enemyCount;
-  HuntQuest(int experience, String name, String[] objectives, Item itemReward) {
+  HuntQuestC(int experience, String name, String[] objectives, Item itemReward) {
     super(experience, name, objectives, itemReward);
   }
   

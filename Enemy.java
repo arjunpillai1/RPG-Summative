@@ -5,10 +5,17 @@ abstract class Enemy extends CombatCharacter{
   
   private Object futureStep;
   private Object previousStep;
-
+  private Object quest;
+  
   Enemy(int health, int strength, int intelligence, int defence, int level, int accuracy,
         String name, int posX, int posY, Object initialGround){
     super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
+    this.previousStep = initialGround;
+  }
+  
+  Enemy(int health, int strength, int intelligence, int defence, int level, int accuracy,
+        String name, int posX, int posY, Object initialGround, Object associatedQuest){
+    super(health, strength, intelligence, defence, level, accuracy, name, posX, posY, associatedQuest);
     this.previousStep = initialGround;
   }
   void attack(Object player) {
@@ -75,5 +82,8 @@ abstract class Enemy extends CombatCharacter{
        // System.out.println("works");
       }
     }
+  }
+  void death(Object[][] world, int coordX, int coordY) {
+    world[coordX][coordY] = previousStep;
   }
 }

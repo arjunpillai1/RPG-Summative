@@ -94,12 +94,12 @@ class StartingFrame extends JFrame {
     
   }
   
-  public static void mapInitialize() throws Exception {
+  public static void mapInitialize(String playerName) throws Exception {
     File map = new File("map.txt");
     Scanner fileIn = new Scanner(map);
     Random rand = new Random();
     String value = fileIn.nextLine();
-    int noobEnemyCount = 3, poisonEnemyCount = 2, frostEnemyCount = 3, fireEnemyCount = 2;
+    int noobEnemyCount = 1, poisonEnemyCount = 2, frostEnemyCount = 2, fireEnemyCount = 1;
     
     for (int a = 0; a < world.length - 1; a++) { // draws first row of the map to avoid errors
       if (value.substring(a, a + 1).equals("S")) {
@@ -193,7 +193,7 @@ class StartingFrame extends JFrame {
     
     
     //Set up Grid Panel
-    world[4][4] = new Player(100,100,100,100,100,100, "guy", 4, 4);
+    world[4][4] = new Player(100,100,100,100,100,100, playerName, 4, 4);
     int playX = 4;
     int playY = 4;
     Object[] mainStory = new Object[5];
@@ -214,14 +214,29 @@ class StartingFrame extends JFrame {
   
   public static Object[] createStory(Object[] questline, int quest) {
     if (quest == 1) {
-      String[] objectives = {"Speak to NPC #2"};
+      String[] objectives = {"Talk to the farmer", "Kill 5 Bandits", "Talk to the farmer"};
       Item item = new RustySword();
-      questline[1] = new MainQuestA(1, "Start", objectives, item);
+      questline[0] = new MainQuestA(1, "Awakening", objectives, item);
     }
     else if (quest == 2) {
-      String[] objectives = {"Speak", "Walk", "Talk"};
+      String[] objectives = {"Talk to the castle guard", "Kill 5 Poison snakes", "Talk to the King"};
       Item item = new RustySword();
-      questline[2] = new MainQuestB(1, "a new beginning", objectives, item);
+      questline[1] = new MainQuestB(1, "Revelations", objectives, item);
+    }
+    else if (quest == 3) {
+      String[] objectives = {"Speak to the citizen", "Kill the Poison Boss", "Talk"};
+      Item item = new RustySword();
+      questline[2] = new MainQuestC(1, "A Symbol of Hope", objectives, item);
+    }
+    else if (quest == 4) {
+      String[] objectives = {"Kill 5 Frost Enemies", "Kill the Frost Boss", "Return to town"};
+      Item item = new RustySword();
+      questline[3] = new MainQuestD(1, "Shivering Foes", objectives, item);
+    }
+    else if (quest == 5) {
+      String[] objectives = {"Kill 2 Fire Enemies", "Kill the Fire Boss", "Talk to the King"};
+      Item item = new RustySword();
+      questline[4] = new MainQuestE(1, "No Turning Back", objectives, item);
     }
     //questline[2] = new Quest();
     //questline[3] = new Quest();
@@ -230,15 +245,17 @@ class StartingFrame extends JFrame {
   public static Object[] createSide(Object[] quests) {
     String[] objectives = new String[1];
     Item item = new RustySword();
-    quests[1] = new FetchQuest(1, "Search", objectives, item);
+    quests[1] = new FetchQuest(1, "The Missing Box", objectives, item);
     objectives[0] = "kill";
-    quests[2] = new HuntQuest(1, "Kill", objectives, item);
+    quests[2] = new HuntQuest(1, "Evening the Odds", objectives, item);
     return quests;
   }
   //Main method starts this application
   public static void main(String[] args) throws Exception { 
+    Scanner keyInput = new Scanner(System.in);
+    String playerName = keyInput.nextLine();
     new StartingFrame();
-    mapInitialize();
+    mapInitialize(playerName);
   }
   
 }
