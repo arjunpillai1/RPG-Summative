@@ -234,6 +234,7 @@ class GameFrame extends JFrame {
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+            g.drawString("Lv:" + ((Player)world[i][j]).getLvl(), (j - (j - (countY %9))) * GridToScreenRatio + 30, (i - (i - countX)) * GridToScreenRatio + 30);
           }
           
           countY++;
@@ -309,6 +310,15 @@ class GameFrame extends JFrame {
     public void interact(Object player, Object interactable, Object[][] world) {
       if (interactable instanceof Enemy) {
         ((Player)player).attack(((Enemy)interactable)); 
+        if (((Enemy)interactable).getQuest() instanceof HuntQuest /* && ((Quest)((Enemy)interactable)).isComplete() */) {
+          ((Quest)((Enemy)interactable).getQuest()).updateObjective(world);
+        }
+        else if (((Enemy)interactable).getQuest() instanceof HuntQuestB /* && ((Quest)((Enemy)interactable)).isComplete() */) {
+          ((Quest)((Enemy)interactable).getQuest()).updateObjective(world);
+        }
+        else if (((Enemy)interactable).getQuest() instanceof HuntQuestC /* && ((Quest)((Enemy)interactable)).isComplete() */) {
+          ((Quest)((Enemy)interactable).getQuest()).updateObjective(world);
+        }
       }
       else if (interactable instanceof NPC) {
         ((NPC)interactable).speak();
@@ -335,3 +345,5 @@ class GameFrame extends JFrame {
   } //end of mouselistener
   
 }
+
+  
