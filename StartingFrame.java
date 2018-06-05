@@ -25,7 +25,6 @@ class StartingFrame extends JFrame {
   JFrame thisFrame;
   static Object[][] world = new Object[106][106];
   static Object[] sideQuests = new Object[6];
-  static Object[] mainStory = new Object[5];
   static Object[] questLog = new Object[1];
   //Constructor - this runs first
   StartingFrame() { 
@@ -33,10 +32,12 @@ class StartingFrame extends JFrame {
     this.thisFrame = this; //lol  
     
     //configure the window
-    this.setSize(500,650);    
+    this.setSize(500,650);
+    
     this.setLocationRelativeTo(null); //start the frame in the center of the screen
     //this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
     this.setResizable (false);
+    this.setUndecorated(true);
     
     //Create a Panel for stuff
     JPanel mainPanel = new JPanel();
@@ -67,6 +68,7 @@ class StartingFrame extends JFrame {
     exitButton.setBorder(BorderFactory.createEmptyBorder());
     exitButton.setFocusPainted(false);
     startButton.addActionListener(new StartButtonListener());
+    exitButton.addActionListener(new ExitButtonListener());
     
     //Create a JButton for the centerPanel
     JLabel startLabel = new JLabel(welcome);
@@ -90,10 +92,26 @@ class StartingFrame extends JFrame {
     public void actionPerformed(ActionEvent event) {  
       System.out.println("Starting new Game");
       thisFrame.dispose();
-      new GameFrame(world, sideQuests, mainStory, questLog); //create a new FunkyFrame (another file that extends JFrame)
+      String[] objectives = {"KIll 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", "Kill 5 Spiders",
+     "Kill 5 Snakes", "Talk to The Farmer", "Go To the capital and meet The King", "Kill the large poisonous creature",
+      "Talk to King Tagnam", "Find the Ice Fisherman in the Frost Lands", "Kill 7 Snakes", "Kill 7 Spiders",
+        "Talk to Fisherman James", "Go back to the capital and speak with King Tagnam", "Kill the Frost Boss",
+      "Talk to Tagnam", "Find the Pyromaniac in the Firelands", "Defeat 10 Spiders", "Defeat 10 Snakes", "Talk to Vivian",
+      "Go talk to Tagnam at the capital", "Kill the Flaming Entity", "Talk to the king", "Meet the king near the abandoned hut",
+      "Defeat Mangat", "Return to the capital"};
+      Armour kingsCrown = new Armour(1, 1);
+     Object mainStory = new MainQuestA(100, "Awakening", objectives, kingsCrown);
+      new GameFrame(world, sideQuests, mainStory, questLog); 
       
     }
     
+  }
+  
+    class ExitButtonListener implements ActionListener {  //this is the required class definition
+    public void actionPerformed(ActionEvent event) {  
+
+      System.exit(0);
+    }
   }
   
   public static void mapInitialize(String playerName) throws Exception {
@@ -216,7 +234,7 @@ class StartingFrame extends JFrame {
   
   public static Object[] createStory(Object[] questline, int quest) { // all main quests can be integrated into one object
     if (quest == 1) {
-      String[] objectives = {"Talk to the farmer", "Kill 5 Bandits and Archers", "Talk to the farmer"};
+      String[] objectives = {"Kill 5 Bandits and Archers", "Talk to Bob"};
       Item item = new RustySword();
       questline[0] = new MainQuestA(1, "Awakening", objectives, item);
     }

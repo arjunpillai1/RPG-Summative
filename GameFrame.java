@@ -27,7 +27,7 @@ class GameFrame extends JFrame {
   private static int maxX,maxY, GridToScreenRatio;
   Object[][] world;
   Object[] sideQuests = new Object[6];
-  Object[] mainQuests = new Object[5];
+  Object mainQuests = new Object();
   Object[] activeQuests = new Object[11];
   
   //class variable (non-static)
@@ -38,7 +38,7 @@ class GameFrame extends JFrame {
   
   
   //Constructor - this runs first
-  GameFrame(Object[][] world, Object[] sideQuests, Object[] mainQuests, Object[] activeQuests) { 
+  GameFrame(Object[][] world, Object[] sideQuests, Object mainQuests, Object[] activeQuests) { 
     super("My Game");  
     this.world = world;
     
@@ -329,6 +329,30 @@ class GameFrame extends JFrame {
               }
             }
           }
+          
+          if (interactable instanceof Archer) {
+            if (((Quest)mainQuests).getActive() && !((Quest)mainQuests).getComplete()) {
+              ((Quest)mainQuests).setComplete(((Quest)mainQuests).updateObjective(1));
+              if (((Quest)mainQuests).getComplete()) {
+                System.out.println("complete");
+                ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
+                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                System.out.println("You have gained : something");
+              }
+            }
+          }
+          
+                    if (interactable instanceof Bandit) {
+            if (((Quest)mainQuests).getActive() && !((Quest)mainQuests).getComplete()) {
+              ((Quest)mainQuests).setComplete(((Quest)mainQuests).updateObjective(1));
+              if (((Quest)mainQuests).getComplete()) {
+                System.out.println("complete");
+                ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
+                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                System.out.println("You have gained : something");
+              }
+            }
+          }
           //Poison Quest (huntquestB/(1 in index)
           else if (interactable instanceof PoisonSnake) {
 //          if (((Quest)sideQuests[1]).getActive() && !((Quest)sideQuests[1]).getComplete()) {
@@ -466,6 +490,11 @@ class GameFrame extends JFrame {
             ((Quest)sideQuests[4]).setActive(true);
             ((Quest)newQuest).initialize(world);
           }
+          
+                    if (newQuest instanceof MainQuestA && !((Quest)newQuest).getComplete()) {
+            ((Quest)mainQuests).setActive(true);
+            ((Quest)newQuest).initialize(world);
+          }
         }
       }
     }
@@ -486,5 +515,4 @@ class GameFrame extends JFrame {
   } //end of mouselistener
   
 }
-
 
