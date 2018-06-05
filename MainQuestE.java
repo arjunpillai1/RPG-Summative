@@ -12,4 +12,8 @@ class MainQuestE extends Quest {
   void initialize(Object[][] world) {
     
   }
+  
+  void updateObjective(Object[][] world) {
+    
+  }
 }

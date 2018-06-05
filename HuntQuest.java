@@ -1,39 +1,30 @@
 class HuntQuest extends Quest {
-  int kills, enemyCount;
+  int kills = 0, enemyCount;
   HuntQuest(int experience, String name, String[] objectives, Item itemReward) {
     super(experience, name, objectives, itemReward);
   }
   
   @Override
   void spawn(Object[][] world) {
-    world[7][6] = new Peasant(10, "bobo", true, this);
+    world[7][6] = new Peasant(10, "Hunter", true, this);
   }
   @Override
   void initialize(Object[][] world) {
     System.out.println(getTask(0));
-    enemyCount = 0;
-    for (int i = 0; i < world.length; i++) {
-      for (int j = 0; j < world.length; j++) {
-        if (world[i][j] instanceof Bandit) {
-          enemyCount+=1;
-        }
-      }
-    }
+    enemyCount = 5;
+    System.out.println("Quest started: " + getName());
+    setActive(true);
   }
   
-  void updateObjective(Object[][] world) {
-    int remaining = 0;
-    for (int i = 0; i < world.length; i++) {
-      for (int j = 0; j < world.length; j++) {
-        if (world[i][j] instanceof Bandit) {
-          remaining+=1;
-        }
-      }
-    } 
-    //or kills += 1; , if kills = enemyCount, complete quest
-    enemyCount = enemyCount - (enemyCount - remaining);
-    if (enemyCount == 0) {
-      setComplete();
+  Boolean updateObjective(int task) {
+    if (task == 1) {
+      kills++;
     }
+    if (kills == enemyCount) {
+
+      setActive(false);
+      return true;
+    }
+    return false;
   }
 }

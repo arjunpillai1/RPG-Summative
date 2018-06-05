@@ -12,4 +12,7 @@ class FetchQuestB extends Quest {
   void initialize(Object[][] world) {
     
   }
+  Boolean updateObjective(int task) {
+    return false;
+  }
 }

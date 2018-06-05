@@ -1,38 +1,38 @@
 class HuntQuestC extends Quest {
-  int kills, enemyCount;
+  int killsA=0, killsB=0, enemyCountA, enemyCountB, numTasks;
   HuntQuestC(int experience, String name, String[] objectives, Item itemReward) {
     super(experience, name, objectives, itemReward);
+    numTasks = objectives.length;
   }
   
   @Override
   void spawn(Object[][] world) {
-    world[7][6] = new Peasant(10, "bobo", true, this);
+    world[90][60] = new Peasant(10, "bobo", true, this);
   }
-  @Override
+  @Override 
   void initialize(Object[][] world) {
     System.out.println(getTask(0));
-    enemyCount = 0;
-    for (int i = 0; i < world.length; i++) {
-      for (int j = 0; j < world.length; j++) {
-        if (world[i][j] instanceof Bandit) {
-          enemyCount+=1;
-        }
-      }
+    enemyCountA = 5;
+    enemyCountB = 10;
+    System.out.println("Quest started: " + getName());
+    for (int i = 0; i < numTasks; i++) {
+      System.out.println(getTask(i));
     }
+    setActive(true);
   }
   
-  void updateObjective(Object[][] world) {
-    int remaining = 0;
-    for (int i = 0; i < world.length; i++) {
-      for (int j = 0; j < world.length; j++) {
-        if (world[i][j] instanceof Bandit) {
-          remaining+=1;
-        }
-      }
+  Boolean updateObjective(int task) {
+    if (task == 1) {
+      killsA++;
     }
-    enemyCount = enemyCount - (enemyCount - remaining);
-    if (enemyCount == 0) {
-      setComplete();
+    else if (task == 2) {
+      killsB++;
     }
+    if (killsA == enemyCountA && killsB == enemyCountB) {
+      setActive(false);
+      return true;
+    }
+    return false;
   }
+
 }

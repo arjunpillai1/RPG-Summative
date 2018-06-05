@@ -1,13 +1,13 @@
-class HuntQuestB extends Quest {
+class HuntQuestD extends Quest {
   int killsA=0, killsB=0, enemyCountA, enemyCountB, numTasks;
-  HuntQuestB(int experience, String name, String[] objectives, Item itemReward) {
+  HuntQuestD(int experience, String name, String[] objectives, Item itemReward) {
     super(experience, name, objectives, itemReward);
     numTasks = objectives.length;
   }
   
   @Override
   void spawn(Object[][] world) {
-    world[60][60] = new Peasant(10, "bobo", true, this);
+    world[80][60] = new Peasant(10, "bobo", true, this);
   }
   @Override 
   void initialize(Object[][] world) {

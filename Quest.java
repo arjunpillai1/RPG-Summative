@@ -4,6 +4,7 @@ abstract class Quest {
   private String name;
   private String[] objectives;
   private Boolean complete = false;
+  private Boolean active = false;
 
   Quest(int experience, String name, String[] objectives, Item itemReward) {
     this.xpReward = experience;
@@ -17,20 +18,35 @@ abstract class Quest {
   
   abstract void initialize(Object[][] world);
   
+  abstract Boolean updateObjective(int task);
+  
   public Boolean getComplete() {
     return this.complete;
   }
-  public void setComplete(){
-    this.complete = true;
+  public void setComplete(Boolean completed){
+    this.complete = completed;
   }
   public String getTask(int index) {
     return this.objectives[index];
   }
   
-  public Item giveItemReward(){
+  public void setActive(Boolean active){
+    this.active = active;
+  }
+  
+  public Boolean getActive(){
+    return this.active;
+  }
+  
+  public String getName() {
+    return this.name;
+  }
+  
+  
+  public Item getItemReward(){
     return this.itemReward;
   }
-  public int giveXPReward(){
+  public int getXPReward(){
     return this.xpReward;
   }
 }

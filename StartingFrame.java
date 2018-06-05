@@ -24,7 +24,9 @@ class StartingFrame extends JFrame {
   
   JFrame thisFrame;
   static Object[][] world = new Object[106][106];
-  
+  static Object[] sideQuests = new Object[6];
+  static Object[] mainStory = new Object[5];
+  static Object[] questLog = new Object[1];
   //Constructor - this runs first
   StartingFrame() { 
     super("Start Screen");
@@ -88,7 +90,7 @@ class StartingFrame extends JFrame {
     public void actionPerformed(ActionEvent event) {  
       System.out.println("Starting new Game");
       thisFrame.dispose();
-      new GameFrame(world); //create a new FunkyFrame (another file that extends JFrame)
+      new GameFrame(world, sideQuests, mainStory, questLog); //create a new FunkyFrame (another file that extends JFrame)
       
     }
     
@@ -196,13 +198,13 @@ class StartingFrame extends JFrame {
     world[4][4] = new Player(100,100,100,100,100,100, playerName, 4, 4);
     int playX = 4;
     int playY = 4;
-    Object[] mainStory = new Object[5];
-    mainStory = createStory(mainStory, 1);
-    Object[] sideQuests = new Object[5];
-    sideQuests = createSide(sideQuests);
-    Object[] questLog = new Object[20]; // all quests in here
     
-    //start all quests
+    mainStory = createStory(mainStory, 1);
+    
+    sideQuests = createSide(sideQuests);
+     // all quests in here
+    
+    //start all side quests and first main quest 
     ((Quest)mainStory[0]).spawn(world);
     for(int i = 0; i < sideQuests.length; i++) {
       if (sideQuests[i] != null) {
@@ -214,7 +216,7 @@ class StartingFrame extends JFrame {
   
   public static Object[] createStory(Object[] questline, int quest) {
     if (quest == 1) {
-      String[] objectives = {"Talk to the farmer", "Kill 5 Bandits", "Talk to the farmer"};
+      String[] objectives = {"Talk to the farmer", "Kill 5 Bandits and Archers", "Talk to the farmer"};
       Item item = new RustySword();
       questline[0] = new MainQuestA(1, "Awakening", objectives, item);
     }
@@ -238,16 +240,24 @@ class StartingFrame extends JFrame {
       Item item = new RustySword();
       questline[4] = new MainQuestE(1, "No Turning Back", objectives, item);
     }
-    //questline[2] = new Quest();
-    //questline[3] = new Quest();
+
     return questline;
   }
   public static Object[] createSide(Object[] quests) {
-    String[] objectives = new String[1];
+    String[] objectivesA = {"Kill 5 Bandits"};
+    String[] objectivesB = {"Kill 5 Poison Snakes", "Kill 10 Poison Spiders"};
+    String[] objectivesC = {"Kill 5 Frost Snakes", "Kill 10 Frost Spiders"};
+    String[] objectivesD = {"Kill 3 Fire Snakes", "Kill 4 Fire Spiders"};
+    String[] objectivesE = {"Kill the Poison Boss", "Kill the Frost Boss", "Kill the Fire Boss"};
     Item item = new RustySword();
-    quests[1] = new FetchQuest(1, "The Missing Box", objectives, item);
-    objectives[0] = "kill";
-    quests[2] = new HuntQuest(1, "Evening the Odds", objectives, item);
+    quests[0] = new HuntQuest(1, "Evening the Odds", objectivesA, item);
+    quests[1] = new HuntQuestB(1, "Poison Conquerer", objectivesB, item);
+    quests[2] = new HuntQuestC(1, "Frost Conquerer", objectivesC, item);
+    quests[3] = new HuntQuestD(1, "Fire Conquerer", objectivesD, item);
+    quests[4] = new HuntQuestE(1, "World Conquerer", objectivesE, item);
+    //objectives[0] = "Find the box";
+    //quests[1] = new FetchQuest(1, "The Missing Box", objectives, item);
+    
     return quests;
   }
   //Main method starts this application
@@ -255,6 +265,7 @@ class StartingFrame extends JFrame {
     Scanner keyInput = new Scanner(System.in);
     System.out.println("enter player name");
     String playerName = keyInput.nextLine();
+    keyInput.close();
     new StartingFrame();
     mapInitialize(playerName);
   }

@@ -14,4 +14,8 @@ class MainQuestA extends Quest {
     world[7][7] = new Peasant(10, "Notbob", false);
     System.out.println(getTask(1));
   }
+  
+  void updateObjective(Object[][] world) {
+    
+  }
 }
