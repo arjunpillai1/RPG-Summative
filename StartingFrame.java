@@ -214,7 +214,7 @@ class StartingFrame extends JFrame {
     fileIn.close();
   }
   
-  public static Object[] createStory(Object[] questline, int quest) {
+  public static Object[] createStory(Object[] questline, int quest) { // all main quests can be integrated into one object
     if (quest == 1) {
       String[] objectives = {"Talk to the farmer", "Kill 5 Bandits and Archers", "Talk to the farmer"};
       Item item = new RustySword();
