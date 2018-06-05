@@ -1,3 +1,4 @@
+
 /**
  * This template can be used as reference or a starting point
  * for your final summative project
@@ -25,7 +26,9 @@ class GameFrame extends JFrame {
   private static JFrame frame;
   private static int maxX,maxY, GridToScreenRatio;
   Object[][] world;
-  
+  Object[] sideQuests = new Object[6];
+  Object[] mainQuests = new Object[5];
+  Object[] activeQuests = new Object[11];
   
   //class variable (non-static)
   static double x, y;
@@ -35,7 +38,7 @@ class GameFrame extends JFrame {
   
   
   //Constructor - this runs first
-  GameFrame(Object[][] world) { 
+  GameFrame(Object[][] world, Object[] sideQuests, Object[] mainQuests, Object[] activeQuests) { 
     super("My Game");  
     this.world = world;
     
@@ -61,7 +64,9 @@ class GameFrame extends JFrame {
     // this.setUndecorated(true);  //Set to true to remove title bar
     //frame.setResizable(false);
     
-    
+    this.sideQuests = sideQuests;
+    this.mainQuests = mainQuests;
+    this.activeQuests = activeQuests;
     
     //Set up the game panel (where we put our graphics)
     this.add(new GameAreaPanel());
@@ -119,7 +124,7 @@ class GameFrame extends JFrame {
     public void paintComponent(Graphics g) {   
       
       
-      //super.repaint();
+      super.paintComponent(g);
       maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
       maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
       int playerX = 0;
@@ -208,14 +213,14 @@ class GameFrame extends JFrame {
           } else if (world[i][j] instanceof CaveWall) {
             g.setColor(Color.BLACK); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
-          
-          //NPCs  
+            
+            //NPCs  
           } else if (world[i][j] instanceof NPC) {
             g.setColor(farmer); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
-          //Enemies
+            //Enemies
           } else if (world[i][j] instanceof Bandit) {
             g.setColor(bandit); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
@@ -234,6 +239,7 @@ class GameFrame extends JFrame {
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+            g.drawString("Lv:" + ((Player)world[i][j]).getLvl(), (j - (j - (countY %9))) * GridToScreenRatio + 30, (i - (i - countX)) * GridToScreenRatio + 30);
           }
           
           countY++;
@@ -308,13 +314,158 @@ class GameFrame extends JFrame {
     
     public void interact(Object player, Object interactable, Object[][] world) {
       if (interactable instanceof Enemy) {
-        ((Player)player).attack(((Enemy)interactable)); 
+        ((Player)player).attack(((Enemy)interactable));
+        
+        //Quests interaction
+        if (((Enemy)interactable).getHealth() <= 0) {
+          if (interactable instanceof Bandit) {
+            if (((Quest)sideQuests[0]).getActive() && !((Quest)sideQuests[0]).getComplete()) {
+              ((Quest)sideQuests[0]).setComplete(((Quest)sideQuests[0]).updateObjective(1));
+              if (((Quest)sideQuests[0]).getComplete()) {
+                System.out.println("complete");
+                ((Player)player).setExp(((Quest)sideQuests[0]).getXPReward());
+                System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+                System.out.println("You have gained : something");
+              }
+            }
+          }
+          //Poison Quest (huntquestB/(1 in index)
+          else if (interactable instanceof PoisonSnake) {
+//          if (((Quest)sideQuests[0]).getActive() && !((Quest)sideQuests[0]).getComplete()) {
+//            ((Quest)sideQuests[0]).setComplete(((Quest)sideQuests[0]).updateObjective(1));
+//            if (((Quest)sideQuests[0]).getComplete()) {
+//              System.out.println("complete");
+//              ((Player)player).setExp(((Quest)sideQuests[0]).getXPReward());
+//              System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+//              System.out.println("You have gained : something");
+//            }
+//          }
+          }
+          else if (interactable instanceof PoisonSpider) {
+//          if (((Quest)sideQuests[0]).getActive() && !((Quest)sideQuests[0]).getComplete()) {
+//            ((Quest)sideQuests[0]).setComplete(((Quest)sideQuests[0]).updateObjective(1));
+//            if (((Quest)sideQuests[0]).getComplete()) {
+//              System.out.println("complete");
+//              ((Player)player).setExp(((Quest)sideQuests[0]).getXPReward());
+//              System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+//              System.out.println("You have gained : something");
+//            }
+//          }
+          }
+          //Frost Quest (huntquestC/(2 in index)
+          else if (interactable instanceof FrostSnake) {
+//          if (((Quest)sideQuests[0]).getActive() && !((Quest)sideQuests[0]).getComplete()) {
+//            ((Quest)sideQuests[0]).setComplete(((Quest)sideQuests[0]).updateObjective(1));
+//            if (((Quest)sideQuests[0]).getComplete()) {
+//              System.out.println("complete");
+//              ((Player)player).setExp(((Quest)sideQuests[0]).getXPReward());
+//              System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+//              System.out.println("You have gained : something");
+//            }
+//          }
+          }
+          else if (interactable instanceof FrostSpider) {
+//          if (((Quest)sideQuests[0]).getActive() && !((Quest)sideQuests[0]).getComplete()) {
+//            ((Quest)sideQuests[0]).setComplete(((Quest)sideQuests[0]).updateObjective(1));
+//            if (((Quest)sideQuests[0]).getComplete()) {
+//              System.out.println("complete");
+//              ((Player)player).setExp(((Quest)sideQuests[0]).getXPReward());
+//              System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+//              System.out.println("You have gained : something");
+//            }
+//          }
+          }
+          //Fire Quest (huntquestD/(3 in index)
+          else if (interactable instanceof FireSnake) {
+//          if (((Quest)sideQuests[0]).getActive() && !((Quest)sideQuests[0]).getComplete()) {
+//            ((Quest)sideQuests[0]).setComplete(((Quest)sideQuests[0]).updateObjective(1));
+//            if (((Quest)sideQuests[0]).getComplete()) {
+//              System.out.println("complete");
+//              ((Player)player).setExp(((Quest)sideQuests[0]).getXPReward());
+//              System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+//              System.out.println("You have gained : something");
+//            }
+//          }
+          }
+          else if (interactable instanceof FireSpider) {
+//          if (((Quest)sideQuests[0]).getActive() && !((Quest)sideQuests[0]).getComplete()) {
+//            ((Quest)sideQuests[0]).setComplete(((Quest)sideQuests[0]).updateObjective(1));
+//            if (((Quest)sideQuests[0]).getComplete()) {
+//              System.out.println("complete");
+//              ((Player)player).setExp(((Quest)sideQuests[0]).getXPReward());
+//              System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+//              System.out.println("You have gained : something");
+//            }
+//          }
+          }
+          
+          //Boss Quest (HuntQuestE/(4 in index)
+          else if (interactable instanceof PoisonBoss) {
+//          if (((Quest)sideQuests[0]).getActive() && !((Quest)sideQuests[0]).getComplete()) {
+//            ((Quest)sideQuests[0]).setComplete(((Quest)sideQuests[0]).updateObjective(1));
+//            if (((Quest)sideQuests[0]).getComplete()) {
+//              System.out.println("complete");
+//              ((Player)player).setExp(((Quest)sideQuests[0]).getXPReward());
+//              System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+//              System.out.println("You have gained : something");
+//            }
+//          }
+          }
+          else if (interactable instanceof FrostBoss) {
+//          if (((Quest)sideQuests[0]).getActive() && !((Quest)sideQuests[0]).getComplete()) {
+//            ((Quest)sideQuests[0]).setComplete(((Quest)sideQuests[0]).updateObjective(1));
+//            if (((Quest)sideQuests[0]).getComplete()) {
+//              System.out.println("complete");
+//              ((Player)player).setExp(((Quest)sideQuests[0]).getXPReward());
+//              System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+//              System.out.println("You have gained : something");
+//            }
+//          }
+          }
+          else if (interactable instanceof FireBoss) {
+//          if (((Quest)sideQuests[0]).getActive() && !((Quest)sideQuests[0]).getComplete()) {
+//            ((Quest)sideQuests[0]).setComplete(((Quest)sideQuests[0]).updateObjective(1));
+//            if (((Quest)sideQuests[0]).getComplete()) {
+//              System.out.println("complete");
+//              ((Player)player).setExp(((Quest)sideQuests[0]).getXPReward());
+//              System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+//              System.out.println("You have gained : something");
+//            }
+//          }
+          }
+        }
+        
       }
       else if (interactable instanceof NPC) {
         ((NPC)interactable).speak();
-        if (((NPC)interactable).getQuestGiver()) {
+        if (((NPC)interactable).getQuestGiver()) { // possibly start the quest by pressing a key not the mouse
+          
           Object newQuest = ((NPC)interactable).getQuest();
-          ((Quest)newQuest).initialize(world);
+          
+          if (newQuest instanceof HuntQuest && !((Quest)newQuest).getComplete()) {
+            ((Quest)sideQuests[0]).setActive(true);
+            ((Quest)newQuest).initialize(world);
+          }
+          
+          if (newQuest instanceof HuntQuestB && !((Quest)newQuest).getComplete()) {
+            ((Quest)sideQuests[1]).setActive(true);
+            ((Quest)newQuest).initialize(world);
+          }
+          
+          if (newQuest instanceof HuntQuestC && !((Quest)newQuest).getComplete()) {
+            ((Quest)sideQuests[2]).setActive(true);
+            ((Quest)newQuest).initialize(world);
+          }
+          
+          if (newQuest instanceof HuntQuestD && !((Quest)newQuest).getComplete()) {
+            ((Quest)sideQuests[3]).setActive(true);
+            ((Quest)newQuest).initialize(world);
+          }
+          
+          if (newQuest instanceof HuntQuestE && !((Quest)newQuest).getComplete()) {
+            ((Quest)sideQuests[4]).setActive(true);
+            ((Quest)newQuest).initialize(world);
+          }
         }
       }
     }
@@ -335,3 +486,5 @@ class GameFrame extends JFrame {
   } //end of mouselistener
   
 }
+
+
