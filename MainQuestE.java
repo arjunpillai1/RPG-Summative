@@ -13,7 +13,7 @@ class MainQuestE extends Quest {
     
   }
   
-  void updateObjective(Object[][] world) {
-    
+  Boolean updateObjective(int task) {
+    return false;
   }
 }

@@ -15,7 +15,7 @@ class MainQuestA extends Quest {
     System.out.println(getTask(1));
   }
   
-  void updateObjective(Object[][] world) {
-    
+  Boolean updateObjective(int task) {
+    return false;
   }
 }
