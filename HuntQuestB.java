@@ -6,11 +6,11 @@ class HuntQuestB extends Quest {
   }
   
   @Override
-  void spawn(Object[][] world) {
+  void spawn(World[][] world) {
     world[60][60] = new Peasant(10, "bobo", true, this);
   }
   @Override 
-  void initialize(Object[][] world) {
+  void initialize(World[][] world) {
     System.out.println(getTask(0));
     enemyCountA = 5;
     enemyCountB = 10;

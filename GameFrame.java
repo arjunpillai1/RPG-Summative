@@ -25,7 +25,7 @@ import java.awt.event.MouseEvent;
 class GameFrame extends JFrame { 
   private static JFrame frame;
   private static int maxX,maxY, GridToScreenRatio;
-  Object[][] world;
+  World[][] world;
   Quest[] sideQuests = new Quest[6];
   Quest mainQuests;
   Quest[] activeQuests = new Quest[11];
@@ -38,7 +38,7 @@ class GameFrame extends JFrame {
   
   
   //Constructor - this runs first
-  GameFrame(Object[][] world, Quest[] sideQuests, Quest mainQuests, Quest[] activeQuests) { 
+  GameFrame(World[][] world, Quest[] sideQuests, Quest mainQuests, Quest[] activeQuests) { 
     super("My Game");  
     this.world = world;
     
@@ -312,7 +312,7 @@ class GameFrame extends JFrame {
       //System.out.println(xToTile + " " + yToTile);
     }
     
-    public void interact(Object player, Object interactable, Object[][] world) {
+    public void interact(Object player, Object interactable, World[][] world) {
       if (interactable instanceof Enemy) {
         ((Player)player).attack(((Enemy)interactable));
         

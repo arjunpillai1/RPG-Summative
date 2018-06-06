@@ -5,11 +5,11 @@ class FetchQuestC extends Quest {
   }
   
   @Override
-  void spawn(Object[][] world) {
+  void spawn(World[][] world) {
     world[10][10] = new Peasant(10, "john", true, this);
   }
   @Override
-  void initialize(Object[][] world) {
+  void initialize(World[][] world) {
     
   }
   Boolean updateObjective(int task) {

@@ -1,5 +1,5 @@
 
-abstract class Character {
+abstract class Character extends World{
   
   private String name;
   private int health;

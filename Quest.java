@@ -14,9 +14,9 @@ abstract class Quest {
     this.complete = complete;
   }
 
-  abstract void spawn(Object[][] world);
+  abstract void spawn(World[][] world);
   
-  abstract void initialize(Object[][] world);
+  abstract void initialize(World[][] world);
   
   abstract Boolean updateObjective(int task);
   

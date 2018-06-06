@@ -23,7 +23,7 @@ import java.awt.event.*;
 class StartingFrame extends JFrame { 
   
   JFrame thisFrame;
-  static Object[][] world = new Object[106][106];
+  static World[][] world = new World[106][106];
   static Quest[] sideQuests = new Quest[6];
   static Quest mainStory;
   static Quest[] questLog = new Quest[11];
@@ -224,7 +224,7 @@ class StartingFrame extends JFrame {
   }
   
   public static Quest createStory(Quest questline) { // all main quests can be integrated into one object
-    String[] objectives = {"KIll 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", "Kill 5 Spiders",
+    String[] objectives = {"Kill 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", "Kill 5 Spiders",
       "Kill 5 Snakes", "Talk to The Farmer", "Go To the capital and meet The King", "Kill the large poisonous creature",
       "Talk to King Tagnam", "Find the Ice Fisherman in the Frost Lands", "Kill 7 Snakes", "Kill 7 Spiders",
       "Talk to Fisherman James", "Go back to the capital and speak with King Tagnam", "Kill the Frost Boss",
@@ -253,6 +253,10 @@ class StartingFrame extends JFrame {
     
     return quests;
   }
+  
+  //public static void saveGame(World[][] ) {
+    
+  //}
   //Main method starts this application
   public static void main(String[] args) throws Exception { 
     Scanner keyInput = new Scanner(System.in);
@@ -261,6 +265,7 @@ class StartingFrame extends JFrame {
     keyInput.close();
     new StartingFrame();
     mapInitialize(playerName);
+    //saveGame(world);
   }
   
 }

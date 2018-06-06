@@ -1,4 +1,4 @@
-class Chest {
+class Chest extends World{
   Chest(){}
   
 }
