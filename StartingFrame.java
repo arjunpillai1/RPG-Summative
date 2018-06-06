@@ -24,9 +24,9 @@ class StartingFrame extends JFrame {
   
   JFrame thisFrame;
   static Object[][] world = new Object[106][106];
-  static Object[] sideQuests = new Object[6];
-  static Object[] mainStory = new Object[5];
-  static Object[] questLog = new Object[1];
+  static Quest[] sideQuests = new Quest[6];
+  static Quest mainStory;
+  static Quest[] questLog = new Quest[11];
   //Constructor - this runs first
   StartingFrame() { 
     super("Start Screen");
@@ -199,13 +199,13 @@ class StartingFrame extends JFrame {
     int playX = 4;
     int playY = 4;
     
-    mainStory = createStory(mainStory, 1);
+    mainStory = createStory(mainStory);
     
     sideQuests = createSide(sideQuests);
      // all quests in here
     
     //start all side quests and first main quest 
-    ((Quest)mainStory[0]).spawn(world);
+    mainStory.spawn(world);
     for(int i = 0; i < sideQuests.length; i++) {
       if (sideQuests[i] != null) {
         ((Quest)sideQuests[i]).spawn(world);
@@ -214,36 +214,20 @@ class StartingFrame extends JFrame {
     fileIn.close();
   }
   
-  public static Object[] createStory(Object[] questline, int quest) { // all main quests can be integrated into one object
-    if (quest == 1) {
-      String[] objectives = {"Talk to the farmer", "Kill 5 Bandits and Archers", "Talk to the farmer"};
-      Item item = new RustySword();
-      questline[0] = new MainQuestA(1, "Awakening", objectives, item);
-    }
-    else if (quest == 2) {
-      String[] objectives = {"Talk to the castle guard", "Kill 5 Poison snakes", "Talk to the King"};
-      Item item = new RustySword();
-      questline[1] = new MainQuestB(1, "Revelations", objectives, item);
-    }
-    else if (quest == 3) {
-      String[] objectives = {"Speak to the citizen", "Kill the Poison Boss", "Talk"};
-      Item item = new RustySword();
-      questline[2] = new MainQuestC(1, "A Symbol of Hope", objectives, item);
-    }
-    else if (quest == 4) {
-      String[] objectives = {"Kill 5 Frost Enemies", "Kill the Frost Boss", "Return to town"};
-      Item item = new RustySword();
-      questline[3] = new MainQuestD(1, "Shivering Foes", objectives, item);
-    }
-    else if (quest == 5) {
-      String[] objectives = {"Kill 2 Fire Enemies", "Kill the Fire Boss", "Talk to the King"};
-      Item item = new RustySword();
-      questline[4] = new MainQuestE(1, "No Turning Back", objectives, item);
-    }
+  public static Quest createStory(Quest questline) { // all main quests can be integrated into one object
+    String[] objectives = {"KIll 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", "Kill 5 Spiders",
+      "Kill 5 Snakes", "Talk to The Farmer", "Go To the capital and meet The King", "Kill the large poisonous creature",
+      "Talk to King Tagnam", "Find the Ice Fisherman in the Frost Lands", "Kill 7 Snakes", "Kill 7 Spiders",
+      "Talk to Fisherman James", "Go back to the capital and speak with King Tagnam", "Kill the Frost Boss",
+      "Talk to Tagnam", "Find the Pyromaniac in the Firelands", "Defeat 10 Spiders", "Defeat 10 Snakes", "Talk to Vivian",
+      "Go talk to Tagnam at the capital", "Kill the Flaming Entity", "Talk to the king", "Meet the king near the abandoned hut",
+      "Defeat Mangat", "Return to the capital"};
+    KingsCrown kingsCrown = new KingsCrown(1,1);
+    questline = new MainQuestA(100, "Awakening", objectives, kingsCrown);
 
     return questline;
   }
-  public static Object[] createSide(Object[] quests) {
+  public static Quest[] createSide(Quest[] quests) {
     String[] objectivesA = {"Kill 5 Bandits"};
     String[] objectivesB = {"Kill 5 Poison Snakes", "Kill 10 Poison Spiders"};
     String[] objectivesC = {"Kill 5 Frost Snakes", "Kill 10 Frost Spiders"};

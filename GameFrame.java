@@ -26,9 +26,9 @@ class GameFrame extends JFrame {
   private static JFrame frame;
   private static int maxX,maxY, GridToScreenRatio;
   Object[][] world;
-  Object[] sideQuests = new Object[6];
-  Object[] mainQuests = new Object[5];
-  Object[] activeQuests = new Object[11];
+  Quest[] sideQuests = new Quest[6];
+  Quest mainQuests;
+  Quest[] activeQuests = new Quest[11];
   
   //class variable (non-static)
   static double x, y;
@@ -38,7 +38,7 @@ class GameFrame extends JFrame {
   
   
   //Constructor - this runs first
-  GameFrame(Object[][] world, Object[] sideQuests, Object[] mainQuests, Object[] activeQuests) { 
+  GameFrame(Object[][] world, Quest[] sideQuests, Quest mainQuests, Quest[] activeQuests) { 
     super("My Game");  
     this.world = world;
     
@@ -323,8 +323,19 @@ class GameFrame extends JFrame {
               ((Quest)sideQuests[0]).setComplete(((Quest)sideQuests[0]).updateObjective(1));
               if (((Quest)sideQuests[0]).getComplete()) {
                 System.out.println("complete");
-                ((Player)player).setExp(((Quest)sideQuests[0]).getXPReward());
+                ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[0]).getXPReward());
                 System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+                System.out.println("You have gained : something");
+              }
+            }
+          }
+          else if (interactable instanceof Archer) {
+            if (((Quest)mainQuests).getActive() && !((Quest)mainQuests).getComplete()) {
+              ((Quest)mainQuests).setComplete(((Quest)mainQuests).updateObjective(1));
+              if (((Quest)mainQuests).getComplete()) {
+                System.out.println("complete");
+                ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
+                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
                 System.out.println("You have gained : something");
               }
             }
@@ -335,7 +346,7 @@ class GameFrame extends JFrame {
               ((Quest)sideQuests[1]).setComplete(((Quest)sideQuests[1]).updateObjective(1));
               if (((Quest)sideQuests[1]).getComplete()) {
                 System.out.println("complete");
-                ((Player)player).setExp(((Quest)sideQuests[1]).getXPReward());
+                ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[1]).getXPReward());
                 System.out.println("You have gained : " + ((Quest)sideQuests[1]).getXPReward() + " XP");
                 System.out.println("You have gained : something");
               }
@@ -346,11 +357,11 @@ class GameFrame extends JFrame {
               ((Quest)sideQuests[1]).setComplete(((Quest)sideQuests[0]).updateObjective(2));
               if (((Quest)sideQuests[1]).getComplete()) {
                 System.out.println("complete");
-                ((Player)player).setExp(((Quest)sideQuests[1]).getXPReward());
+                ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[1]).getXPReward());
                 System.out.println("You have gained : " + ((Quest)sideQuests[1]).getXPReward() + " XP");
                 System.out.println("You have gained : something");
               }
-                                                 }
+            }
           }
           //Frost Quest (huntquestC/(2 in index)
           else if (interactable instanceof FrostSnake) {
@@ -358,7 +369,7 @@ class GameFrame extends JFrame {
               ((Quest)sideQuests[2]).setComplete(((Quest)sideQuests[2]).updateObjective(1));
               if (((Quest)sideQuests[2]).getComplete()) {
                 System.out.println("complete");
-                ((Player)player).setExp(((Quest)sideQuests[2]).getXPReward());
+                ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[2]).getXPReward());
                 System.out.println("You have gained : " + ((Quest)sideQuests[2]).getXPReward() + " XP");
                 System.out.println("You have gained : something");
               }
@@ -369,7 +380,7 @@ class GameFrame extends JFrame {
               ((Quest)sideQuests[2]).setComplete(((Quest)sideQuests[2]).updateObjective(2));
               if (((Quest)sideQuests[2]).getComplete()) {
                 System.out.println("complete");
-                ((Player)player).setExp(((Quest)sideQuests[2]).getXPReward());
+                ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[2]).getXPReward());
                 System.out.println("You have gained : " + ((Quest)sideQuests[2]).getXPReward() + " XP");
                 System.out.println("You have gained : something");
               }
@@ -381,7 +392,7 @@ class GameFrame extends JFrame {
               ((Quest)sideQuests[3]).setComplete(((Quest)sideQuests[3]).updateObjective(1));
               if (((Quest)sideQuests[3]).getComplete()) {
                 System.out.println("complete");
-                ((Player)player).setExp(((Quest)sideQuests[3]).getXPReward());
+                ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[3]).getXPReward());
                 System.out.println("You have gained : " + ((Quest)sideQuests[3]).getXPReward() + " XP");
                 System.out.println("You have gained : something");
               }
@@ -405,7 +416,7 @@ class GameFrame extends JFrame {
               ((Quest)sideQuests[4]).setComplete(((Quest)sideQuests[4]).updateObjective(1));
               if (((Quest)sideQuests[4]).getComplete()) {
                 System.out.println("complete");
-                ((Player)player).setExp(((Quest)sideQuests[4]).getXPReward());
+                ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[4]).getXPReward());
                 System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
                 System.out.println("You have gained : something");
               }
@@ -416,7 +427,7 @@ class GameFrame extends JFrame {
               ((Quest)sideQuests[4]).setComplete(((Quest)sideQuests[4]).updateObjective(2));
               if (((Quest)sideQuests[4]).getComplete()) {
                 System.out.println("complete");
-                ((Player)player).setExp(((Quest)sideQuests[4]).getXPReward());
+                ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[4]).getXPReward());
                 System.out.println("You have gained : " + ((Quest)sideQuests[4]).getXPReward() + " XP");
                 System.out.println("You have gained : something");
               }
@@ -427,13 +438,13 @@ class GameFrame extends JFrame {
               ((Quest)sideQuests[4]).setComplete(((Quest)sideQuests[4]).updateObjective(2));
               if (((Quest)sideQuests[4]).getComplete()) {
                 System.out.println("complete");
-                ((Player)player).setExp(((Quest)sideQuests[4]).getXPReward());
+                ((Player)player).setExp(((Player)player).getExp() + ((Quest)sideQuests[4]).getXPReward());
                 System.out.println("You have gained : " + ((Quest)sideQuests[4]).getXPReward() + " XP");
                 System.out.println("You have gained : something");
               }
             }
           }
-          }
+        }
         
       }
       else if (interactable instanceof NPC) {
@@ -468,7 +479,7 @@ class GameFrame extends JFrame {
           }
         }
       }
-      }
+    }
     public void mousePressed(MouseEvent e) {
       
       
@@ -483,7 +494,7 @@ class GameFrame extends JFrame {
     
     public void mouseExited(MouseEvent e) {
     }
-    } //end of mouselistener
+  } //end of mouselistener
   
 }
 

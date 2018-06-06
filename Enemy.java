@@ -5,7 +5,6 @@ abstract class Enemy extends CombatCharacter{
   
   private Object futureStep;
   private Object previousStep;
-  private Object quest;
   
   Enemy(int health, int strength, int intelligence, int defence, int level, int accuracy,
         String name, int posX, int posY, Object initialGround){
@@ -13,11 +12,7 @@ abstract class Enemy extends CombatCharacter{
     this.previousStep = initialGround;
   }
   
-  Enemy(int health, int strength, int intelligence, int defence, int level, int accuracy,
-        String name, int posX, int posY, Object initialGround, Object associatedQuest){
-    super(health, strength, intelligence, defence, level, accuracy, name, posX, posY, associatedQuest);
-    this.previousStep = initialGround;
-  }
+
   void attack(Object player) {
     int damage = getStr() + getInt();
     ((Character)player).setHealth(((Character)player).getHealth()-damage);
