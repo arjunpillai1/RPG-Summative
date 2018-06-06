@@ -28,15 +28,17 @@ class StartingFrame extends JFrame {
   static Quest mainStory;
   static Quest[] questLog = new Quest[11];
   //Constructor - this runs first
-  StartingFrame() { 
+   StartingFrame() { 
     super("Start Screen");
     this.thisFrame = this; //lol  
     
     //configure the window
-    this.setSize(500,650);    
+    this.setSize(500,650);
+    
     this.setLocationRelativeTo(null); //start the frame in the center of the screen
     //this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
     this.setResizable (false);
+    this.setUndecorated(true);
     
     //Create a Panel for stuff
     JPanel mainPanel = new JPanel();
@@ -67,6 +69,7 @@ class StartingFrame extends JFrame {
     exitButton.setBorder(BorderFactory.createEmptyBorder());
     exitButton.setFocusPainted(false);
     startButton.addActionListener(new StartButtonListener());
+    exitButton.addActionListener(new ExitButtonListener());
     
     //Create a JButton for the centerPanel
     JLabel startLabel = new JLabel(welcome);
@@ -95,7 +98,13 @@ class StartingFrame extends JFrame {
     }
     
   }
-  
+  class ExitButtonListener implements ActionListener {  //this is the required class definition
+    public void actionPerformed(ActionEvent event) {  
+      
+      System.exit(0);
+    }
+  }
+    
   public static void mapInitialize(String playerName) throws Exception {
     File map = new File("map.txt");
     Scanner fileIn = new Scanner(map);
