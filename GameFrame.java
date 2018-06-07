@@ -12,6 +12,8 @@ import java.awt.Graphics;
 import java.awt.Color;
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 //Keyboard imports
 import java.awt.event.KeyEvent;
@@ -25,6 +27,12 @@ class GameFrame extends JFrame {
   private static JFrame frame;
   private static int maxX,maxY, GridToScreenRatio;
   Object[][] world;
+  int spaceX; //elon musk?
+  int spaceY;
+  Clock clock = new Clock();
+  Player player;
+  
+  
   
   
   //class variable (non-static)
@@ -35,10 +43,15 @@ class GameFrame extends JFrame {
   
   
   //Constructor - this runs first
-  GameFrame(Object[][] world) { 
+  GameFrame(Object[][] world, Player player) { 
     super("My Game");  
     this.world = world;
+    this.player = player;
+    System.out.println(player.getX());
+    System.out.println(player.getY());
     
+    clock.update();
+    System.out.println(clock.getElapsedTime());
     maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
     maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
     GridToScreenRatio = maxY / (10);  //ratio to fit in screen as square map
@@ -81,23 +94,33 @@ class GameFrame extends JFrame {
     t.start();
     
   } //End of Constructor
-  
+
   //the main gameloop - this is where the game state is updated
   public void animate() { 
-    
+
     while(true){
+      if (((int)clock.getElapsedTime()) == 15) {
+       System.out.println("hit");
+        respawnEnemies(((int)clock.getElapsedTime()));
+        clock.update();
+     }
+      
+      
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
           // this is for when enemies are in vision range
+          
           if (world[i][j] instanceof Player) {
             int playX = ((Player)world[i][j]).getX();
             int playY = ((Player)world[i][j]).getY();
             for (int m = playX - 4; m < playX+5; m++) {
               for (int n = playY - 4; n < playY+5; n++) {
                 if (world[m][n] instanceof Enemy) {
-                  ((Enemy)world[m][n]).setX(m);
-                  ((Enemy)world[m][n]).setY(n);
-                  ((Enemy)world[m][n]).move(world, m, n);
+                  if (((Enemy)world[m][n]).getHealth() <= 0) {
+                    ((Enemy)world[m][n]).death(world, m, n);
+                  } else {
+                    ((Enemy)world[m][n]).move(world, m, n);
+                  }
                 }
               }
             }
@@ -109,6 +132,71 @@ class GameFrame extends JFrame {
     }
   }
   
+  void respawnEnemies(int time) {
+    int noobCount = 0, fireCount = 0, frostCount = 0, poisonCount = 0, totalCount = 0;
+    Random rand = new Random();
+    int enemyType;
+    int randX;
+    int randY;
+    System.out.println(time);
+    
+    
+    System.out.println("works");
+    
+    while (noobCount < 2 || fireCount < 1 || frostCount < 2 || poisonCount < 1) {
+      for (int i = 0; i < world.length; i++) {
+        for (int j = 0; j < world.length; j++) {
+          randX = rand.nextInt(97) + 4;
+          randY = rand.nextInt(97) + 4;
+          if (noobCount < 2) {
+            if (world[randX][randY] instanceof Grass) {
+              enemyType = rand.nextInt(2);
+              if (enemyType == 1) {
+                noobCount++;
+                world[randX][randY] = new Bandit(1,1,1,1,1,1,"Bandit", randX, randY, world[randX][randY]);
+              } else {
+                noobCount++;
+                world[randX][randY] = new Archer(1,1,1,1,1,1,"Archer", randX, randY, world[randX][randY]);
+              }
+            } 
+          } if (frostCount < 2) { 
+            if (world[randX][randY] instanceof FrostGrass) {
+              enemyType = rand.nextInt(2);
+              if (enemyType == 1) {
+                frostCount++;
+                world[randX][randY] = new FrostSnake(1,1,1,1,1,1,"FrostSnake", i, j, world[i][j]);
+              } else {
+                frostCount++;
+                world[randX][randY] = new FrostSpider(1,1,1,1,1,1,"FrostSpider", i, j, world[i][j]);
+              }
+            }
+          } if (fireCount < 1) {
+            if (world[randX][randY] instanceof FireGrass) {
+              enemyType = rand.nextInt(2);
+              if (enemyType == 1) {
+                fireCount++;
+                world[randX][randY] = new FireSnake(1,1,1,1,1,1,"FireSnake", randX, randY, world[randX][randY]);
+              } else {
+                fireCount++;
+                world[randX][randY] = new FireSpider(1,1,1,1,1,1,"FireSpider", randX, randY, world[i][j]);
+              }
+            }
+          } if (poisonCount < 1) { 
+            if (world[randX][randY] instanceof PoisonGrass) {
+              enemyType = rand.nextInt(2);
+              if (enemyType == 1) {
+                poisonCount++;
+                world[randX][randY] = new PoisonSnake(1,1,1,1,1,1,"PoisonSnake", randX, randY, world[randX][randY]);
+              } else {
+                poisonCount++;
+                world[randX][randY] = new PoisonSpider(1,1,1,1,1,1,"PoisonSpider", randX, randY, world[randX][randY]);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   /** --------- INNER CLASSES ------------- **/
   
   // Inner class for the the game area - This is where all the drawing of the screen occurs
@@ -119,11 +207,8 @@ class GameFrame extends JFrame {
       //super.repaint();
       maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
       maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
-      int playerX = 0;
-      int playerY = 0;
       int countX = 0;
       int countY = 0;
-      Object playerSight = new Object[9][9];
       
       setDoubleBuffered(true); 
       Color myGreen = new Color(11, 215, 72);
@@ -135,27 +220,22 @@ class GameFrame extends JFrame {
       Color wood = new Color(102, 51, 0);
       Color floor = new Color(20, 80, 40); 
       Color tree = new Color(20, 51, 6);
-      
-      for (int a = 0; a < world.length; a++) {
-        for (int b = 0; b < world.length; b++) {
-          if (world[a][b] instanceof Player) {
-            playerX = a;
-            ((Player)world[a][b]).setX(playerX);
-            playerY = b;
-            ((Player)world[a][b]).setY(playerY);
-          }
-        }
-      }
+      Color bandit = new Color(139, 60, 100);
+      Color archer = new Color(11, 110, 80);
+      Color farmer = new Color(176, 102, 84);
       
       
       
       
-      for(int i =  playerX - 4; i <= playerX + 4;i=i+1)
+      
+      
+      
+      for(int i =  player.getX() - 4; i <= player.getX() + 4;i=i+1)
       { 
-        for(int j =playerY - 4; j <= playerY + 4;j=j+1) 
+        for(int j =player.getY() - 4; j <= player.getY() + 4;j=j+1) 
         { 
           
-          
+          // Environment
           if (world[i][j] instanceof Grass) {  
             g.setColor(myGreen); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
@@ -202,16 +282,68 @@ class GameFrame extends JFrame {
           } else if (world[i][j] instanceof CaveWall) {
             g.setColor(Color.BLACK); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
-          } else if (world[i][j] instanceof Player) {
+            
+            //NPCs  
+          } else if (world[i][j] instanceof NPC) {
+            g.setColor(farmer); //sets colour for printing organism
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            g.setColor(Color.WHITE);
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+            //Enemies
+          } else if (world[i][j] instanceof Bandit) {
+            g.setColor(bandit); //sets colour for printing organism
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            g.setColor(Color.WHITE);
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+          }
+          else if (world[i][j] instanceof Archer) {
+            g.setColor(archer); //sets colour for printing organism
+            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            g.setColor(Color.WHITE);
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+          }
+          //Player
+          else if (world[i][j] instanceof Player) {
             g.setColor(Color.BLACK); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
-            
+            g.setColor(Color.WHITE);
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+            g.drawString("Lv:" + ((Player)world[i][j]).getLvl(), (j - (j - (countY %9))) * GridToScreenRatio + 30, (i - (i - countX)) * GridToScreenRatio + 30);
           }
+          
           countY++;
         }
         countX++;
       }
       
+      g.setColor(Color.BLACK);
+      g.fillRect((maxX/4) - 205 , maxY - 150, 410, 50); 
+      g.setColor(Color.RED);
+      g.fillRect((maxX/4) - 200 , maxY - 145, player.getHealth() * 4, 40);
+    }
+  }
+  
+  class Clock {
+    long elapsedTime;
+    long lastTimeCheck;
+     long currentTime;
+     
+    public Clock() { 
+      lastTimeCheck=System.nanoTime();
+      elapsedTime=0;
+    }
+    
+    public void update() {
+        //if the computer is fast you need more precision
+      currentTime = System.nanoTime();
+      elapsedTime=currentTime - lastTimeCheck;
+      lastTimeCheck=currentTime;
+    }
+    
+    //return elapsed time in milliseconds
+    public double getElapsedTime() {
+      currentTime = System.nanoTime();
+      return (currentTime - lastTimeCheck)/1.0E9;
     }
   }
   
@@ -223,6 +355,7 @@ class GameFrame extends JFrame {
     }
     
     public void keyPressed(KeyEvent e) {
+      clock.update();
       //System.out.println("keyPressed="+KeyEvent.getKeyText(e.getKeyCode()));
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
@@ -258,8 +391,6 @@ class GameFrame extends JFrame {
       int mouseY = e.getY();
       int yToTile = ((mouseX / GridToScreenRatio) - 4) + playerX;
       int xToTile = ((mouseY / GridToScreenRatio) - 4) + playerY;
-      int spaceX; //elon musk??
-      int spaceY;
       
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
@@ -272,21 +403,40 @@ class GameFrame extends JFrame {
       
       yToTile = ((mouseX / GridToScreenRatio) - 4) + playerY;
       xToTile = ((mouseY / GridToScreenRatio) - 4) + playerX;
+      spaceX = Math.abs(xToTile - playerX);
+      spaceY = Math.abs(yToTile - playerY);
       
-      if (world[xToTile][yToTile] instanceof Enemy) {
-        spaceX = Math.abs(xToTile - playerX);
-        spaceY = Math.abs(yToTile - playerY);
-//        System.out.println(world[xToTile][yToTile]);
-        if (spaceX * spaceY == 1 || spaceY * spaceX == 0) {
-          ((Enemy)world[xToTile][yToTile]).setX(xToTile);
-          ((Enemy)world[xToTile][yToTile]).setY(yToTile);
-          ((Player)world[playerX][playerY]).attack(((Enemy)world[xToTile][yToTile]), world); 
-        }
-      }
-//      System.out.println(xToTile + " " + yToTile);
-//      System.out.println(world[xToTile][yToTile]);
+      interact(world[playerX][playerY], world[xToTile][yToTile], world);
+      
+      
+      
+      //System.out.println(xToTile + " " + yToTile);
     }
     
+    public void interact(Object player, Object interactable, Object[][] world) {
+      if (interactable instanceof Enemy) {
+        
+        if (Math.abs(spaceX - spaceY) == 1 || spaceY - spaceX == 0) {
+          ((Player)player).attack(((Enemy)interactable));
+          if (((Enemy)interactable).getQuest() instanceof HuntQuest /* && ((Quest)((Enemy)interactable)).isComplete() */) {
+            ((Quest)((Enemy)interactable).getQuest()).updateObjective(world);
+          }
+          else if (((Enemy)interactable).getQuest() instanceof HuntQuestB /* && ((Quest)((Enemy)interactable)).isComplete() */) {
+            ((Quest)((Enemy)interactable).getQuest()).updateObjective(world);
+          }
+          else if (((Enemy)interactable).getQuest() instanceof HuntQuestC /* && ((Quest)((Enemy)interactable)).isComplete() */) {
+            ((Quest)((Enemy)interactable).getQuest()).updateObjective(world);
+          }
+        }
+      }
+      else if (interactable instanceof NPC) {
+        ((NPC)interactable).speak();
+        if (((NPC)interactable).getQuestGiver()) {
+          Object newQuest = ((NPC)interactable).getQuest();
+          ((Quest)newQuest).initialize(world);
+        }
+      }
+    }
     public void mousePressed(MouseEvent e) {
       
       
@@ -302,4 +452,6 @@ class GameFrame extends JFrame {
     public void mouseExited(MouseEvent e) {
     }
   } //end of mouselistener
+  
 }
+
