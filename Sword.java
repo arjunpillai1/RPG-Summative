@@ -8,8 +8,8 @@
 
 abstract class Sword extends ShortRangeWeapon{
   
-  Sword(int cost, int attackBoost, double speed){
-    super(cost, attackBoost, speed, 1); //range is 1
+  Sword(String name, int cost, int attackBoost, double speed){
+    super(name, cost, attackBoost, speed, 1); //range is 1
   }
   
   public void swing(Player user, Object[][] map, int xSpot, int ySpot){

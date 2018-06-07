@@ -6,8 +6,8 @@ abstract class Armour extends Item{
   
   boolean equipped;
   
-  Armour(int cost, int defenseBoost, double speed){
-    super(cost, 2);
+  Armour(String name, int cost, int defenseBoost, double speed){
+    super(name, cost, 2);
     
     this.defenseBoost=defenseBoost;
     

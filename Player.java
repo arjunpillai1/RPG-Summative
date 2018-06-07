@@ -50,39 +50,71 @@ class Player extends CombatCharacter {
     armourBoost=value;
   }
   
-  public void equipWeapon(Weapon weapon){
-    if (equippedWeapon == false){
-      weapon.setEquipped(true);
-      setWeaponBoost(weapon.getAttackBoost());
-      setEquippedWeapon(true);
-    }
-  }
-  
-  public void unequipWeapon(Weapon weapon){
+  public void unequipWeapon(Inventory bag, int placement){
     if (getEquippedWeapon() == true){
-      weapon.setEquipped(false);
-      setWeaponBoost(0);
-      setEquippedWeapon(false);
+      for (int i=0; i<bag.amount(); i++){
+        if ((i!=placement) && (bag.call(i) instanceof Weapon)){
+          Weapon weapon =(Weapon)( bag.call(i));
+          weapon.setEquipped(false);
+        }
+        setWeaponBoost(0);
+        setEquippedWeapon(false);
+      }
     }
+  }  
+  
+  public void equipWeapon(Inventory bag, int placement){
+    unequipWeapon(bag, placement);
+    
+    Weapon weapon =(Weapon)( bag.call(placement));
+    weapon.setEquipped(true);
+    setWeaponBoost(weapon.getAttackBoost());
+    setEquippedWeapon(true);
+    
   }
   
-  public void equipArmour(Armour armour){
-    if (equippedArmour == false){
-      armour.setEquipped(true);
-      setArmourBoost(armour.getDefenseBoost());
-      setEquippedArmour(true);
-    }
-  }
-  
-  public void unequipArmour(Armour armour){
+  public void unequipArmour(Inventory bag, int placement){
     if (getEquippedArmour() == true){
-      armour.setEquipped(false);
-      setArmourBoost(0);
-      setEquippedArmour(false);
+      for (int i=0; i<bag.amount(); i++){
+        if ((i!=placement) && (bag.call(i) instanceof Armour)){
+          Armour armour =(Armour)( bag.call(i));
+          armour.setEquipped(false);
+        }
+        setArmourBoost(0);
+        setEquippedArmour(false);
+      }
     }
   }
   
+  public void equipArmour(Inventory bag, int placement){
+    unequipArmour(bag, placement);
+    Armour armour =(Armour)( bag.call(placement));
+    armour.setEquipped(true);
+    setArmourBoost(armour.getDefenseBoost());
+    setEquippedArmour(true);
+  }
   
+  
+  public void useAttackPotion(Inventory bag, int placement){
+    AttackPotion potion = (AttackPotion)(bag.call(placement));
+    setWeaponBoost((weaponBoost + potion.getAttackBoost()));
+    bag.tossItem(placement);
+    for(int i=0; i<=(potion.getTimer()); i++){
+      try{ Thread.sleep(100); }catch(Exception e) {};
+    }
+    setWeaponBoost((weaponBoost -= potion.getAttackBoost()));
+  }
+  
+  public void useAttackPermanentPotion(Inventory bag, int placement){
+    AttackPermanentPotion potion = (AttackPermanentPotion)(bag.call(placement));
+    setStr(getStr() + potion.getAttackBoost());
+    bag.tossItem(placement);
+  }
+  public void useDefensePermanentPotion(Inventory bag, int placement){
+    DefensePermanentPotion potion = (DefensePermanentPotion)(bag.call(placement));
+    setDef(getDef() + potion.getDefenseBoost());
+    bag.tossItem(placement);
+  }
   public void attack(int strength, int intelligence) {
     
   }

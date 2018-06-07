@@ -6,7 +6,7 @@
 
 abstract class DefensePotion extends Potion{
   
-  double defenseMultiplier;
+  private double defenseMultiplier;
   
   DefensePotion(int cost, int timer, double defenseMultiplier){
   super(cost, timer);
