@@ -152,17 +152,20 @@ class GameFrame extends JFrame {
           output.print("M");
         } else if (world[i][j] instanceof Water) {
           output.print("S");
-        } else if (world[i][j] instanceof Enemy) {
-          output.print("A");
         } else if (world[i][j] instanceof Player) {
           output.print("P");
           player = ((Player)world[i][j]);
           PrintWriter outputPlayer = new PrintWriter(saveGame) ;
           //save player
           outputPlayer.println(player.getName());
-          outputPlayer.println(player.getExp());
+          outputPlayer.println(player.getLvl());
           outputPlayer.println(player.getInt());
           outputPlayer.println(player.getStr());
+          outputPlayer.println(player.getDef());
+          outputPlayer.println(player.getHealth());
+          outputPlayer.println(player.getX());
+          outputPlayer.println(player.getY());
+          outputPlayer.println(player.getAccuracy());
           //save quest
           for (int k = 0; k < sideQuests.length; k++) {
             if (sideQuests[i].getActive()) {
