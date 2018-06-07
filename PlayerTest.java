@@ -4,19 +4,22 @@
  * May 24 2018
  */
 
-class Player extends CombatCharacter {
+import java.util.Random;
+
+class PlayerTest extends CombatCharacter {
   private int exp;
   private Object futureStep;
-  private Object previousStep;
+  private Object previousStep = new Grass();
+  Random rand = new Random();
   private int weaponBoost = 0;
   private int armourBoost = 0;
   private boolean equippedWeapon = false;
   private boolean equippedArmour = false;
   
-  Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY) {
+  PlayerTest(int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY) {
     super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
   }
-//<<<<<<< HEAD
+  
   
   public boolean getEquippedWeapon(){
     return equippedWeapon;
@@ -115,58 +118,55 @@ class Player extends CombatCharacter {
     setDef(getDef() + potion.getDefenseBoost());
     bag.tossItem(placement);
   }
-  public void attack(int strength, int intelligence) {
-    //target.setHealth((target.getHealth())- ((int) (Math.floor(( ( ( (2 * user.getLvl() + 2) * 60 * ( (user.getStr() + user.getWeaponBoost())/target.getDef() ) ) / 50 ) + 2) * ( ( (int)(Math.random()*16) + 85) / 100)))));
+  
+  public void attack(CombatCharacter target){
+    target.setHealth((target.getHealth())- ((int) (Math.floor(( ( ( (2 * getLvl() + 2) * 60 * ( (getStr() + getWeaponBoost())/target.getDef() ) ) / 50 ) + 2) * ( ( (int)(Math.random()*16) + 85) / 100)))));
   }
   
-  public void attack(CombatCharacter enemy) {
-    
-  }
-  
- public void move(Object[][] world, int value) {
+  public void move(Object[][] world, int value) {
     if (value == 1) {
-
+      
       if (world[getX() - 1][getY()] instanceof Floor) { //checks if spot is walkable
         futureStep = world[getX() - 1][getY()];
         world[getX() - 1][getY()] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
         setX(getX()-1);
-
+        
       }
     } 
     else if (value == 4) {
-
+      
       if (world[getX()][getY() + 1] instanceof Floor) {
-
+        
         futureStep = world[getX()][getY() + 1];
         world[getX()][getY() + 1] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
         setY(getY()+1);
-
+        
       }
     }  
     else if (value == 2) {
-
+      
       if (world[getX() + 1][getY()] instanceof Floor) {
         futureStep = world[getX() + 1][getY()];
         world[getX() + 1][getY()] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
         setX(getX()+1);
-
+        
       }
     }
     else if (value == 3) {
-
+      
       if (world[getX()][getY() - 1] instanceof Floor) {
         futureStep = world[getX()][getY() - 1];
         world[getX()][getY() - 1] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
         setY(getY()-1);
-
+        
       }
     }
   }
