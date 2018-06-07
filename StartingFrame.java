@@ -193,7 +193,8 @@ class StartingFrame extends JFrame {
         } else if (value.substring(j, j + 1).equals("E")) {
           world[i][j] = new Grass();
         } else if (value.substring(j, j + 1).equals("L")) {
-          world[i][j] = new Chest();
+          Item chestItems[] = new Item[1];
+          world[i][j] = new Chest(chestItems);
         }  
       }
       frostEnemyCount += 1;
@@ -254,9 +255,12 @@ class StartingFrame extends JFrame {
     return quests;
   }
   
-  //public static void saveGame(World[][] ) {
+  
+  
+  public static void loadGame() throws Exception{
     
-  //}
+    
+  }
   //Main method starts this application
   public static void main(String[] args) throws Exception { 
     Scanner keyInput = new Scanner(System.in);

@@ -11,6 +11,8 @@ import javax.swing.JPanel;
 import java.awt.Toolkit;
 import java.awt.Graphics;
 import java.awt.Color;
+import java.io.PrintWriter;
+import java.io.File;
 import javax.swing.*;
 import java.awt.*;
 
@@ -117,6 +119,69 @@ class GameFrame extends JFrame {
     }
   }
   
+  public static void saveGame(World[][] world, Quest[] sideQuests, Quest mainQuestA) throws Exception{
+    File saveGame = new File("saveGame.txt");
+    File saveMap = new File("mapSave.txt");
+    Player player;
+    PrintWriter output = new PrintWriter(saveMap);
+    for (int i = 0; i < world.length; i++) {
+      for (int j = 0; j < world.length; j++) {
+        if (world[i][j] instanceof Bridge) {
+          output.print("B");
+        } else if (world[i][j] instanceof CaveWall) {
+          output.print("c");
+        } else if (world[i][j] instanceof Tree) {
+          output.print("T");
+        } else if (world[i][j] instanceof Wall) {
+          output.print("h");
+        } else if (world[i][j] instanceof CastleWall) {
+          output.print("C");
+        } else if (world[i][j] instanceof HouseFloor) {
+          output.print("F");
+        } else if (world[i][j] instanceof Dirt) {
+          output.print("-");
+        } else if (world[i][j] instanceof Grass) {
+          output.print("E");
+        } else if (world[i][j] instanceof Chest) {
+          output.print("L");
+        } else if (world[i][j] instanceof FrostGrass) {
+          output.print("I");
+        } else if (world[i][j] instanceof PoisonGrass) {
+          output.print("D");
+        } else if (world[i][j] instanceof FireGrass) {
+          output.print("M");
+        } else if (world[i][j] instanceof Water) {
+          output.print("S");
+        } else if (world[i][j] instanceof Enemy) {
+          output.print("A");
+        } else if (world[i][j] instanceof Player) {
+          output.print("P");
+          player = ((Player)world[i][j]);
+          PrintWriter outputPlayer = new PrintWriter(saveGame) ;
+          //save player
+          outputPlayer.println(player.getName());
+          outputPlayer.println(player.getExp());
+          outputPlayer.println(player.getInt());
+          outputPlayer.println(player.getStr());
+          //save quest
+          for (int k = 0; k < sideQuests.length; k++) {
+            if (sideQuests[i].getActive()) {
+              //outputPlayer.println(sideQuests[i].getCurrentTask());
+            }
+          }
+          //outputPlayer.println(mainQuestA.getCurrentTask());
+          outputPlayer.close();
+        }
+        
+      }
+      output.println("");
+    }
+    output.close();
+    
+    
+    
+    
+  }
   /** --------- INNER CLASSES ------------- **/
   
   // Inner class for the the game area - This is where all the drawing of the screen occurs
