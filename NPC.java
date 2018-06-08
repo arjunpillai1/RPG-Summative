@@ -1,8 +1,8 @@
 abstract class NPC extends NonCombatCharacter{
   private Boolean questGiver;
-  private Object quest;
+  private Quest quest;
   
-  NPC(int health, String name, Boolean isQuestGiver, Object quest){
+  NPC(int health, String name, Boolean isQuestGiver, Quest quest){
     super(health,name);
     this.questGiver= isQuestGiver;
     this.quest = quest;
@@ -12,7 +12,7 @@ abstract class NPC extends NonCombatCharacter{
     super(health,name);
     this.questGiver= isQuestGiver;
   } 
-  public Object getQuest(){
+  public Quest getQuest(){
     // construct the appropriate quest object and then somehow attribute it to the character
     return this.quest;
   }

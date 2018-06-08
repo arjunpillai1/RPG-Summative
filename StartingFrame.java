@@ -225,13 +225,14 @@ class StartingFrame extends JFrame {
   }
   
   public static Quest createStory(Quest questline) { // all main quests can be integrated into one object
-    String[] objectives = {"Kill 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", "Kill 5 Spiders",
-      "Kill 5 Snakes", "Talk to The Farmer", "Go To the capital and meet The King", "Kill the large poisonous creature",
-      "Talk to King Tagnam", "Find the Ice Fisherman in the Frost Lands", "Kill 7 Snakes", "Kill 7 Spiders",
-      "Talk to Fisherman James", "Go back to the capital and speak with King Tagnam", "Kill the Frost Boss",
+    String[] objectives = {"Kill 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", 
+      "Kill 5 Spiders", "Kill 5 Snakes", "Talk to The Farmer", 
+      "Go To the capital and meet The King", "Kill the large poisonous creature",
+      "Talk to King Tagnam", "Find the Ice Fisherman in the Frost Lands", "Kill 7 Snakes"/*12-13*/, "Kill 7 Spiders",
+      "Talk to Fisherman James", "Go back to the capital and speak with King Tagnam", "Kill the Frost Boss"/*16*/,
       "Talk to Tagnam", "Find the Pyromaniac in the Firelands", "Defeat 10 Spiders", "Defeat 10 Snakes", "Talk to Vivian",
       "Go talk to Tagnam at the capital", "Kill the Flaming Entity", "Talk to the king", "Meet the king near the abandoned hut",
-      "Defeat Mangat", "Return to the capital"};
+      "Defeat Mangat", "Speak with the counsellor"};
     KingsCrown kingsCrown = new KingsCrown(1,1);
     questline = new MainQuestA(100, "Awakening", objectives, kingsCrown);
 

@@ -5,6 +5,7 @@ abstract class Quest {
   private String[] objectives;
   private Boolean complete = false;
   private Boolean active = false;
+  private int currentTask;
 
   Quest(int experience, String name, String[] objectives, Item itemReward) {
     this.xpReward = experience;
@@ -42,6 +43,13 @@ abstract class Quest {
     return this.name;
   }
   
+  public int getCurrentTask() {
+    return this.currentTask;
+  }
+  
+  public void setCurrentTask(int task) {
+    this.currentTask = task;
+  }
   
   public Item getItemReward(){
     return this.itemReward;
