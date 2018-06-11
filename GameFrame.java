@@ -291,15 +291,44 @@ class GameFrame extends JFrame {
           } else if (world[i][j] instanceof CaveWall) {
             g.setColor(Color.BLACK); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
-            
+          }
             //NPCs  
-          } else if (world[i][j] instanceof NPC) {
+          if (world[i][j] instanceof NPC) {
             g.setColor(farmer); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
-            //Enemies
-          } else if (world[i][j] instanceof Bandit) {
+            
+          } 
+          //Enemies
+          if (world[i][j] instanceof Enemy || world[i][j] instanceof Player){
+            World characterImageBackground=null;
+            if (world[i][j] instanceof Enemy){
+              characterImageBackground=((Enemy)world[i][j]).returnFutureStep();
+            }else if(world[i][j] instanceof Player){
+              characterImageBackground=((Player)world[i][j]).returnFutureStep();
+            }
+            if (characterImageBackground instanceof Grass) {  
+              g.drawImage(floorTextures[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+              
+            } else if (characterImageBackground instanceof FrostGrass) {
+              g.drawImage(floorTextures[2],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);            
+              
+            } else if (characterImageBackground instanceof FireGrass) {
+              g.drawImage(floorTextures[3],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+              
+            } else if (characterImageBackground instanceof Dirt) {
+              g.drawImage(floorTextures[4],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+              
+            } else if (characterImageBackground instanceof PoisonGrass) {
+              g.drawImage(floorTextures[1],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+              
+            }else if (characterImageBackground instanceof HouseFloor) {
+            g.drawImage(floorTextures[5],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            
+            }
+          }
+          if (world[i][j] instanceof Bandit) {
             g.drawImage(knights[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);

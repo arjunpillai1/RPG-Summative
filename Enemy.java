@@ -81,4 +81,8 @@ abstract class Enemy extends CombatCharacter{
   void death(Object[][] world, int coordX, int coordY) {
     world[coordX][coordY] = previousStep;
   }
+  
+  public World returnFutureStep(){
+    return futureStep;
+  }
 }
