@@ -5,6 +5,7 @@ abstract class Quest {
   private String[] objectives;
   private Boolean complete = false;
   private Boolean active = false;
+  private int currentTask;
 
   Quest(int experience, String name, String[] objectives, Item itemReward) {
     this.xpReward = experience;
@@ -14,9 +15,9 @@ abstract class Quest {
     this.complete = complete;
   }
 
-  abstract void spawn(Object[][] world);
+  abstract void spawn(World[][] world);
   
-  abstract void initialize(Object[][] world);
+  abstract void initialize(World[][] world, Inventory bag);
   
   abstract Boolean updateObjective(int task);
   
@@ -42,6 +43,13 @@ abstract class Quest {
     return this.name;
   }
   
+  public int getCurrentTask() {
+    return this.currentTask;
+  }
+  
+  public void setCurrentTask(int task) {
+    this.currentTask = task;
+  }
   
   public Item getItemReward(){
     return this.itemReward;

@@ -23,11 +23,11 @@ import java.awt.event.*;
 class StartingFrame extends JFrame { 
   
   JFrame thisFrame;
-  static Object[][] world = new Object[106][106];
-  static Object[] sideQuests = new Object[6];
-  static Object[] questLog = new Object[1];
+  static World[][] world = new World[106][106];
+  static Quest[] sideQuests = new Quest[8];
+  static Quest mainStory;
   //Constructor - this runs first
-  StartingFrame() { 
+   StartingFrame() { 
     super("Start Screen");
     this.thisFrame = this; //lol  
     
@@ -92,28 +92,18 @@ class StartingFrame extends JFrame {
     public void actionPerformed(ActionEvent event) {  
       System.out.println("Starting new Game");
       thisFrame.dispose();
-      String[] objectives = {"KIll 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", "Kill 5 Spiders",
-     "Kill 5 Snakes", "Talk to The Farmer", "Go To the capital and meet The King", "Kill the large poisonous creature",
-      "Talk to King Tagnam", "Find the Ice Fisherman in the Frost Lands", "Kill 7 Snakes", "Kill 7 Spiders",
-        "Talk to Fisherman James", "Go back to the capital and speak with King Tagnam", "Kill the Frost Boss",
-      "Talk to Tagnam", "Find the Pyromaniac in the Firelands", "Defeat 10 Spiders", "Defeat 10 Snakes", "Talk to Vivian",
-      "Go talk to Tagnam at the capital", "Kill the Flaming Entity", "Talk to the king", "Meet the king near the abandoned hut",
-      "Defeat Mangat", "Return to the capital"};
-      Armour kingsCrown = new Armour(1, 1);
-     Object mainStory = new MainQuestA(100, "Awakening", objectives, kingsCrown);
-      new GameFrame(world, sideQuests, mainStory, questLog); 
+      new GameFrame(world, sideQuests, mainStory); //create a new FunkyFrame (another file that extends JFrame)
       
     }
     
   }
-  
-    class ExitButtonListener implements ActionListener {  //this is the required class definition
+  class ExitButtonListener implements ActionListener {  //this is the required class definition
     public void actionPerformed(ActionEvent event) {  
-
+      
       System.exit(0);
     }
   }
-  
+    
   public static void mapInitialize(String playerName) throws Exception {
     File map = new File("map.txt");
     Scanner fileIn = new Scanner(map);
@@ -129,7 +119,7 @@ class StartingFrame extends JFrame {
     
     for (int i = 1; i < world.length - 1; i++) { // draws the rest of the map in the array
       value = fileIn.nextLine();
-      Object initialGround;
+      World initialGround;
       for (int j = 0; j < world.length - 1; j++) {
         if (value.substring(j, j + 1).equals("S") || (value.substring(j, j + 1).equals("r"))) {
           world[i][j] = new Water();
@@ -146,7 +136,7 @@ class StartingFrame extends JFrame {
             }
             noobEnemyCount--;
           }
-        } else if (value.substring(j, j + 1).equals("M")) {
+        } else if (value.substring(j, j + 1).equals("D")) {
           world[i][j] = new FireGrass();
           int enemyChance = rand.nextInt(5);
           if ((enemyChance == 1) && (fireEnemyCount > 0)) {
@@ -159,7 +149,7 @@ class StartingFrame extends JFrame {
             }
             fireEnemyCount--;
           }
-        } else if (value.substring(j, j + 1).equals("D")) {
+        } else if (value.substring(j, j + 1).equals("M")) {
           world[i][j] = new PoisonGrass();
           int enemyChance = rand.nextInt(5);
           if ((enemyChance == 1) && (poisonEnemyCount > 0)) {
@@ -201,8 +191,24 @@ class StartingFrame extends JFrame {
           world[i][j] = new Dirt();
         } else if (value.substring(j, j + 1).equals("E")) {
           world[i][j] = new Grass();
+        }
+          else if (value.substring(j, j + 1).equals("X")) {
+          System.out.println("farmer:" + i + ":" + j);
+        } 
+          else if (value.substring(j, j + 1).equals("K")) {
+          System.out.println("KING:" + i + ":" + j);
+        }
+          else if (value.substring(j, j + 1).equals("G")) {
+          System.out.println("Guard:" + i + ":" + j);
+        }
+          else if (value.substring(j, j + 1).equals("Y")) {
+          System.out.println("Hunter:" + i + ":" + j);
+        }
+          else if (value.substring(j, j + 1).equals("P")) {
+          System.out.println("Chancellor:" + i + ":" + j);
         } else if (value.substring(j, j + 1).equals("L")) {
-          world[i][j] = new Chest();
+          Item chestItems[] = new Item[1];
+          world[i][j] = new Chest(chestItems);
         }  
       }
       frostEnemyCount += 1;
@@ -213,17 +219,14 @@ class StartingFrame extends JFrame {
     
     
     //Set up Grid Panel
-    world[4][4] = new Player(100,100,100,100,100,100, playerName, 4, 4);
-    int playX = 4;
-    int playY = 4;
-    
-    mainStory = createStory(mainStory, 1);
+    world[5][5] = new Player(100,100,100,100,100,100, playerName, 5, 5);
+    mainStory = createStory(mainStory);
     
     sideQuests = createSide(sideQuests);
      // all quests in here
     
     //start all side quests and first main quest 
-    ((Quest)mainStory[0]).spawn(world);
+    mainStory.spawn(world);
     for(int i = 0; i < sideQuests.length; i++) {
       if (sideQuests[i] != null) {
         ((Quest)sideQuests[i]).spawn(world);
@@ -232,51 +235,49 @@ class StartingFrame extends JFrame {
     fileIn.close();
   }
   
-  public static Object[] createStory(Object[] questline, int quest) { // all main quests can be integrated into one object
-    if (quest == 1) {
-      String[] objectives = {"Kill 5 Bandits and Archers", "Talk to Bob"};
-      Item item = new RustySword();
-      questline[0] = new MainQuestA(1, "Awakening", objectives, item);
-    }
-    else if (quest == 2) {
-      String[] objectives = {"Talk to the castle guard", "Kill 5 Poison snakes", "Talk to the King"};
-      Item item = new RustySword();
-      questline[1] = new MainQuestB(1, "Revelations", objectives, item);
-    }
-    else if (quest == 3) {
-      String[] objectives = {"Speak to the citizen", "Kill the Poison Boss", "Talk"};
-      Item item = new RustySword();
-      questline[2] = new MainQuestC(1, "A Symbol of Hope", objectives, item);
-    }
-    else if (quest == 4) {
-      String[] objectives = {"Kill 5 Frost Enemies", "Kill the Frost Boss", "Return to town"};
-      Item item = new RustySword();
-      questline[3] = new MainQuestD(1, "Shivering Foes", objectives, item);
-    }
-    else if (quest == 5) {
-      String[] objectives = {"Kill 2 Fire Enemies", "Kill the Fire Boss", "Talk to the King"};
-      Item item = new RustySword();
-      questline[4] = new MainQuestE(1, "No Turning Back", objectives, item);
-    }
+  public static Quest createStory(Quest questline) { 
+    String[] objectives = {"Kill 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", 
+      "Kill 5 Spiders", "Kill 5 Snakes", "Talk to The Farmer", 
+      "Go To the capital and meet The King", "Kill the large poisonous creature",
+      "Talk to King Tagnam", "Find the Ice Fisherman in the Frost Lands", "Kill 7 Snakes", "Kill 7 Spiders",
+      "Talk to Fisherman James", "Go back to the capital and speak with King Tagnam", "Kill the Frost Boss",
+      "Talk to Tagnam", "Find the Pyromaniac in the Firelands", "Defeat 10 Spiders", "Defeat 10 Snakes", "Talk to Vivian",
+      "Go talk to Tagnam at the capital", "Kill the Flaming Entity", "Talk to the king", "Meet the king near the abandoned hut",
+      "Defeat Mangat", "Speak with the counsellor"};
+    KingsCrown kingsCrown = new KingsCrown(69);
+    questline = new MainQuestA(100, "Awakening", objectives, kingsCrown);
 
     return questline;
   }
-  public static Object[] createSide(Object[] quests) {
+  public static Quest[] createSide(Quest[] quests) {
     String[] objectivesA = {"Kill 5 Bandits"};
     String[] objectivesB = {"Kill 5 Poison Snakes", "Kill 10 Poison Spiders"};
     String[] objectivesC = {"Kill 5 Frost Snakes", "Kill 10 Frost Spiders"};
     String[] objectivesD = {"Kill 3 Fire Snakes", "Kill 4 Fire Spiders"};
     String[] objectivesE = {"Kill the Poison Boss", "Kill the Frost Boss", "Kill the Fire Boss"};
+    String[] objectivesF = {"Find a Wood Staff", "Give the Wood Staff to John"};
+    String[] objectivesG = {"Find a Defence Potion", "Give the Defence Potion to John"};
+    String[] objectivesH = {"Find a Wood Staff", "Give the Wood Staff to John"};
     Item item = new RustySword();
     quests[0] = new HuntQuest(1, "Evening the Odds", objectivesA, item);
     quests[1] = new HuntQuestB(1, "Poison Conquerer", objectivesB, item);
     quests[2] = new HuntQuestC(1, "Frost Conquerer", objectivesC, item);
     quests[3] = new HuntQuestD(1, "Fire Conquerer", objectivesD, item);
     quests[4] = new HuntQuestE(1, "World Conquerer", objectivesE, item);
+    quests[5] = new FetchQuest(1, "Birthday Gift", objectivesF, item);
+    quests[6] = new FetchQuestB(1, "More Protection", objectivesG, item);
+    quests[7] = new FetchQuestC(1, "The Ultimate Prize", objectivesH, item);
     //objectives[0] = "Find the box";
     //quests[1] = new FetchQuest(1, "The Missing Box", objectives, item);
     
     return quests;
+  }
+  
+  
+  
+  public static void loadGame() throws Exception{
+    
+    
   }
   //Main method starts this application
   public static void main(String[] args) throws Exception { 
@@ -286,6 +287,7 @@ class StartingFrame extends JFrame {
     keyInput.close();
     new StartingFrame();
     mapInitialize(playerName);
+    //saveGame(world);
   }
   
 }
