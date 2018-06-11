@@ -15,7 +15,6 @@ class MainQuestA extends Quest {
 //    System.out.println(getTask(0));
 //    System.out.println(getTask(1));
     setCurrentTask(0);
-    System.out.println("Quest started: " + getName());
     world[8][14] = new Peasant(10, "Farmer", false, this);
     world[54][40] = new Peasant(1000000, "King Mangat", false, this);
     world[52][40] = new Peasant(1000000, "Chancellor", false, this);

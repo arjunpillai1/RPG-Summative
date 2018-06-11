@@ -199,7 +199,7 @@ class GameFrame extends JFrame {
       int playerY = 0;
       int countX = 0;
       int countY = 0;
-      Font questTitle = new Font("Arial", Font.BOLD, 16);
+      Font questTitle = new Font("Arial", Font.BOLD, 14);
       Font questTask = new Font("Berlin Sans FB", Font.BOLD, 12);
       
       setDoubleBuffered(true); 
@@ -210,6 +210,7 @@ class GameFrame extends JFrame {
       Color myBlue = new Color(0, 168, 252);
       Color mySaddleBrown = new Color(139,69,19);
       Color wood = new Color(102, 51, 0);
+      Color quest = new Color(101,50,50);
       Color floor = new Color(20, 80, 40); 
       Color tree = new Color(20, 51, 6);
       Color bandit = new Color(139, 60, 100);
@@ -329,26 +330,26 @@ class GameFrame extends JFrame {
         countX++;
       }
       updateActiveQuests();
-      
+      g.drawRect(6*maxX/17, 0, 1/17, 50);
       for (int i = 0; i < activeQuests.size(); i++) {
         if (activeQuests.get(i) instanceof MainQuestA) {
-          g.setColor(Color.RED);
+          g.setColor(quest);
           g.setFont(questTitle);
-          g.drawString(mainQuests.getName(), 7 * maxX / 17, maxY / 10 + i*40);
+          g.drawString(mainQuests.getName(), 6 * maxX / 17, maxY / 10 + i*40);
           g.setFont(questTask);
           if (mainQuests.getCurrentTask() == 0 || mainQuests.getCurrentTask() == 5 || mainQuests.getCurrentTask() == 12 || 
               mainQuests.getCurrentTask() == 19) {
-            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 7 * maxX / 17, maxY / 10 + i*30 + 20);
-            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()+1), 7 * maxX / 17, maxY / 10 + i*30 + 40);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 6 * maxX / 17, maxY / 10 + i*30 + 20);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()+1), 6 * maxX / 17, maxY / 10 + i*30 + 40);
           } else {
-            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 7 * maxX / 17, maxY / 10 + i*30 + 20);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 6 * maxX / 17, maxY / 10 + i*30 + 20);
           }
         } else {
-          g.setColor(Color.BLUE);
+          g.setColor(Color.BLACK);
           g.setFont(questTitle);
-          g.drawString((activeQuests.get(i)).getName(),7 * maxX / 17, maxY / 10 + i*40);
+          g.drawString((activeQuests.get(i)).getName(),6 * maxX / 17, maxY / 10 + i*40 + 20);
           g.setFont(questTask);
-          g.drawString("- " +(activeQuests.get(i)).getTask((activeQuests.get(i)).getCurrentTask()), 7 * maxX / 17, maxY / 10 + i*30 + 20);
+          g.drawString("- " +(activeQuests.get(i)).getTask((activeQuests.get(i)).getCurrentTask()), 6 * maxX / 17, maxY / 10 + i*30 + 65);
         }
       }
     }
