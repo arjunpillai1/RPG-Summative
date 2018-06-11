@@ -325,26 +325,26 @@ class GameFrame extends JFrame {
         }
         countX++;
       }
-      updateActiveQuests();
+      //updateActiveQuests();
       
-      for (int i = 0; i < activeQuests.size(); i++) {
-        if (activeQuests.get(i) instanceof MainQuestA) {
-          g.setColor(Color.RED);
-          g.drawString(mainQuests.getName(), maxX / 2 - 100, maxY / 8);
-        }
-      }
+//      for (int i = 0; i < activeQuests.size(); i++) {
+//        if (activeQuests.get(i) instanceof MainQuestA) {
+//          g.setColor(Color.RED);
+//          g.drawString(mainQuests.getName(), maxX / 2 - 100, maxY / 8);
+//        }
+//      }
     }
   }
-  private void updateActiveQuests() {
-    if (mainQuests.getActive()) {
-      activeQuests.add(mainQuests);
-    }
-    for (int i = 0; i < sideQuests.length; i++) {
-      if (sideQuests[i].getActive()) {
-        activeQuests.add(sideQuests[i]);
-      }
-    }
-  }
+//  private void updateActiveQuests() {
+//    if (mainQuests.getActive()) {
+//      activeQuests.add(mainQuests);
+//    }
+//    for (int i = 0; i < sideQuests.length; i++) {
+//      if (sideQuests[i].getActive()) {
+//        activeQuests.add(sideQuests[i]);
+//      }
+//    }
+//  }
   // -----------  Inner class for the keyboard listener - this detects key presses and runs the corresponding code
   private class MyKeyListener implements KeyListener {
     int playerX = 0;
