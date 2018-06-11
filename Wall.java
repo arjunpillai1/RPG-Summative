@@ -1,4 +1,4 @@
-class Wall {
+class Wall extends World{
   
   Wall(){}
 }

@@ -5,15 +5,12 @@
 */  
 
 abstract class Potion extends Consumable{
-  int timer;
+  private int timer;
   
-  Potion(int cost, int timer){
-  super(cost);
+  Potion(String name, int cost, int timer){
+  super(name, cost);
   this.timer = timer;
   }
-  
-  abstract public void use();
-  
   public int getTimer(){
     return timer;
   }
@@ -21,4 +18,5 @@ abstract class Potion extends Consumable{
   public void setTimer(int value){
     timer=value;
   }
+  
 }

@@ -2,44 +2,83 @@
 import java.util.Random;
 
 abstract class Enemy extends CombatCharacter{
-    
   
-  Enemy(int health, int strength, int intelligence, int defence, int level, int accuracy, String name){
-    super(health, strength, intelligence, defence, level, accuracy, name);
+  private World futureStep;
+  private World previousStep;
+  
+  Enemy(int health, int strength, int intelligence, int defence, int level, int accuracy,
+        String name, int posX, int posY, World initialGround){
+    super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
+    this.previousStep = initialGround;
   }
-  void attack(Object player) {
+  
+
+  void attack(World player) {
     int damage = getStr() + getInt();
-    ((Character)player).setHealth(((Character)player).getHealth()-damage); 
+    ((Character)player).setHealth(((Character)player).getHealth()-damage);
   }
-  void move(Object[][] map) {
+  void move(World[][] world, int coordX, int coordY) {
+    //System.out.println("works" + getX() + getY());
+    //System.out.println(coordX + " d" + coordY);
     Random rand = new Random();
     int decision;
-    map[1][1] = null;
-    // for now enemies are stationary
-    for (int i=0; i < map.length; i++) {
-      for (int j=0; j < map.length; j++) {
-        if (map[i][j] instanceof Player) {
-          attack(map[i][j]); 
-        }
-      }
-    }
-    // we can set a limit on their movement based on the original position that we save it as from initialization
     
+    for (int i=coordX-1; i < coordX+2; i++) {
+      for (int j=coordY-1; j < coordY+2; j++) {
+        //System.out.print(world[i][j]);
+        if (world[i][j] instanceof Player) {
+          attack(world[i][j]);
+          ///System.out.println("attacks");
+          return;
+        }
+        
+      }
+      //System.out.println("");
+    }
+    
+    // we can set a limit on their movement based on the original position that we save it as from initialization
+
     // this code is for random movement
     decision = rand.nextInt(5);
-    // the main method can be used to prevent stepping on important objects
-//    if (decision == 1) { // up
-//      return 1;
-//    }
-//    else if (decision == 2) { // down
-//      return 2;
-//    }
-//    else if (decision == 3) { // left
-//      return 3;
-//    }
-//    else if (decision == 4) { // right
-//      return 4;
-//    }
+    if (decision == 1 && coordX >= getX() - 2) { // up
+      
+      if (world[coordX - 1][coordY] instanceof Floor) { //checks if spot is walkable
+        futureStep = world[coordX - 1][coordY];
+        world[coordX - 1][coordY] = world[coordX][coordY];
+        world[coordX][coordY] = previousStep;
+        previousStep = futureStep;
+        //System.out.println("works");
+      }
+    }
+    else if (decision == 2 && coordX <= getX() + 2) { // down
+      if (world[coordX + 1][coordY] instanceof Floor) { //checks if spot is walkable
+        futureStep = world[coordX + 1][coordY];
+        world[coordX + 1][coordY] = world[coordX][coordY];
+        world[coordX][coordY] = previousStep;
+        previousStep = futureStep;
+        //System.out.println("works");
+      }
+    }
+    else if (decision == 3 && coordY <= getY() + 2) { // right
+      if (world[coordX][coordY+1] instanceof Floor) { //checks if spot is walkable
+        futureStep = world[coordX][coordY+1];
+        world[coordX][coordY+1] = world[coordX][coordY];
+        world[coordX][coordY] = previousStep;
+        previousStep = futureStep;
+        //System.out.println("works");
+      }
+    }
+    else if (decision == 4 && coordY >= getY() - 2) { // left
+      if (world[coordX][coordY-1] instanceof Floor) { //checks if spot is walkable
+        futureStep = world[coordX][coordY-1];
+        world[coordX][coordY-1] = world[coordX][coordY];
+        world[coordX][coordY] = previousStep;
+        previousStep = futureStep;
+       // System.out.println("works");
+      }
+    }
+  }
+  void death(Object[][] world, int coordX, int coordY) {
+    world[coordX][coordY] = previousStep;
   }
 }
-

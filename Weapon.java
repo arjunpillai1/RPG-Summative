@@ -6,16 +6,16 @@
 
 abstract class Weapon extends Item{
   
-  int attackBoost;
+  private int attackBoost;
   
-  double speed;
+  private double speed;
   
-  int range;
+  private  int range;
   
-  boolean equipped;
+  private  boolean equipped;
   
-  Weapon(int cost, int attackBoost, double speed, int range){
-    super(cost, 1);
+  Weapon(String name, int cost, int attackBoost, double speed, int range){
+    super(name, cost, 1);
     
     this.attackBoost=attackBoost;
     
@@ -55,11 +55,10 @@ abstract class Weapon extends Item{
     return equipped;
   }
   
-  public void equipWeapon(){
-    equipped=true;
+  public void setEquipped(boolean value){
+    equipped = value;
   }
   
-  public void unequipWeapon(){
-    equipped = false;
+  
+
   }
-}

@@ -1,4 +1,4 @@
-class Floor {
+class Floor extends World{
   
   Floor(){}
 }
