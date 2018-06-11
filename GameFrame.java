@@ -129,7 +129,7 @@ class GameFrame extends JFrame {
               firstTime = false;
             }
             System.out.println(enemyDelay.getElapsedTime());
-            if (((int)enemyDelay.getElapsedTime()) == 2) {
+            if (((int)enemyDelay.getElapsedTime()) % 2 == 0) {
               for (int m = playX - 4; m < playX+5; m++) {
                 for (int n = playY - 4; n < playY+5; n++) {
                   if (world[m][n] instanceof Enemy) {
