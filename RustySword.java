@@ -7,6 +7,6 @@
 class RustySword extends Sword{
   
   RustySword(){
-    super(50, 10, 1); //cost, attackBoost, speed
+    super("Rusty sword", 50, 10, 1); //cost, attackBoost, speed
   }
 }

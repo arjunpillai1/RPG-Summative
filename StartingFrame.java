@@ -26,7 +26,6 @@ class StartingFrame extends JFrame {
   static World[][] world = new World[106][106];
   static Quest[] sideQuests = new Quest[6];
   static Quest mainStory;
-  static Quest[] questLog = new Quest[11];
   //Constructor - this runs first
    StartingFrame() { 
     super("Start Screen");
@@ -93,7 +92,7 @@ class StartingFrame extends JFrame {
     public void actionPerformed(ActionEvent event) {  
       System.out.println("Starting new Game");
       thisFrame.dispose();
-      new GameFrame(world, sideQuests, mainStory, questLog); //create a new FunkyFrame (another file that extends JFrame)
+      new GameFrame(world, sideQuests, mainStory); //create a new FunkyFrame (another file that extends JFrame)
       
     }
     
@@ -120,7 +119,7 @@ class StartingFrame extends JFrame {
     
     for (int i = 1; i < world.length - 1; i++) { // draws the rest of the map in the array
       value = fileIn.nextLine();
-      Object initialGround;
+      World initialGround;
       for (int j = 0; j < world.length - 1; j++) {
         if (value.substring(j, j + 1).equals("S") || (value.substring(j, j + 1).equals("r"))) {
           world[i][j] = new Water();
@@ -137,7 +136,7 @@ class StartingFrame extends JFrame {
             }
             noobEnemyCount--;
           }
-        } else if (value.substring(j, j + 1).equals("M")) {
+        } else if (value.substring(j, j + 1).equals("D")) {
           world[i][j] = new FireGrass();
           int enemyChance = rand.nextInt(5);
           if ((enemyChance == 1) && (fireEnemyCount > 0)) {
@@ -150,7 +149,7 @@ class StartingFrame extends JFrame {
             }
             fireEnemyCount--;
           }
-        } else if (value.substring(j, j + 1).equals("D")) {
+        } else if (value.substring(j, j + 1).equals("M")) {
           world[i][j] = new PoisonGrass();
           int enemyChance = rand.nextInt(5);
           if ((enemyChance == 1) && (poisonEnemyCount > 0)) {
@@ -192,6 +191,21 @@ class StartingFrame extends JFrame {
           world[i][j] = new Dirt();
         } else if (value.substring(j, j + 1).equals("E")) {
           world[i][j] = new Grass();
+        }
+          else if (value.substring(j, j + 1).equals("X")) {
+          System.out.println("farmer:" + i + ":" + j);
+        } 
+          else if (value.substring(j, j + 1).equals("K")) {
+          System.out.println("KING:" + i + ":" + j);
+        }
+          else if (value.substring(j, j + 1).equals("G")) {
+          System.out.println("Guard:" + i + ":" + j);
+        }
+          else if (value.substring(j, j + 1).equals("A")) {
+          System.out.println("ice fisher:" + i + ":" + j);
+        }
+          else if (value.substring(j, j + 1).equals("P")) {
+          System.out.println("Chancellor:" + i + ":" + j);
         } else if (value.substring(j, j + 1).equals("L")) {
           Item chestItems[] = new Item[1];
           world[i][j] = new Chest(chestItems);
@@ -205,10 +219,7 @@ class StartingFrame extends JFrame {
     
     
     //Set up Grid Panel
-    world[4][4] = new Player(100,100,100,100,100,100, playerName, 4, 4);
-    int playX = 4;
-    int playY = 4;
-    
+    world[5][5] = new Player(100,100,100,100,100,100, playerName, 5, 5);
     mainStory = createStory(mainStory);
     
     sideQuests = createSide(sideQuests);
@@ -233,7 +244,7 @@ class StartingFrame extends JFrame {
       "Talk to Tagnam", "Find the Pyromaniac in the Firelands", "Defeat 10 Spiders", "Defeat 10 Snakes", "Talk to Vivian",
       "Go talk to Tagnam at the capital", "Kill the Flaming Entity", "Talk to the king", "Meet the king near the abandoned hut",
       "Defeat Mangat", "Speak with the counsellor"};
-    KingsCrown kingsCrown = new KingsCrown(1,1);
+    KingsCrown kingsCrown = new KingsCrown(69);
     questline = new MainQuestA(100, "Awakening", objectives, kingsCrown);
 
     return questline;

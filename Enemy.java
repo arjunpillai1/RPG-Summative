@@ -3,21 +3,21 @@ import java.util.Random;
 
 abstract class Enemy extends CombatCharacter{
   
-  private Object futureStep;
-  private Object previousStep;
+  private World futureStep;
+  private World previousStep;
   
   Enemy(int health, int strength, int intelligence, int defence, int level, int accuracy,
-        String name, int posX, int posY, Object initialGround){
+        String name, int posX, int posY, World initialGround){
     super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
     this.previousStep = initialGround;
   }
   
 
-  void attack(Object player) {
+  void attack(World player) {
     int damage = getStr() + getInt();
     ((Character)player).setHealth(((Character)player).getHealth()-damage);
   }
-  void move(Object[][] world, int coordX, int coordY) {
+  void move(World[][] world, int coordX, int coordY) {
     //System.out.println("works" + getX() + getY());
     //System.out.println(coordX + " d" + coordY);
     Random rand = new Random();

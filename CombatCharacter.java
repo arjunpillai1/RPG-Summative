@@ -19,19 +19,11 @@ abstract class CombatCharacter extends Character {
     this.posY = posY;
   }
   
-  CombatCharacter (int health, int strength, int intelligence, int defence, int level, int accuracy, 
-                   String name, int posX, int posY, Object quest) {
-    super (health, name, quest);
-    this.strength = strength;
-    this.intelligence = intelligence;
-    this.defence = defence;
-    this.level = level;
-    this.accuracy = accuracy;
-    this.posX = posX;
-    this.posY = posY;
+  
+  public void attack(CombatCharacter enemy) {
+    
   }
   
-  abstract void attack(Object enemy);
   
   
   public int getStr(){

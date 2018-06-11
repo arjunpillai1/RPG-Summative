@@ -7,17 +7,18 @@ class MainQuestA extends Quest {
 
   @Override
   void spawn(World[][] world) {
-    world[6][6] = new Peasant(10, "Bob", true, this);
+    world[8][12] = new Peasant(10, "Bob", true, this);
   }
   
   @Override
   void initialize(World[][] world) {
     System.out.println(getTask(0));
     System.out.println(getTask(1));
+    setCurrentTask(1);
     System.out.println("Quest started: " + getName());
-    world[8][8] = new Peasant(10, "Farmer", false, this);
-    world[8][8] = new Peasant(100000, "King Mangat", false, this);
-    world[10][10] = new Peasant(1000, "Chancellor", false, this);
+    world[8][14] = new Peasant(10, "Farmer", false, this);
+    world[54][40] = new Peasant(1000000, "King Mangat", false, this);
+    world[63][70] = new Peasant(1000, "Ice Fisher", false, this);
     setActive(true);
   }
   
@@ -25,24 +26,25 @@ class MainQuestA extends Quest {
     //update these conditions for the objectives
     if (task == 1) {
       killsA++;
-      System.out.println("A:" + killsA);
+      //System.out.println("A:" + killsA);
     }
     if (task == 2) {
       killsB++;
-      System.out.println("B:" + killsB);
+      //System.out.println("B:" + killsB);
     }
     if (task == 3) {
       killsC++;
     }
     // quest conditions fulfilled
     //normal enemies
-    if (killsA >= 5 && killsB >= 5 && getCurrentTask() < 3) {
+    // Killed 5 archers and bandits
+    if (killsA >= 5 && killsB >= 5 && getCurrentTask() > 0 && getCurrentTask() < 3) {
       setCurrentTask(3);
       killsA = 0;
       killsB = 0;
     }
     //poison enemies
-    else if (killsB >= 5 && killsB >= 5 && getCurrentTask() > 5 && getCurrentTask() < 7) {
+    else if (killsB >= 5 && killsB >= 5 && getCurrentTask() > 4 && getCurrentTask() < 7) {
       setCurrentTask(7);
       killsA = 0;
       killsB = 0;
@@ -75,11 +77,11 @@ class MainQuestA extends Quest {
       killsA = 0;
     }
     //mangat
-    else if (killsA >= 1 && getCurrentTask() == 28) {
-      setCurrentTask(29);
+    else if (killsA >= 1 && getCurrentTask() == 26) {
+      setCurrentTask(27);
       killsA = 0;
     }
-    else if (getCurrentTask() == 30) {
+    else if (getCurrentTask() == 28) {
       return true;
     }
     return false;
@@ -87,10 +89,10 @@ class MainQuestA extends Quest {
   
   @Override
   public int getXPReward() {
-    if (getCurrentTask() < 3) {
+    if (getCurrentTask() < 3 && getCurrentTask() > 0) {
       return 10;
     }
-    else if (getCurrentTask() < 7 && getCurrentTask() > 5) {
+    else if (getCurrentTask() < 7 && getCurrentTask() > 4) {
       return 25;
     }
     else if (getCurrentTask() < 14 && (getCurrentTask() > 11)) {
