@@ -336,7 +336,7 @@ class GameFrame extends JFrame {
           g.setFont(questTitle);
           g.drawString(mainQuests.getName(), 7 * maxX / 17, maxY / 10 + i*40);
           g.setFont(questTask);
-          if (mainQuests.getCurrentTask() == 1 || mainQuests.getCurrentTask() == 5 || mainQuests.getCurrentTask() == 12 || 
+          if (mainQuests.getCurrentTask() == 0 || mainQuests.getCurrentTask() == 5 || mainQuests.getCurrentTask() == 12 || 
               mainQuests.getCurrentTask() == 19) {
             g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 7 * maxX / 17, maxY / 10 + i*30 + 20);
             g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()+1), 7 * maxX / 17, maxY / 10 + i*30 + 40);
