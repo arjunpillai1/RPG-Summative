@@ -7,7 +7,7 @@ class HuntQuestD extends Quest {
   
   @Override
   void spawn(World[][] world) {
-    world[80][60] = new Peasant(10, "bobo", true, this);
+    world[67][62] = new Peasant(10, "Hunter Alex", true, this);
   }
   @Override 
   void initialize(World[][] world) {

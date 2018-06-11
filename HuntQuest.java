@@ -6,7 +6,7 @@ class HuntQuest extends Quest {
   
   @Override
   void spawn(World[][] world) {
-    world[7][6] = new Peasant(10, "Hunter", true, this);
+    world[10][57] = new Peasant(10, "Hunter Alex", true, this);
   }
   @Override
   void initialize(World[][] world) {
@@ -21,7 +21,6 @@ class HuntQuest extends Quest {
       kills++;
     }
     if (kills == enemyCount) {
-
       setActive(false);
       return true;
     }

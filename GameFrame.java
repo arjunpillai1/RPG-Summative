@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.io.PrintWriter;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.*;
 import java.awt.*;
 
@@ -29,7 +30,7 @@ class GameFrame extends JFrame {
   private static JFrame frame;
   private static int maxX,maxY, GridToScreenRatio;
   World[][] world;
-  Quest[] sideQuests = new Quest[6];
+  Quest[] sideQuests = new Quest[5];
   static Quest mainQuests;
   ArrayList<Quest> activeQuests = new ArrayList<Quest>();
   
@@ -198,6 +199,8 @@ class GameFrame extends JFrame {
       int playerY = 0;
       int countX = 0;
       int countY = 0;
+      Font questTitle = new Font("Arial", Font.BOLD, 16);
+      Font questTask = new Font("Berlin Sans FB", Font.BOLD, 12);
       
       setDoubleBuffered(true); 
       Color myGreen = new Color(11, 215, 72);
@@ -325,26 +328,50 @@ class GameFrame extends JFrame {
         }
         countX++;
       }
-      //updateActiveQuests();
+      updateActiveQuests();
       
-//      for (int i = 0; i < activeQuests.size(); i++) {
-//        if (activeQuests.get(i) instanceof MainQuestA) {
-//          g.setColor(Color.RED);
-//          g.drawString(mainQuests.getName(), maxX / 2 - 100, maxY / 8);
-//        }
-//      }
+      for (int i = 0; i < activeQuests.size(); i++) {
+        if (activeQuests.get(i) instanceof MainQuestA) {
+          g.setColor(Color.RED);
+          g.setFont(questTitle);
+          g.drawString(mainQuests.getName(), 7 * maxX / 17, maxY / 10 + i*40);
+          g.setFont(questTask);
+          if (mainQuests.getCurrentTask() == 1 || mainQuests.getCurrentTask() == 5 || mainQuests.getCurrentTask() == 12 || 
+              mainQuests.getCurrentTask() == 19) {
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 7 * maxX / 17, maxY / 10 + i*30 + 20);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()+1), 7 * maxX / 17, maxY / 10 + i*30 + 40);
+          } else {
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 7 * maxX / 17, maxY / 10 + i*30 + 20);
+          }
+        } else {
+          g.setColor(Color.BLUE);
+          g.setFont(questTitle);
+          g.drawString((activeQuests.get(i)).getName(),7 * maxX / 17, maxY / 10 + i*40);
+          g.setFont(questTask);
+          g.drawString("- " +(activeQuests.get(i)).getTask((activeQuests.get(i)).getCurrentTask()), 7 * maxX / 17, maxY / 10 + i*30 + 20);
+        }
+      }
     }
   }
-//  private void updateActiveQuests() {
-//    if (mainQuests.getActive()) {
-//      activeQuests.add(mainQuests);
-//    }
-//    for (int i = 0; i < sideQuests.length; i++) {
-//      if (sideQuests[i].getActive()) {
-//        activeQuests.add(sideQuests[i]);
+  private void updateActiveQuests() {
+//    for (int i = 0; i < activeQuests.size(); i++) {
+//      if (!activeQuests.get(i).getActive()) {
+//        activeQuests.remove(i);
 //      }
 //    }
-//  }
+    activeQuests.clear();
+    if (mainQuests.getActive()) {
+      activeQuests.add(mainQuests);
+    }
+    for (int i = 0; i < sideQuests.length; i++) {
+      //System.out.println(sideQuests[i]);
+      if (sideQuests[i] != null) {
+        if (sideQuests[i].getActive()) {
+          activeQuests.add(sideQuests[i]);
+        }
+      }
+    }
+  }
   // -----------  Inner class for the keyboard listener - this detects key presses and runs the corresponding code
   private class MyKeyListener implements KeyListener {
     int playerX = 0;

@@ -12,12 +12,13 @@ class MainQuestA extends Quest {
   
   @Override
   void initialize(World[][] world) {
-    System.out.println(getTask(0));
-    System.out.println(getTask(1));
-    setCurrentTask(1);
+//    System.out.println(getTask(0));
+//    System.out.println(getTask(1));
+    setCurrentTask(0);
     System.out.println("Quest started: " + getName());
     world[8][14] = new Peasant(10, "Farmer", false, this);
     world[54][40] = new Peasant(1000000, "King Mangat", false, this);
+    world[52][40] = new Peasant(1000000, "Chancellor", false, this);
     world[63][70] = new Peasant(1000, "Ice Fisher", false, this);
     setActive(true);
   }
@@ -38,7 +39,7 @@ class MainQuestA extends Quest {
     // quest conditions fulfilled
     //normal enemies
     // Killed 5 archers and bandits
-    if (killsA >= 5 && killsB >= 5 && getCurrentTask() > 0 && getCurrentTask() < 3) {
+    if (killsA >= 5 && killsB >= 5 && getCurrentTask() < 3) {
       setCurrentTask(3);
       killsA = 0;
       killsB = 0;
@@ -89,16 +90,16 @@ class MainQuestA extends Quest {
   
   @Override
   public int getXPReward() {
-    if (getCurrentTask() < 3 && getCurrentTask() > 0) {
+    if (getCurrentTask() < 3 && getCurrentTask() > 0) { //1,2
       return 10;
     }
-    else if (getCurrentTask() < 7 && getCurrentTask() > 4) {
+    else if (getCurrentTask() < 7 && getCurrentTask() > 4) { //5,6
       return 25;
     }
-    else if (getCurrentTask() < 14 && (getCurrentTask() > 11)) {
+    else if (getCurrentTask() < 14 && (getCurrentTask() > 11)) { //12,13
       return 50;
     }
-    else if (getCurrentTask() < 21 && getCurrentTask() > 18) {
+    else if (getCurrentTask() < 21 && getCurrentTask() > 18) { //19,20
       return 1000;
     }
     else if (getCurrentTask() == 25) {

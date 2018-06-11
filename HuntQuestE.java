@@ -7,7 +7,7 @@ class HuntQuestE extends Quest {
   
   @Override
   void spawn(World[][] world) {
-    world[70][60] = new Peasant(10, "bobo", true, this);
+    world[97][36] = new Peasant(10, "Hunter Jack", true, this);
   }
   @Override 
   void initialize(World[][] world) {
@@ -31,7 +31,7 @@ class HuntQuestE extends Quest {
     } else {
       killsC++;
     }
-    if (killsA == enemyCountA && killsB == enemyCountB) {
+    if (killsA == enemyCountA && killsB == enemyCountB && killsC == enemyCountC) {
       setActive(false);
       return true;
     }
