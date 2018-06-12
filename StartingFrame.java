@@ -20,28 +20,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-
 class StartingFrame extends JFrame { 
   
   JFrame thisFrame;
   static World[][] world = new World[106][106];
-  static Quest[] sideQuests = new Quest[6];
+  static Quest[] sideQuests = new Quest[8];
   static Quest mainStory;
   //Constructor - this runs first
    StartingFrame() { 
-
     super("Start Screen");
     this.thisFrame = this; //lol  
     
     //configure the window
-
     this.setSize(500,650);
     
     this.setLocationRelativeTo(null); //start the frame in the center of the screen
     //this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
     this.setResizable (false);
     this.setUndecorated(true);
-
     
     //Create a Panel for stuff
     JPanel mainPanel = new JPanel();
@@ -72,9 +68,7 @@ class StartingFrame extends JFrame {
     exitButton.setBorder(BorderFactory.createEmptyBorder());
     exitButton.setFocusPainted(false);
     startButton.addActionListener(new StartButtonListener());
-
     exitButton.addActionListener(new ExitButtonListener());
-
     
     //Create a JButton for the centerPanel
     JLabel startLabel = new JLabel(welcome);
@@ -98,16 +92,11 @@ class StartingFrame extends JFrame {
     public void actionPerformed(ActionEvent event) {  
       System.out.println("Starting new Game");
       thisFrame.dispose();
-
-      new GameFrame(world, sideQuests, mainStory, ((Player)world[23][21]); //create a new FunkyFrame (another file that extends JFrame)
-
-
-
+      new GameFrame(world, sideQuests, mainStory, ((Player)world[23][21]));
       
     }
     
   }
-
   class ExitButtonListener implements ActionListener {  //this is the required class definition
     public void actionPerformed(ActionEvent event) {  
       
@@ -115,14 +104,13 @@ class StartingFrame extends JFrame {
     }
   }
     
-
   public static void mapInitialize(String playerName) throws Exception {
     File map = new File("map.txt");
     Scanner fileIn = new Scanner(map);
     Random rand = new Random();
     String value = fileIn.nextLine();
     int noobEnemyCount = 1, poisonEnemyCount = 2, frostEnemyCount = 2, fireEnemyCount = 1;
-
+    
     for (int a = 0; a < world.length - 1; a++) { // draws first row of the map to avoid errors
       if (value.substring(a, a + 1).equals("S")) {
         world[0][a] = new Water();
@@ -131,9 +119,7 @@ class StartingFrame extends JFrame {
     
     for (int i = 1; i < world.length - 1; i++) { // draws the rest of the map in the array
       value = fileIn.nextLine();
-
       World initialGround;
-
       for (int j = 0; j < world.length - 1; j++) {
         if (value.substring(j, j + 1).equals("S") || (value.substring(j, j + 1).equals("r"))) {
           world[i][j] = new Water();
@@ -144,42 +130,36 @@ class StartingFrame extends JFrame {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-
-              world[i][j] = new Bandit(100,1,1,1,1,1,"Bandit", i, j, initialGround);
+              world[i][j] = new Bandit(1,1,1,1,1,1,"Bandit", i, j, initialGround);
             }else {
-              world[i][j] = new Archer(100,1,1,1,1,1,"Archer", i, j, initialGround);
+              world[i][j] = new Archer(1,1,1,1,1,1,"Archer", i, j, initialGround);
             }
             noobEnemyCount--;
           }
         } else if (value.substring(j, j + 1).equals("D")) {
-
           world[i][j] = new FireGrass();
           int enemyChance = rand.nextInt(5);
           if ((enemyChance == 1) && (fireEnemyCount > 0)) {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-
-              world[i][j] = new FireSnake(100,1,1,1,1,1,"Fire Snake", i, j, initialGround);
+              world[i][j] = new FireSnake(1,1,1,1,1,1,"Fire Snake", i, j, initialGround);
             }else {
-              world[i][j] = new FireSpider(100,1,1,1,1,1,"Fire Spider", i, j, initialGround);
+              world[i][j] = new FireSpider(1,1,1,1,1,1,"Fire Spider", i, j, initialGround);
             }
             fireEnemyCount--;
           }
         } else if (value.substring(j, j + 1).equals("M")) {
-
           world[i][j] = new PoisonGrass();
           int enemyChance = rand.nextInt(5);
           if ((enemyChance == 1) && (poisonEnemyCount > 0)) {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-
-              world[i][j] = new PoisonSnake(100,1,1,1,1,1,"Venom Snake", i, j, initialGround);
+              world[i][j] = new PoisonSnake(1,1,1,1,1,1,"Venom Snake", i, j, initialGround);
             }else {
-              world[i][j] = new PoisonSpider(100,1,1,1,1,1,"Venom Spider", i, j, initialGround);
+              world[i][j] = new PoisonSpider(1,1,1,1,1,1,"Venom Spider", i, j, initialGround);
             }
-
             poisonEnemyCount--;
           }
         } else if (value.substring(j, j + 1).equals("I")) {
@@ -189,10 +169,9 @@ class StartingFrame extends JFrame {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new FrostSpider(100,1,1,1,1,1,"Frost Spider", i, j, initialGround);
+              world[i][j] = new FrostSpider(1,1,1,1,1,1,"Frost Spider", i, j, initialGround);
             }else {
-              world[i][j] = new FrostSnake(100,1,1,1,1,1,"Frost Snake", i, j, initialGround);
-
+              world[i][j] = new FrostSnake(1,1,1,1,1,1,"Frost Snake", i, j, initialGround);
             }
             frostEnemyCount--;
           }
@@ -212,10 +191,24 @@ class StartingFrame extends JFrame {
           world[i][j] = new Dirt();
         } else if (value.substring(j, j + 1).equals("E")) {
           world[i][j] = new Grass();
+        }
+          else if (value.substring(j, j + 1).equals("X")) {
+          System.out.println("farmer:" + i + ":" + j);
+        } 
+          else if (value.substring(j, j + 1).equals("K")) {
+          System.out.println("KING:" + i + ":" + j);
+        }
+          else if (value.substring(j, j + 1).equals("G")) {
+          System.out.println("Guard:" + i + ":" + j);
+        }
+          else if (value.substring(j, j + 1).equals("Y")) {
+          System.out.println("Hunter:" + i + ":" + j);
+        }
+          else if (value.substring(j, j + 1).equals("P")) {
+          System.out.println("Chancellor:" + i + ":" + j);
         } else if (value.substring(j, j + 1).equals("L")) {
           Item chestItems[] = new Item[1];
           world[i][j] = new Chest(chestItems);
-
         }  
       }
       frostEnemyCount += 1;
@@ -226,20 +219,14 @@ class StartingFrame extends JFrame {
     
     
     //Set up Grid Panel
-
-
+    world[5][5] = new Player(100,100,100,100,100,100, playerName, 5, 5);
+    mainStory = createStory(mainStory);
+    
+    sideQuests = createSide(sideQuests);
      // all quests in here
     
     //start all side quests and first main quest 
     mainStory.spawn(world);
-    world[23][21] = new Player(100,100,100,100,100,100, playerName, 23, 21);
-    int playX = 23;
-    int playY = 21;
-    mainStory = createStory(mainStory);
-    
-    sideQuests = createSide(sideQuests);
-
-    
     for(int i = 0; i < sideQuests.length; i++) {
       if (sideQuests[i] != null) {
         ((Quest)sideQuests[i]).spawn(world);
@@ -248,7 +235,6 @@ class StartingFrame extends JFrame {
     fileIn.close();
   }
   
-
   public static Quest createStory(Quest questline) { 
     String[] objectives = {"Kill 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", 
       "Kill 5 Spiders", "Kill 5 Snakes", "Talk to The Farmer", 
@@ -269,12 +255,18 @@ class StartingFrame extends JFrame {
     String[] objectivesC = {"Kill 5 Frost Snakes", "Kill 10 Frost Spiders"};
     String[] objectivesD = {"Kill 3 Fire Snakes", "Kill 4 Fire Spiders"};
     String[] objectivesE = {"Kill the Poison Boss", "Kill the Frost Boss", "Kill the Fire Boss"};
+    String[] objectivesF = {"Find a Wood Staff", "Give the Wood Staff to John"};
+    String[] objectivesG = {"Find a Defence Potion", "Give the Defence Potion to John"};
+    String[] objectivesH = {"Find a Wood Staff", "Give the Wood Staff to John"};
     Item item = new RustySword();
     quests[0] = new HuntQuest(1, "Evening the Odds", objectivesA, item);
     quests[1] = new HuntQuestB(1, "Poison Conquerer", objectivesB, item);
     quests[2] = new HuntQuestC(1, "Frost Conquerer", objectivesC, item);
     quests[3] = new HuntQuestD(1, "Fire Conquerer", objectivesD, item);
     quests[4] = new HuntQuestE(1, "World Conquerer", objectivesE, item);
+    quests[5] = new FetchQuest(1, "Birthday Gift", objectivesF, item);
+    quests[6] = new FetchQuestB(1, "More Protection", objectivesG, item);
+    quests[7] = new FetchQuestC(1, "The Ultimate Prize", objectivesH, item);
     //objectives[0] = "Find the box";
     //quests[1] = new FetchQuest(1, "The Missing Box", objectives, item);
     
@@ -287,18 +279,15 @@ class StartingFrame extends JFrame {
     
     
   }
-
   //Main method starts this application
   public static void main(String[] args) throws Exception { 
     Scanner keyInput = new Scanner(System.in);
     System.out.println("enter player name");
     String playerName = keyInput.nextLine();
-
     keyInput.close();
     new StartingFrame();
     mapInitialize(playerName);
     //saveGame(world);
-
   }
   
 }

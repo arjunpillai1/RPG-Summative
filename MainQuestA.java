@@ -11,7 +11,7 @@ class MainQuestA extends Quest {
   }
   
   @Override
-  void initialize(World[][] world) {
+  void initialize(World[][] world, Inventory bag) {
 //    System.out.println(getTask(0));
 //    System.out.println(getTask(1));
     setCurrentTask(0);

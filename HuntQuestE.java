@@ -10,7 +10,7 @@ class HuntQuestE extends Quest {
     world[97][36] = new Peasant(10, "Hunter Jack", true, this);
   }
   @Override 
-  void initialize(World[][] world) {
+  void initialize(World[][] world, Inventory bag) {
     System.out.println(getTask(0));
     enemyCountA = 1;
     enemyCountB = 1;
