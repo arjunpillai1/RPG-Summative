@@ -1,15 +1,27 @@
 abstract class NPC extends NonCombatCharacter{
-
-    NPC(int health, String name){
-        //super(whatever
-        this.name=name;
-    }
-
-    public void giveQuest(){
-        // construct the appropriate quest object and then somehow attribute it to the character
-    }
-
-    public void speak(){
-        //print out the proper speech
-    }
+  private Boolean questGiver;
+  private Quest quest;
+  
+  NPC(int health, String name, Boolean isQuestGiver, Quest quest){
+    super(health,name);
+    this.questGiver= isQuestGiver;
+    this.quest = quest;
+  }
+  
+  NPC(int health, String name, Boolean isQuestGiver){
+    super(health,name);
+    this.questGiver= isQuestGiver;
+  } 
+  public Quest getQuest(){
+    // construct the appropriate quest object and then somehow attribute it to the character
+    return this.quest;
+  }
+  
+  public void speak(){
+    System.out.println("HI!");
+  }
+  
+  public Boolean getQuestGiver() {
+    return this.questGiver;
+  }
 }

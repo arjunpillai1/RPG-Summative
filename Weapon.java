@@ -14,8 +14,8 @@ abstract class Weapon extends Item{
   
   private  boolean equipped;
   
-  Weapon(int cost, int attackBoost, double speed, int range){
-    super(cost, 1);
+  Weapon(String name, int cost, int attackBoost, double speed, int range){
+    super(name, cost, 1);
     
     this.attackBoost=attackBoost;
     
