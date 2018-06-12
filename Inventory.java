@@ -39,13 +39,13 @@ class Inventory{
   }
   
 
-  public void useConsumable(int placement){
-    if ( (inventory.get(placement)).getInventoryNum() == 3){ //it's consumable
-      ((Consumable)(inventory.get(placement))).use();
-      inventory.remove(placement);
-    }
-    map[xSpot][ySpot] = map[xSpot+1][ySpot];
-  }
+//  public void useConsumable(int placement){
+//    if ( (inventory.get(placement)).getInventoryNum() == 3){ //it's consumable
+//      ((Consumable)(inventory.get(placement))).use();
+//      inventory.remove(placement);
+//    }
+//    map[xSpot][ySpot] = map[xSpot+1][ySpot];
+//  }
   
   public String getItemName(int placement){
     return (inventory.get(placement)).getName();

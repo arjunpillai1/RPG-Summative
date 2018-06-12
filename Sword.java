@@ -18,10 +18,6 @@ abstract class Sword extends ShortRangeWeapon{
     }
   }
   
-  public void swing(Player user, Object[][] map, int xSpot, int ySpot){
-    if (map[xSpot][ySpot] instanceof CombatCharacter){
-      attack(user, (CombatCharacter)(map[xSpot][ySpot]));
-    }
-  }
+
   
 }

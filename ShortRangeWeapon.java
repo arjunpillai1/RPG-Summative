@@ -16,9 +16,6 @@ abstract class ShortRangeWeapon extends Weapon{
   public void attack(Player user, CombatCharacter target){
     target.setHealth((target.getHealth())- ((int) (Math.floor(( ( ( (2 * user.getLvl() + 2) * 60 * ( (user.getStr() + user.getWeaponBoost())/target.getDef() ) ) / 50 ) + 2) * ( ( (int)(Math.random()*16) + 85) / 100)))));
   }
-  public void attack(Player user, CombatCharacter target){
-    target.setHealth((target.getHealth())- ((int) (Math.floor(( ( ( (2 * user.getLvl() + 2) * 60 * ( user.getStr()/target.getDef() ) ) / 50 ) + 2) * ( ( (int)(Math.random()*16) + 85) / 100)))));
-    }
-  
+
   
 }

@@ -8,7 +8,7 @@ class Player extends CombatCharacter {
   private int exp;
 
   private World futureStep;
-  private World previousStep = new Grass();
+  private World previousStep = new HouseFloor();
 
   private int weaponBoost = 0;
   private int armourBoost = 0;

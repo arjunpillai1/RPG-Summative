@@ -9,16 +9,16 @@ class FetchQuestB extends Quest {
     world[5][91] = new Peasant(10, "Gary", true, this);
   }
   @Override
-  void initialize(World[][] world, Inventory bag) {
+  void initialize(World[][] world/*, Inventory bag*/) {
         System.out.println(getTask(0));
     System.out.println("Quest started: " + getName());
     setActive(true);
     //if((bag.getInventory()).contains(RustySword)){
-    for (int i=0; i<(bag.amount()); i++){
-      if (bag.call(i) instanceof DefensePermanentPotion){
-    System.out.println(getTask(1));
-      }
-    }
+//    for (int i=0; i<(bag.amount()); i++){
+//      if (bag.call(i) instanceof DefensePermanentPotion){
+//    System.out.println(getTask(1));
+//      }
+//    }
   }
   Boolean updateObjective(int task) {
     return false;

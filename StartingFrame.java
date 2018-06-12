@@ -191,21 +191,6 @@ class StartingFrame extends JFrame {
           world[i][j] = new Dirt();
         } else if (value.substring(j, j + 1).equals("E")) {
           world[i][j] = new Grass();
-        }
-          else if (value.substring(j, j + 1).equals("X")) {
-          System.out.println("farmer:" + i + ":" + j);
-        } 
-          else if (value.substring(j, j + 1).equals("K")) {
-          System.out.println("KING:" + i + ":" + j);
-        }
-          else if (value.substring(j, j + 1).equals("G")) {
-          System.out.println("Guard:" + i + ":" + j);
-        }
-          else if (value.substring(j, j + 1).equals("Y")) {
-          System.out.println("Hunter:" + i + ":" + j);
-        }
-          else if (value.substring(j, j + 1).equals("P")) {
-          System.out.println("Chancellor:" + i + ":" + j);
         } else if (value.substring(j, j + 1).equals("L")) {
           Item chestItems[] = new Item[1];
           world[i][j] = new Chest(chestItems);
@@ -219,7 +204,7 @@ class StartingFrame extends JFrame {
     
     
     //Set up Grid Panel
-    world[5][5] = new Player(100,100,100,100,100,100, playerName, 5, 5);
+    world[23][21] = new Player(100,100,100,100,100,100, playerName, 23, 21);
     mainStory = createStory(mainStory);
     
     sideQuests = createSide(sideQuests);

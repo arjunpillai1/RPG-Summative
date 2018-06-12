@@ -1,7 +1,9 @@
 class FetchQuest extends Quest {
+  Inventory bag;
   
   FetchQuest(int experience, String name, String[] objectives, Item itemReward) {
     super(experience, name, objectives, itemReward);
+    this.bag = bag;
   }
   
   @Override
@@ -9,7 +11,7 @@ class FetchQuest extends Quest {
     world[10][10] = new Peasant(10, "John", true, this);
   }
   @Override
-  void initialize(World[][] world, Inventory bag) {
+  void initialize(World[][] world) {
     System.out.println(getTask(0));
     System.out.println("Quest started: " + getName());
     setActive(true);

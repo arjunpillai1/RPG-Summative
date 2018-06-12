@@ -13,6 +13,7 @@ import java.awt.Graphics;
 import java.awt.Color;
 import java.io.PrintWriter;
 import java.io.File;
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.*;
@@ -37,14 +38,14 @@ class GameFrame extends JFrame {
   //class variable (non-static)
   static double x, y;
   static GameAreaPanel gamePanel;
-  
-  
+  static Player player;
   
   
   //Constructor - this runs first
   GameFrame(World[][] world, Quest[] sideQuests, Quest mainQuests, Player player) { 
     super("My Game");  
     this.world = world;
+    this.player = player;
     
     maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
     maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -115,7 +116,6 @@ class GameFrame extends JFrame {
           }
         }
       }
-      try{ Thread.sleep(500);} catch (Exception exc){}  //delay
       this.repaint();
     }
   }
@@ -291,29 +291,37 @@ class GameFrame extends JFrame {
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
             //Enemies
-          } else if (world[i][j] instanceof Bandit) {
-            g.setColor(bandit); //sets colour for printing organism
-            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
-            g.setColor(Color.WHITE);
-            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
-          }
-          else if (world[i][j] instanceof Archer) {
-            g.setColor(archer); //sets colour for printing organism
-            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
-            g.setColor(Color.WHITE);
-            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
-          }
-          else if (world[i][j] instanceof PoisonSpider) {
-            g.setColor(archer); //sets colour for printing organism
-            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
-            g.setColor(Color.WHITE);
-            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
-          }
-          else if (world[i][j] instanceof PoisonSnake) {
-            g.setColor(archer); //sets colour for printing organism
-            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
-            g.setColor(Color.WHITE);
-            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+          
+          } else if (world[i][j] instanceof Enemy) {
+            
+            if (world[i][j] instanceof Bandit) {
+              g.setColor(bandit); //sets colour for printing organism
+              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+              g.setColor(Color.WHITE);
+              g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+            }
+            else if (world[i][j] instanceof Archer) {
+              g.setColor(archer); //sets colour for printing organism
+              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+              g.setColor(Color.WHITE);
+              g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+            }
+            else if (world[i][j] instanceof PoisonSpider) {
+              g.setColor(archer); //sets colour for printing organism
+              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+              g.setColor(Color.WHITE);
+              g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+            }
+            else if (world[i][j] instanceof PoisonSnake) {
+              g.setColor(archer); //sets colour for printing organism
+              g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+              g.setColor(Color.WHITE);
+              g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+            }
+            g.setColor(Color.BLACK);
+            g.fillRect((j - (j - (countY%9))) * GridToScreenRatio, ((i - (i - countX)) * GridToScreenRatio) - 30, GridToScreenRatio - 25, 10);
+            g.setColor(Color.RED);
+            g.fillRect(((j - (j - (countY%9))) * GridToScreenRatio) + 2, ((i - (i - countX)) * GridToScreenRatio) - 29, (((Enemy)world[i][j]).getHealth() * (GridToScreenRatio - 28)) / 100, 8);
           }
           //Player
           else if (world[i][j] instanceof Player) {
@@ -329,26 +337,31 @@ class GameFrame extends JFrame {
         countX++;
       }
       updateActiveQuests();
+      g.setColor(Color.BLACK);
+      g.fillRect((maxX/4) - 205 , maxY - 150, 410, 35); 
+      g.setColor(Color.RED);
+      g.fillRect((maxX/4) - 200 , maxY - 145, player.getHealth() * 4, 25);
       
       for (int i = 0; i < activeQuests.size(); i++) {
         if (activeQuests.get(i) instanceof MainQuestA) {
           g.setColor(Color.RED);
           g.setFont(questTitle);
-          g.drawString(mainQuests.getName(), 7 * maxX / 17, maxY / 10 + i*40);
+          g.drawString(mainQuests.getName(), 15, 30 + i*30);
           g.setFont(questTask);
+          System.out.println(mainQuests.getCurrentTask());
           if (mainQuests.getCurrentTask() == 0 || mainQuests.getCurrentTask() == 5 || mainQuests.getCurrentTask() == 12 || 
               mainQuests.getCurrentTask() == 19) {
-            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 7 * maxX / 17, maxY / 10 + i*30 + 20);
-            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()+1), 7 * maxX / 17, maxY / 10 + i*30 + 40);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 15, 30 + i*30 + 20);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()+1), 15, 30 + i*30 + 40);
           } else {
-            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 7 * maxX / 17, maxY / 10 + i*30 + 20);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 15, 30 + i*30 + 20);
           }
         } else {
           g.setColor(Color.BLUE);
           g.setFont(questTitle);
-          g.drawString((activeQuests.get(i)).getName(),7 * maxX / 17, maxY / 10 + i*40);
+          g.drawString((activeQuests.get(i)).getName(),10, 40 + 60*i);
           g.setFont(questTask);
-          g.drawString("- " +(activeQuests.get(i)).getTask((activeQuests.get(i)).getCurrentTask()), 7 * maxX / 17, maxY / 10 + i*30 + 20);
+          g.drawString("- " +(activeQuests.get(i)).getTask((activeQuests.get(i)).getCurrentTask()), 15, 40 + 60*i + 20);
         }
       }
     }
@@ -697,49 +710,49 @@ class GameFrame extends JFrame {
           
           if (newQuest instanceof HuntQuest && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[0]).setActive(true);
-            ((Quest)newQuest).initialize(world, bag);
+            ((Quest)newQuest).initialize(world);
           }
           
           if (newQuest instanceof HuntQuestB && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[1]).setActive(true);
-            ((Quest)newQuest).initialize(world, bag);
+            ((Quest)newQuest).initialize(world);
           }
           
           if (newQuest instanceof HuntQuestC && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[2]).setActive(true);
-            ((Quest)newQuest).initialize(world, bag);
+            ((Quest)newQuest).initialize(world);
           }
           
           if (newQuest instanceof HuntQuestD && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[3]).setActive(true);
-            ((Quest)newQuest).initialize(world, bag);
+            ((Quest)newQuest).initialize(world);
           }
           
           if (newQuest instanceof HuntQuestE && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[4]).setActive(true);
-            ((Quest)newQuest).initialize(world, bag);
+            ((Quest)newQuest).initialize(world);
           }
           
           if (newQuest instanceof FetchQuest && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[5]).setActive(true);
-            ((Quest)newQuest).initialize(world, bag);
+            ((Quest)newQuest).initialize(world);
           }
           
           if (newQuest instanceof FetchQuestB && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[6]).setActive(true);
-            ((Quest)newQuest).initialize(world, bag);
+            ((Quest)newQuest).initialize(world);
           }
                               
           if (newQuest instanceof FetchQuestC && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[7]).setActive(true);
-            ((Quest)newQuest).initialize(world, bag);
+            ((Quest)newQuest).initialize(world);
           }
         }
         // Main Quest handling
         if (((NPC)interactable).getQuest() instanceof MainQuestA) {
           Quest mainQuest = ((NPC)interactable).getQuest();
           if (((NPC)interactable).getName() == "Bob" && mainQuest.getCurrentTask() == 0) {
-            mainQuest.initialize(world, bag);
+            mainQuest.initialize(world);
             Speech bobSpeech = new Speech("Hey can you help me?", 1,1);
           }
           else if (((NPC)interactable).getName() == "Bob" && mainQuest.getCurrentTask() == 3) {
