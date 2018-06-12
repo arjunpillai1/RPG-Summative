@@ -6,16 +6,19 @@
 
 class Player extends CombatCharacter {
   private int exp;
+
   private World futureStep;
   private World previousStep = new Grass();
+
   private int weaponBoost = 0;
   private int armourBoost = 0;
   private boolean equippedWeapon = false;
   private boolean equippedArmour = false;
-  
+
   Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY) {
     super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
   }
+
   
   public boolean getEquippedWeapon(){
     return equippedWeapon;
@@ -49,6 +52,7 @@ class Player extends CombatCharacter {
     armourBoost=value;
   }
   
+
   public void unequipWeapon(Inventory bag, int placement){
     if (getEquippedWeapon() == true){
       for (int i=0; i<bag.amount(); i++){
@@ -164,6 +168,7 @@ class Player extends CombatCharacter {
         previousStep = futureStep;
         setY(getY()-1);
 
+
       }
     }
   }
@@ -184,4 +189,6 @@ class Player extends CombatCharacter {
 //    }
   }
   
+
 }
+

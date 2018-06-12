@@ -5,10 +5,12 @@ abstract class CombatCharacter extends Character {
   private int defence;
   private int level;
   private int accuracy;
+
   private int posX, posY;
   
   
   CombatCharacter (int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY) {
+
     super (health, name);
     this.strength = strength;
     this.intelligence = intelligence;
@@ -18,14 +20,13 @@ abstract class CombatCharacter extends Character {
     this.posX = posX;
     this.posY = posY;
   }
+
   
   
   public void attack(CombatCharacter enemy) {
     
   }
-  
-  
-  
+
   public int getStr(){
     return strength;
   }

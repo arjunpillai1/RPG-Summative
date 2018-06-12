@@ -1,4 +1,5 @@
 
+
 /**
  * This template can be used as reference or a starting point
  * for your final summative project
@@ -33,11 +34,15 @@ class GameFrame extends JFrame {
   Quest[] sideQuests = new Quest[5];
   static Quest mainQuests;
   ArrayList<Quest> activeQuests = new ArrayList<Quest>();
+  Clock clock = new Clock();
+  Clock enemyDelay = new Clock();
+  Player player;
+  JPanel mainPanel = new JPanel();
   
   //class variable (non-static)
   static double x, y;
   static GameAreaPanel gamePanel;
-  
+  static DeathPanel deathPanel;
   
   
   
@@ -45,7 +50,7 @@ class GameFrame extends JFrame {
   GameFrame(World[][] world, Quest[] sideQuests, Quest mainQuests) { 
     super("My Game");  
     this.world = world;
-    
+    clock.update();
     maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
     maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
     GridToScreenRatio = maxY / (10);  //ratio to fit in screen as square map
@@ -92,8 +97,24 @@ class GameFrame extends JFrame {
   
   //the main gameloop - this is where the game state is updated
   public void animate() { 
+    boolean firstTime = true;
+    boolean stamina = true;
     
-    while(true){
+    while(player.getHealth() > 0){
+      if (((int)clock.getElapsedTime()) == 15) {
+        respawnEnemies(((int)clock.getElapsedTime()));
+        clock.update();
+      }
+      
+      for (int i = 0; i < world.length; i++) {
+        for (int j = 0; j < world.length; j++) {
+          if (world[i][j] instanceof Enemy) {
+            if (((Enemy)world[i][j]).getHealth() <= 0)
+              ((Enemy)world[i][j]).death(world, i, j);
+          }
+        }
+      }
+      
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
           // this is for when enemies are in vision range
@@ -101,14 +122,20 @@ class GameFrame extends JFrame {
           if (world[i][j] instanceof Player) {
             int playX = ((Player)world[i][j]).getX();
             int playY = ((Player)world[i][j]).getY();
-            for (int m = playX - 4; m < playX+5; m++) {
-              for (int n = playY - 4; n < playY+5; n++) {
-                if (world[m][n] instanceof Enemy) {
-                  if (((Enemy)world[m][n]).getHealth() <= 0) {
-                    ((Enemy)world[m][n]).death(world, m, n);
-                  } else {
+            if (firstTime == true) {
+              enemyDelay.update();
+              firstTime = false;
+            }
+            System.out.println(enemyDelay.getElapsedTime());
+            if (((int)enemyDelay.getElapsedTime()) % 2 == 0) {
+              for (int m = playX - 4; m < playX+5; m++) {
+                for (int n = playY - 4; n < playY+5; n++) {
+                  if (world[m][n] instanceof Enemy) {
+                    System.out.println("move");
                     ((Enemy)world[m][n]).move(world, m, n);
+                    enemyDelay.update();
                   }
+                  
                 }
               }
             }
@@ -118,6 +145,7 @@ class GameFrame extends JFrame {
       try{ Thread.sleep(500);} catch (Exception exc){}  //delay
       this.repaint();
     }
+    playerDeath();
   }
   
   
@@ -184,6 +212,30 @@ class GameFrame extends JFrame {
     
     
     
+  }
+    void playerDeath() {
+    deathPanel = new DeathPanel();
+    frame.getContentPane().add(BorderLayout.CENTER, deathPanel);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+    frame.setVisible(true);
+    
+  }
+  /** --------- INNER CLASSES ------------- **/
+  
+  private class DeathPanel extends JPanel {
+    public void paintComponent(Graphics f) {   
+      maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
+      maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
+      
+      f.setColor(Color.BLACK);
+      f.fillRect(0,0,maxX,maxY);
+      
+      f.setColor(Color.RED);
+      f.drawString(player.getName() + " Died",maxX/2,100); 
+
+      
+    }
   }
   /** --------- INNER CLASSES ------------- **/
   
@@ -329,6 +381,10 @@ class GameFrame extends JFrame {
         }
         countX++;
       }
+      g.setColor(Color.BLACK);
+      g.fillRect((maxX/4) - 205 , maxY - 150, 410, 35); 
+      g.setColor(Color.RED);
+      g.fillRect((maxX/4) - 200 , maxY - 145, player.getHealth() * 4, 25);
       updateActiveQuests();
       g.drawRect(6*maxX/17, 0, 1/17, 50);
       for (int i = 0; i < activeQuests.size(); i++) {
@@ -369,6 +425,94 @@ class GameFrame extends JFrame {
       if (sideQuests[i] != null) {
         if (sideQuests[i].getActive()) {
           activeQuests.add(sideQuests[i]);
+        }
+      }
+    }
+  }
+    class Clock {
+    long elapsedTime;
+    long lastTimeCheck;
+    long currentTime;
+    
+    public Clock() { 
+      lastTimeCheck=System.nanoTime();
+      elapsedTime=0;
+    }
+    
+    public void update() {
+      //if the computer is fast you need more precision
+      currentTime = System.nanoTime();
+      elapsedTime=currentTime - lastTimeCheck;
+      lastTimeCheck=currentTime;
+    }
+    
+    //return elapsed time in milliseconds
+    public double getElapsedTime() {
+      currentTime = System.nanoTime();
+      return (currentTime - lastTimeCheck)/1.0E9;
+    }
+  }
+  void respawnEnemies(int time) {
+    int noobCount = 0, fireCount = 0, frostCount = 0, poisonCount = 0, totalCount = 0;
+    Random rand = new Random();
+    int enemyType;
+    int randX;
+    int randY;
+    System.out.println(time);
+    
+    
+    System.out.println("works");
+    
+    while (noobCount < 2 || fireCount < 1 || frostCount < 2 || poisonCount < 1) {
+      for (int i = 0; i < world.length; i++) {
+        for (int j = 0; j < world.length; j++) {
+          randX = rand.nextInt(97) + 4;
+          randY = rand.nextInt(97) + 4;
+          if (noobCount < 2) {
+            if (world[randX][randY] instanceof Grass) {
+              enemyType = rand.nextInt(2);
+              if (enemyType == 1) {
+                noobCount++;
+                world[randX][randY] = new Bandit(1,1,1,1,1,1,"Bandit", randX, randY, world[randX][randY]);
+              } else {
+                noobCount++;
+                world[randX][randY] = new Archer(1,1,1,1,1,1,"Archer", randX, randY, world[randX][randY]);
+              }
+            } 
+          } if (frostCount < 2) { 
+            if (world[randX][randY] instanceof FrostGrass) {
+              enemyType = rand.nextInt(2);
+              if (enemyType == 1) {
+                frostCount++;
+                world[randX][randY] = new FrostSnake(1,1,1,1,1,1,"FrostSnake", i, j, world[i][j]);
+              } else {
+                frostCount++;
+                world[randX][randY] = new FrostSpider(1,1,1,1,1,1,"FrostSpider", i, j, world[i][j]);
+              }
+            }
+          } if (fireCount < 1) {
+            if (world[randX][randY] instanceof FireGrass) {
+              enemyType = rand.nextInt(2);
+              if (enemyType == 1) {
+                fireCount++;
+                world[randX][randY] = new FireSnake(1,1,1,1,1,1,"FireSnake", randX, randY, world[randX][randY]);
+              } else {
+                fireCount++;
+                world[randX][randY] = new FireSpider(1,1,1,1,1,1,"FireSpider", randX, randY, world[i][j]);
+              }
+            }
+          } if (poisonCount < 1) { 
+            if (world[randX][randY] instanceof PoisonGrass) {
+              enemyType = rand.nextInt(2);
+              if (enemyType == 1) {
+                poisonCount++;
+                world[randX][randY] = new PoisonSnake(1,1,1,1,1,1,"PoisonSnake", randX, randY, world[randX][randY]);
+              } else {
+                poisonCount++;
+                world[randX][randY] = new PoisonSpider(1,1,1,1,1,1,"PoisonSpider", randX, randY, world[randX][randY]);
+              }
+            }
+          }
         }
       }
     }
@@ -815,5 +959,6 @@ class GameFrame extends JFrame {
   } //end of mouselistener
   
 }
+
 
 

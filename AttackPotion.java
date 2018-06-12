@@ -13,8 +13,10 @@ abstract class AttackPotion extends Potion{
     this.attackBoost=attackBoost;
   }
   
+
   public int getAttackBoost(){
     return attackBoost;
   }
   
+
 }
