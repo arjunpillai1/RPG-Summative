@@ -97,6 +97,13 @@ class StartingFrame extends JFrame {
     }
     
   }
+  class LoadButtonListener implements ActionListener {  //this is the required class definition
+    public void actionPerformed(ActionEvent event) {  
+      System.out.println("Loading previous save");
+      thisFrame.dispose();
+      new GameFrame(world, sideQuests, mainStory, ((Player)world[23][21]));
+    }
+  }
   class ExitButtonListener implements ActionListener {  //this is the required class definition
     public void actionPerformed(ActionEvent event) {  
       
@@ -210,7 +217,7 @@ class StartingFrame extends JFrame {
     sideQuests = createSide(sideQuests);
      // all quests in here
     
-    //start all side quests and first main quest 
+    //start all side quests and first main quest \
     mainStory.spawn(world);
     for(int i = 0; i < sideQuests.length; i++) {
       if (sideQuests[i] != null) {
@@ -221,7 +228,7 @@ class StartingFrame extends JFrame {
   }
   
   public static Quest createStory(Quest questline) { 
-    String[] objectives = {"Kill 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", 
+    String[] objectives = {"Filler text","Kill 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", 
       "Kill 5 Spiders", "Kill 5 Snakes", "Talk to The Farmer", 
       "Go To the capital and meet The King", "Kill the large poisonous creature",
       "Talk to King Tagnam", "Find the Ice Fisherman in the Frost Lands", "Kill 7 Snakes", "Kill 7 Spiders",
@@ -261,7 +268,126 @@ class StartingFrame extends JFrame {
   
   
   public static void loadGame() throws Exception{
+    File map = new File("saveMap.txt");
+    File player = new File("savePlayer.txt");
+    Scanner fileIn = new Scanner(map);
+    Random rand = new Random();
+    String value = fileIn.nextLine();
+    int noobEnemyCount = 1, poisonEnemyCount = 2, frostEnemyCount = 2, fireEnemyCount = 1;
+    int playerX, playerY, playerLevel, health, strength, intel, defence, accuracy;
+    String name;
     
+    for (int a = 0; a < world.length - 1; a++) { // draws first row of the map to avoid errors
+      if (value.substring(a, a + 1).equals("S")) {
+        world[0][a] = new Water();
+      }
+    }
+    
+    for (int i = 1; i < world.length - 1; i++) { // draws the rest of the map in the array
+      value = fileIn.nextLine();
+      World initialGround;
+      for (int j = 0; j < world.length - 1; j++) {
+        if (value.substring(j, j + 1).equals("S") || (value.substring(j, j + 1).equals("r"))) {
+          world[i][j] = new Water();
+        } else if (value.substring(j, j + 1).equals("E")) {
+          world[i][j] = new Grass();
+          int enemyChance = rand.nextInt(5);
+          if ((enemyChance == 1) && (noobEnemyCount > 0) && i > 8 && j > 8) {
+            initialGround = world[i][j];
+            enemyChance = rand.nextInt(2);
+            if (enemyChance == 1) {
+              world[i][j] = new Bandit(1,1,1,1,1,1,"Bandit", i, j, initialGround);
+            }else {
+              world[i][j] = new Archer(1,1,1,1,1,1,"Archer", i, j, initialGround);
+            }
+            noobEnemyCount--;
+          }
+        } else if (value.substring(j, j + 1).equals("M")) {
+          world[i][j] = new FireGrass();
+          int enemyChance = rand.nextInt(5);
+          if ((enemyChance == 1) && (fireEnemyCount > 0)) {
+            initialGround = world[i][j];
+            enemyChance = rand.nextInt(2);
+            if (enemyChance == 1) {
+              world[i][j] = new FireSnake(1,1,1,1,1,1,"Fire Snake", i, j, initialGround);
+            }else {
+              world[i][j] = new FireSpider(1,1,1,1,1,1,"Fire Spider", i, j, initialGround);
+            }
+            fireEnemyCount--;
+          }
+        } else if (value.substring(j, j + 1).equals("D")) {
+          world[i][j] = new PoisonGrass();
+          int enemyChance = rand.nextInt(5);
+          if ((enemyChance == 1) && (poisonEnemyCount > 0)) {
+            initialGround = world[i][j];
+            enemyChance = rand.nextInt(2);
+            if (enemyChance == 1) {
+              world[i][j] = new PoisonSnake(1,1,1,1,1,1,"Venom Snake", i, j, initialGround);
+            }else {
+              world[i][j] = new PoisonSpider(1,1,1,1,1,1,"Venom Spider", i, j, initialGround);
+            }
+            poisonEnemyCount--;
+          }
+        } else if (value.substring(j, j + 1).equals("I")) {
+          world[i][j] = new FrostGrass();
+          int enemyChance = rand.nextInt(5);
+          if ((enemyChance == 1) && (frostEnemyCount > 0)) {
+            initialGround = world[i][j];
+            enemyChance = rand.nextInt(2);
+            if (enemyChance == 1) {
+              world[i][j] = new FrostSpider(1,1,1,1,1,1,"Frost Spider", i, j, initialGround);
+            }else {
+              world[i][j] = new FrostSnake(1,1,1,1,1,1,"Frost Snake", i, j, initialGround);
+            }
+            frostEnemyCount--;
+          }
+        } else if (value.substring(j, j + 1).equals("B")) {
+          world[i][j] = new Bridge();
+        } else if (value.substring(j, j + 1).equals("c")) {
+          world[i][j] = new CaveWall();
+        } else if (value.substring(j, j + 1).equals("T")) {
+          world[i][j] = new Tree();
+        } else if (value.substring(j, j + 1).equals("H")) {
+          world[i][j] = new Wall();
+        } else if (value.substring(j, j + 1).equals("C")) {
+          world[i][j] = new CastleWall();
+        } else if (value.substring(j, j + 1).equals("F")) {
+          world[i][j] = new HouseFloor();
+        } else if (value.substring(j, j + 1).equals("-")) {
+          world[i][j] = new Dirt();
+        } else if (value.substring(j, j + 1).equals("E")) {
+          world[i][j] = new Grass();
+        } else if (value.substring(j, j + 1).equals("L")) {
+          Item chestItems[] = new Item[1];
+          world[i][j] = new Chest(chestItems);
+        }  
+      }
+//      if (i % 2 == 0) {
+//        frostEnemyCount += 1;
+//        noobEnemyCount += 1;
+//        fireEnemyCount += 1;
+//        poisonEnemyCount += 1;
+//      }
+    }
+    
+    fileIn.close();
+    
+    
+    Scanner fileInput = new Scanner(player);
+   // playerX, playerY, playerLevel, health, strength, intel, name, defence
+   //  Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY)
+    
+    name = fileInput.nextLine();
+    playerLevel = Integer.parseInt(fileInput.nextLine());
+    intel = Integer.parseInt(fileInput.nextLine());
+    strength = Integer.parseInt(fileInput.nextLine());
+    defence = Integer.parseInt(fileInput.nextLine());
+    health = Integer.parseInt(fileInput.nextLine());
+    playerX = Integer.parseInt(fileInput.nextLine());
+    playerY = Integer.parseInt(fileInput.nextLine());
+    accuracy = Integer.parseInt(fileInput.nextLine());
+    fileInput.close();
+    world[playerY][playerX] = new Player(health, strength, intel, defence, playerLevel, accuracy, name, playerX, playerY);
     
   }
   //Main method starts this application

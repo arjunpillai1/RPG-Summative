@@ -12,9 +12,7 @@ class MainQuestA extends Quest {
   
   @Override
   void initialize(World[][] world) {
-//    System.out.println(getTask(0));
-//    System.out.println(getTask(1));
-    setCurrentTask(0);
+    setCurrentTask(1);
     world[8][14] = new Peasant(10, "Farmer", false, this);
     world[54][40] = new Peasant(1000000, "King Mangat", false, this);
     world[52][40] = new Peasant(1000000, "Chancellor", false, this);

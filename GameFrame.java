@@ -34,7 +34,11 @@ class GameFrame extends JFrame {
   Quest[] sideQuests = new Quest[5];
   static Quest mainQuests;
   ArrayList<Quest> activeQuests = new ArrayList<Quest>();
-  
+  int spaceX; //elon musk?
+  int spaceY;
+  Clock clock = new Clock();
+  Clock enemyDelay = new Clock();
+  JPanel mainPanel = new JPanel();
   //class variable (non-static)
   static double x, y;
   static GameAreaPanel gamePanel;
@@ -93,8 +97,27 @@ class GameFrame extends JFrame {
   
   //the main gameloop - this is where the game state is updated
   public void animate() { 
+    boolean firstTime = true;
+    boolean stamina = true;
     
-    while(true){
+    while(player.getHealth() > 0){
+      
+      if (((int)clock.getElapsedTime()) == 15) {
+        respawnEnemies(((int)clock.getElapsedTime()));
+        System.out.println("respawn");
+        clock.update();
+      }
+      
+      for (int i = 0; i < world.length; i++) {
+        for (int j = 0; j < world.length; j++) {
+          if (world[i][j] instanceof Enemy) {
+            if (((Enemy)world[i][j]).getHealth() <= 0)
+              ((Enemy)world[i][j]).death(world, i, j);
+          }
+        }
+      }
+      
+      
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
           // this is for when enemies are in vision range
@@ -102,14 +125,19 @@ class GameFrame extends JFrame {
           if (world[i][j] instanceof Player) {
             int playX = ((Player)world[i][j]).getX();
             int playY = ((Player)world[i][j]).getY();
-            for (int m = playX - 4; m < playX+5; m++) {
-              for (int n = playY - 4; n < playY+5; n++) {
-                if (world[m][n] instanceof Enemy) {
-                  if (((Enemy)world[m][n]).getHealth() <= 0) {
-                    ((Enemy)world[m][n]).death(world, m, n);
-                  } else {
+            if (firstTime == true) {
+              enemyDelay.update();
+              firstTime = false;
+            }
+            
+            if (((int)enemyDelay.getElapsedTime()) % 2 == 0 && ((int)enemyDelay.getElapsedTime()) > 0 ) {
+              for (int m = playX - 4; m < playX+5; m++) {
+                for (int n = playY - 4; n < playY+5; n++) {
+                  if (world[m][n] instanceof Enemy) {
+                    System.out.println("move");
                     ((Enemy)world[m][n]).move(world, m, n);
-                  }
+                    enemyDelay.update();
+                  }                 
                 }
               }
             }
@@ -121,7 +149,7 @@ class GameFrame extends JFrame {
   }
   
   
-  public static void saveGame(World[][] world, Quest[] sideQuests, Quest mainQuestA) throws Exception{
+   public static void saveGame(World[][] world, Quest[] sideQuests, Quest mainQuestA) throws Exception{
     File saveGame = new File("saveGame.txt");
     File saveMap = new File("mapSave.txt");
     Player player;
@@ -154,24 +182,26 @@ class GameFrame extends JFrame {
           output.print("M");
         } else if (world[i][j] instanceof Water) {
           output.print("S");
-        } else if (world[i][j] instanceof Enemy) {
-          output.print("A");
         } else if (world[i][j] instanceof Player) {
           output.print("P");
           player = ((Player)world[i][j]);
           PrintWriter outputPlayer = new PrintWriter(saveGame) ;
           //save player
           outputPlayer.println(player.getName());
-          outputPlayer.println(player.getExp());
+          outputPlayer.println(player.getLvl());
           outputPlayer.println(player.getInt());
           outputPlayer.println(player.getStr());
+          outputPlayer.println(player.getDef());
+          outputPlayer.println(player.getHealth());
+          outputPlayer.println(player.getX());
+          outputPlayer.println(player.getY());
+          outputPlayer.println(player.getAccuracy());
           //save quest
           for (int k = 0; k < sideQuests.length; k++) {
             if (sideQuests[i].getActive()) {
               //outputPlayer.println(sideQuests[i].getCurrentTask());
             }
           }
-          outputPlayer.println(((Quest)mainQuests).getCurrentTask());
           //outputPlayer.println(mainQuestA.getCurrentTask());
           outputPlayer.close();
         }
@@ -200,7 +230,8 @@ class GameFrame extends JFrame {
       int countX = 0;
       int countY = 0;
       Font questTitle = new Font("Arial", Font.BOLD, 16);
-      Font questTask = new Font("Berlin Sans FB", Font.BOLD, 12);
+      Font questTask = new Font("Berlin Sans FB", Font.PLAIN, 15);
+      Font questLogTitle = new Font("Verdana", Font.BOLD, 14);
       
       setDoubleBuffered(true); 
       Color myGreen = new Color(11, 215, 72);
@@ -209,12 +240,14 @@ class GameFrame extends JFrame {
       Color myBrown = new Color(176, 102, 96);
       Color myBlue = new Color(0, 168, 252);
       Color mySaddleBrown = new Color(139,69,19);
+      Color questLog = new Color(205, 133, 63);
       Color wood = new Color(102, 51, 0);
       Color floor = new Color(20, 80, 40); 
       Color tree = new Color(20, 51, 6);
       Color bandit = new Color(139, 60, 100);
       Color archer = new Color(11, 110, 80);
       Color yellow = new Color(255,255,0);
+      Color royalYellow = new Color(250, 218, 94);
       Color farmer = new Color(176, 102, 84);
       
       for (int a = 0; a < world.length; a++) {
@@ -336,53 +369,147 @@ class GameFrame extends JFrame {
         }
         countX++;
       }
-      updateActiveQuests();
       g.setColor(Color.BLACK);
       g.fillRect((maxX/4) - 205 , maxY - 150, 410, 35); 
       g.setColor(Color.RED);
       g.fillRect((maxX/4) - 200 , maxY - 145, player.getHealth() * 4, 25);
       
+      updateActiveQuests();
+      
+      g.setColor(questLog);
+      if (activeQuests.size() > 3) {
+        g.fillRect(0,0, (maxX/8), maxY/3);
+      } else {
+        g.fillRect(0,0, (maxX/8), maxY/4);
+      }
+      g.setColor(royalYellow);
+      g.drawLine(0,28, maxX/8, 28);
+      g.setFont(questLogTitle);
+      g.drawString("Quest Log",10, 25);
       for (int i = 0; i < activeQuests.size(); i++) {
         if (activeQuests.get(i) instanceof MainQuestA) {
           g.setColor(Color.RED);
           g.setFont(questTitle);
-          g.drawString(mainQuests.getName(), 15, 30 + i*30);
+          g.drawString(mainQuests.getName(), 15, 55 + i*30);
           g.setFont(questTask);
           System.out.println(mainQuests.getCurrentTask());
-          if (mainQuests.getCurrentTask() == 0 || mainQuests.getCurrentTask() == 5 || mainQuests.getCurrentTask() == 12 || 
+          // need to change all tasks by reducing their numbers by 1 soon
+          if (mainQuests.getCurrentTask() == 1 || mainQuests.getCurrentTask() == 5 || mainQuests.getCurrentTask() == 12 || 
               mainQuests.getCurrentTask() == 19) {
-            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 15, 30 + i*30 + 20);
-            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()+1), 15, 30 + i*30 + 40);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 15, 55 + i*30 + 20);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()+1), 15, 55 + i*30 + 40);
           } else {
-            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 15, 30 + i*30 + 20);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 15, 55 + i*30 + 20);
           }
         } else {
           g.setColor(Color.BLUE);
           g.setFont(questTitle);
-          g.drawString((activeQuests.get(i)).getName(),10, 40 + 60*i);
+          g.drawString((activeQuests.get(i)).getName(),10, 65 + 60*i);
           g.setFont(questTask);
-          g.drawString("- " +(activeQuests.get(i)).getTask((activeQuests.get(i)).getCurrentTask()), 15, 40 + 60*i + 20);
+          g.drawString("- " +(activeQuests.get(i)).getTask((activeQuests.get(i)).getCurrentTask()), 15, 65 + 60*i + 20);
+        }
+      }
+    }
+  }
+  void respawnEnemies(int time) {
+    int noobCount = 0, fireCount = 0, frostCount = 0, poisonCount = 0, totalCount = 0;
+    Random rand = new Random();
+    int enemyType;
+    int randX;
+    int randY;
+    System.out.println(time);
+    
+    
+    System.out.println("works");
+    
+    while (noobCount < 2 || fireCount < 1 || frostCount < 2 || poisonCount < 1) {
+      for (int i = 0; i < world.length; i++) {
+        for (int j = 0; j < world.length; j++) {
+          randX = rand.nextInt(97) + 4;
+          randY = rand.nextInt(97) + 4;
+          if (noobCount < 2) {
+            if (world[randX][randY] instanceof Grass) {
+              enemyType = rand.nextInt(2);
+              if (enemyType == 1) {
+                noobCount++;
+                world[randX][randY] = new Bandit(1,1,1,1,1,1,"Bandit", randX, randY, world[randX][randY]);
+              } else {
+                noobCount++;
+                world[randX][randY] = new Archer(1,1,1,1,1,1,"Archer", randX, randY, world[randX][randY]);
+              }
+            } 
+          } if (frostCount < 2) { 
+            if (world[randX][randY] instanceof FrostGrass) {
+              enemyType = rand.nextInt(2);
+              if (enemyType == 1) {
+                frostCount++;
+                world[randX][randY] = new FrostSnake(1,1,1,1,1,1,"FrostSnake", i, j, world[i][j]);
+              } else {
+                frostCount++;
+                world[randX][randY] = new FrostSpider(1,1,1,1,1,1,"FrostSpider", i, j, world[i][j]);
+              }
+            }
+          } if (fireCount < 1) {
+            if (world[randX][randY] instanceof FireGrass) {
+              enemyType = rand.nextInt(2);
+              if (enemyType == 1) {
+                fireCount++;
+                world[randX][randY] = new FireSnake(1,1,1,1,1,1,"FireSnake", randX, randY, world[randX][randY]);
+              } else {
+                fireCount++;
+                world[randX][randY] = new FireSpider(1,1,1,1,1,1,"FireSpider", randX, randY, world[i][j]);
+              }
+            }
+          } if (poisonCount < 1) { 
+            if (world[randX][randY] instanceof PoisonGrass) {
+              enemyType = rand.nextInt(2);
+              if (enemyType == 1) {
+                poisonCount++;
+                world[randX][randY] = new PoisonSnake(1,1,1,1,1,1,"PoisonSnake", randX, randY, world[randX][randY]);
+              } else {
+                poisonCount++;
+                world[randX][randY] = new PoisonSpider(1,1,1,1,1,1,"PoisonSpider", randX, randY, world[randX][randY]);
+              }
+            }
+          }
         }
       }
     }
   }
   private void updateActiveQuests() {
-//    for (int i = 0; i < activeQuests.size(); i++) {
-//      if (!activeQuests.get(i).getActive()) {
-//        activeQuests.remove(i);
-//      }
-//    }
     activeQuests.clear();
     if (mainQuests.getActive()) {
       activeQuests.add(mainQuests);
     }
     for (int i = 0; i < sideQuests.length; i++) {
-      //System.out.println(sideQuests[i]);
       if (sideQuests[i] != null) {
         if (sideQuests[i].getActive()) {
           activeQuests.add(sideQuests[i]);
         }
       }
+    }
+  }
+  class Clock {
+    long elapsedTime;
+    long lastTimeCheck;
+    long currentTime;
+    
+    public Clock() { 
+      lastTimeCheck=System.nanoTime();
+      elapsedTime=0;
+    }
+    
+    public void update() {
+      //if the computer is fast you need more precision
+      currentTime = System.nanoTime();
+      elapsedTime=currentTime - lastTimeCheck;
+      lastTimeCheck=currentTime;
+    }
+    
+    //return elapsed time in milliseconds
+    public double getElapsedTime() {
+      currentTime = System.nanoTime();
+      return (currentTime - lastTimeCheck)/1.0E9;
     }
   }
   // -----------  Inner class for the keyboard listener - this detects key presses and runs the corresponding code
@@ -393,7 +520,6 @@ class GameFrame extends JFrame {
     }
     
     public void keyPressed(KeyEvent e) {
-      //System.out.println("keyPressed="+KeyEvent.getKeyText(e.getKeyCode()));
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
           if (world[i][j] instanceof Player) {
@@ -687,17 +813,17 @@ class GameFrame extends JFrame {
               }
             }
           }
-          // else if (interactable instanceof MangatBoss) {
-//          if (((Quest)mainQuests).getCurrentTask() == 24 && !((Quest)mainQuests).getComplete()) {
-//              ((Quest)mainQuests).updateObjective(1);
-//              if (((Quest)mainQuests).getCurrentTask() == 25) {
-//                System.out.println("complete");
-//                ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-//                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-//                System.out.println("You have gained : something");
-//              }
-//            }
-          //}
+          else if (interactable instanceof MangatBoss) {
+            if (((Quest)mainQuests).getCurrentTask() == 25 && !((Quest)mainQuests).getComplete()) {
+              ((Quest)mainQuests).updateObjective(1);
+              if (((Quest)mainQuests).getCurrentTask() == 26) {
+                System.out.println("complete");
+                ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
+                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                System.out.println("You have gained : something");
+              }
+            }
+          }
         }
         
       }
