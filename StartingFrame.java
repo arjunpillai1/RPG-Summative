@@ -99,12 +99,7 @@ class StartingFrame extends JFrame {
   
   //This is an inner class that is used to detect a button press
   class StartButtonListener implements ActionListener {  //this is the required class definition
-    
-    
- 
-    
-    
-    
+
     public void actionPerformed(ActionEvent event) {  
       System.out.println("Starting new Game");
       thisFrame.dispose();
@@ -416,7 +411,7 @@ class StartingFrame extends JFrame {
   */
   static JTextField nameField;
   static JLabel messageLabel;
-  static JButton clickButton;
+  static JButton doneButton;
   // ****
   
   
@@ -428,16 +423,18 @@ class StartingFrame extends JFrame {
       menuMusicStream = AudioSystem.getAudioInputStream(menuMusicFile);
       info = new DataLine.Info(Clip.class, menuMusicStream.getFormat());
       clip = (Clip) AudioSystem.getLine(info);
+      clip.open(menuMusicStream);
     }catch (Exception e){};
     
-    clip.open(menuMusicStream);
     clip.start();
       
     
     // **** Create a new Window and set it up
     JFrame myWindow = new JFrame("This is the frame!"); //create a new window with a title
+     ImageIcon namePic = new ImageIcon ( "name.png" );
+      ImageIcon done = new ImageIcon ( "startName.png" );
     
-    myWindow.setSize(400,200);  // set the size of my window to 400 by 400 pixels
+    myWindow.setSize(700,500);  // set the size of my window to 700 by 500 pixels
     myWindow.setResizable(true);  // set my window to allow the user to resize it
     myWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // set the window up to end the program when closed
     
@@ -449,18 +446,22 @@ class StartingFrame extends JFrame {
     // **** Create a some Panels and set their layouts
     JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new GridLayout(0,1));  // set the layouts to grid 1 coloumn
-    
     // ****
     
     
     // **** Create a button
-    clickButton = new JButton("Done"); 
+    doneButton = new JButton(done); 
+    doneButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    doneButton.setBackground(new Color(0, 0, 0, 0));
+    doneButton.setBorder(BorderFactory.createEmptyBorder());
+    doneButton.setFocusPainted(false);
     
-    clickButton.addActionListener(new clickButtonListener());  // add a listener to the button (makes the button active)
+    doneButton.addActionListener(new clickButtonListener(myWindow));  // add a listener to the button (makes the button active)
     // ****
     
     // **** Create a label
-    messageLabel = new JLabel("What is Your Name");
+    messageLabel = new JLabel(namePic);
+    messageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     // ****
     
     // **** Creat a text field
@@ -468,9 +469,9 @@ class StartingFrame extends JFrame {
     // ****
     
     // **** Now adding all the components tot the panels 
-    mainPanel.add(nameField);
     mainPanel.add(messageLabel);
-    mainPanel.add(clickButton);
+    mainPanel.add(nameField);
+    mainPanel.add(doneButton);
     // ****
     
     // **** Add the main panel to the frame, the order is important
@@ -492,14 +493,18 @@ class StartingFrame extends JFrame {
    */
   
   static class clickButtonListener implements ActionListener {  //this is the required class definition
+    private JFrame nameFrame;
+          clickButtonListener(JFrame nameFrame){
+      this.nameFrame = nameFrame;
+      }
     public void actionPerformed(ActionEvent event)  {     //this is the only method in this class and it will run automatically when the button is activated
-    
     // **** This is where the code to respond to the button event goes
       try{
     String name;
     name = nameField.getText();
        new StartingFrame();
        mapInitialize(name);
+       nameFrame.dispose();
     //saveGame(world);
     
     // ****
