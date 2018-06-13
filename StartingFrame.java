@@ -243,7 +243,7 @@ class StartingFrame extends JFrame {
   public static Quest createStory(Quest questline) { 
     String[] objectives = {"Filler text","Kill 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", 
       "Kill 5 Spiders", "Kill 5 Snakes", "Talk to The Farmer", 
-      "Go To the capital and meet The King", "Kill the large poisonous creature",
+      "Go to the capital and meet The King", "Kill the poisonous creature",
       "Talk to King Tagnam", "Find the Ice Fisherman in the Frost Lands", "Kill 7 Snakes", "Kill 7 Spiders",
       "Talk to Fisherman James", "Go back to the capital and speak with King Tagnam", "Kill the Frost Boss",
       "Talk to Tagnam", "Find the Pyromaniac in the Firelands", "Defeat 10 Spiders", "Defeat 10 Snakes", "Talk to Vivian",
