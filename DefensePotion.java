@@ -4,21 +4,15 @@
  * Abstract class of potions that boost your attack
 */  
 
-abstract class DefensePotion extends Potion{
+class DefensePotion extends TempPotion{
   
-  double defenseMultiplier;
+  private int defenseBoost =(int)(Math.random()*5)+10;
   
-  DefensePotion(int cost, int timer, double defenseMultiplier){
-  super(cost, timer);
-  this.defenseMultiplier=defenseMultiplier;
+  DefensePotion(int cost, int timer){
+  super("Defense Potion", cost, timer);
   }
   
-  public double getDefenseMultiplier(){
-    return defenseMultiplier;
-  }
-  
-  public void use(Player user){
-    user.setDef((int)(Math.floor((user.getDef()) * (defenseMultiplier))));
-    used = true;
+  public int getDefenseBoost(){
+    return defenseBoost;
   }
 }
