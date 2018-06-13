@@ -18,6 +18,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.*;
 import java.awt.*;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
 
 //Keyboard imports
 import java.awt.event.KeyEvent;
@@ -48,6 +52,11 @@ class GameFrame extends JFrame {
   static GameAreaPanel gamePanel;
   static Player player;
   
+  //Music variables
+  static File menuMusicFile ;
+  static AudioInputStream menuMusicStream ;
+  static DataLine.Info info;
+  static Clip clip ;
   
   //Constructor - this runs first
   GameFrame(World[][] world, Quest[] sideQuests, Quest mainQuests, Player player) { 
@@ -58,6 +67,17 @@ class GameFrame extends JFrame {
     maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
     maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
     GridToScreenRatio = maxY / (10);  //ratio to fit in screen as square map
+    
+    //Music initalisation
+    try {
+      menuMusicFile = new File("maskoff.wav");
+      menuMusicStream = AudioSystem.getAudioInputStream(menuMusicFile);
+      info = new DataLine.Info(Clip.class, menuMusicStream.getFormat());
+      clip = (Clip) AudioSystem.getLine(info);
+      clip.open(menuMusicStream);
+    }catch (Exception e) {};
+    
+    clip.start();
     
     System.out.println("Map size: "+world.length+" by "+world[0].length + "\nScreen size: "+ maxX +"x"+maxY+ " Ratio: " + GridToScreenRatio);
     
@@ -246,7 +266,7 @@ class GameFrame extends JFrame {
       };
       Image[] knights={Toolkit.getDefaultToolkit().getImage("Knight2_IDLE_000.png")};
       Image[] trolls={Toolkit.getDefaultToolkit().getImage("Trolls1_IDLE_000.png")};
-      Image[] player={Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger_idle_000.png")};
+      Image[] playerSprite={Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger_idle_000.png")};
       Image[] spider={Toolkit.getDefaultToolkit().getImage("Spider_sprite_``                                                                                                                                                                                                                                                               walk_4.png")}; 
       Image[] sorcerer={Toolkit.getDefaultToolkit().getImage("sorcerer attack_Animation 1_1.png")}; 
       Image waterImage=Toolkit.getDefaultToolkit().getImage("Water.png");
@@ -344,9 +364,9 @@ class GameFrame extends JFrame {
           if (world[i][j] instanceof Enemy || world[i][j] instanceof Player){
             World characterImageBackground=null;
             if (world[i][j] instanceof Enemy){
-              characterImageBackground=((Enemy)world[i][j]).returnFutureStep();
+              characterImageBackground=((Enemy)world[i][j]).getFutureStep();
             }else if(world[i][j] instanceof Player){
-              characterImageBackground=((Player)world[i][j]).returnFutureStep();
+              characterImageBackground=((Player)world[i][j]).getFutureStep();
             }
             if (characterImageBackground instanceof Grass) {  
               g.drawImage(floorTextures[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
@@ -390,7 +410,7 @@ class GameFrame extends JFrame {
           }
           //Player
           else if (world[i][j] instanceof Player) {
-            g.drawImage(player[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.drawImage(playerSprite[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
             g.drawString("Lv:" + ((Player)world[i][j]).getLvl(), (j - (j - (countY %9))) * GridToScreenRatio + 30, (i - (i - countX)) * GridToScreenRatio + 30);

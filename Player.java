@@ -191,6 +191,10 @@ class Player extends CombatCharacter {
     return exp;
   }
   
+  public World getFutureStep(){
+    return this.futureStep;
+  }
+  
   public void setExp(int newExp){
     this.exp = newExp;
   }

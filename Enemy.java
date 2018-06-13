@@ -82,7 +82,7 @@ abstract class Enemy extends CombatCharacter{
     world[coordX][coordY] = previousStep;
   }
   
-  public World returnFutureStep(){
+  public World getFutureStep(){
     return futureStep;
   }
 }
