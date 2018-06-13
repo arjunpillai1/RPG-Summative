@@ -4,7 +4,7 @@
  * Abstract class of potions that boost your attack
  */  
 
-abstract class AttackPotion extends Potion{
+abstract class AttackPotion extends TempPotion{
   
   private int attackBoost;
   
@@ -13,10 +13,8 @@ abstract class AttackPotion extends Potion{
     this.attackBoost=attackBoost;
   }
   
-
   public int getAttackBoost(){
     return attackBoost;
   }
   
-
 }
