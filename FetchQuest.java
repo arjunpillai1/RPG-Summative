@@ -21,7 +21,7 @@ class FetchQuest extends Quest {
     System.out.println(getTask(1));
       }
     }
-    }
+  }
   
   Boolean updateObjective(int task) {
     return false;

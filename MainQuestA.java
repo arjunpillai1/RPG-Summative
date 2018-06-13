@@ -7,7 +7,7 @@ class MainQuestA extends Quest {
 
   @Override
   void spawn(World[][] world) {
-    world[8][12] = new Peasant(10, "Bob", true, this);
+    world[22][20] = new Peasant(10, "Bob", true, this);
   }
   
   @Override

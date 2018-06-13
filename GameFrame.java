@@ -32,13 +32,17 @@ class GameFrame extends JFrame {
   private static int maxX,maxY, GridToScreenRatio;
   World[][] world;
   Quest[] sideQuests = new Quest[5];
+  ArrayList<String> speechQueue = new ArrayList<String>();
+  Speech[] speeches = new Speech[2];
   static Quest mainQuests;
   ArrayList<Quest> activeQuests = new ArrayList<Quest>();
   int spaceX; //elon musk?
   int spaceY;
+  int advanceDialogue = 0;
   Clock clock = new Clock();
   Clock enemyDelay = new Clock();
   JPanel mainPanel = new JPanel();
+  Boolean dialogue = false;
   //class variable (non-static)
   static double x, y;
   static GameAreaPanel gamePanel;
@@ -134,7 +138,7 @@ class GameFrame extends JFrame {
               for (int m = playX - 4; m < playX+5; m++) {
                 for (int n = playY - 4; n < playY+5; n++) {
                   if (world[m][n] instanceof Enemy) {
-                    System.out.println("move");
+                    //System.out.println("move");
                     ((Enemy)world[m][n]).move(world, m, n);
                     enemyDelay.update();
                   }                 
@@ -249,6 +253,7 @@ class GameFrame extends JFrame {
       Color yellow = new Color(255,255,0);
       Color royalYellow = new Color(250, 218, 94);
       Color farmer = new Color(176, 102, 84);
+      Color speech = new Color(0,49,82);
       
       for (int a = 0; a < world.length; a++) {
         for (int b = 0; b < world.length; b++) {
@@ -392,7 +397,7 @@ class GameFrame extends JFrame {
           g.setFont(questTitle);
           g.drawString(mainQuests.getName(), 15, 55 + i*30);
           g.setFont(questTask);
-          System.out.println(mainQuests.getCurrentTask());
+          //System.out.println(mainQuests.getCurrentTask());
           // need to change all tasks by reducing their numbers by 1 soon
           if (mainQuests.getCurrentTask() == 1 || mainQuests.getCurrentTask() == 5 || mainQuests.getCurrentTask() == 12 || 
               mainQuests.getCurrentTask() == 19) {
@@ -409,8 +414,48 @@ class GameFrame extends JFrame {
           g.drawString("- " +(activeQuests.get(i)).getTask((activeQuests.get(i)).getCurrentTask()), 15, 65 + 60*i + 20);
         }
       }
+      
+      
+      if (speechQueue.size() > 0) {
+        dialogue = true; 
+        
+        if (advanceDialogue == speechQueue.size()) {
+          dialogue = false;
+          speechQueue.clear();
+          speechQueue.trimToSize();
+          advanceDialogue=0;
+        } else {
+          g.setColor(Color.BLACK);
+          g.fillRect((maxX/4) - 220, maxY - 250, maxX/3 - 150, 142);
+          g.setColor(speech);
+          g.fillRect((maxX/4) - 210, maxY - 240, maxX/3 - 170, 122);
+          g.setFont(questTask);
+          g.setColor(Color.WHITE);
+          g.drawString(speechQueue.get(advanceDialogue), (maxX/4)-100, ((maxY - 250) + 142 / 2));
+        }
+        
+        
+      }
     }
   }
+  
+  
+  private void updateActiveQuests() {
+    activeQuests.clear();
+    if (mainQuests.getActive()) {
+      activeQuests.add(mainQuests);
+    }
+    for (int i = 0; i < sideQuests.length; i++) {
+      if (sideQuests[i] != null) {
+        if (sideQuests[i].getActive()) {
+          activeQuests.add(sideQuests[i]);
+        }
+      }
+    }
+  }
+  
+  
+  
   void respawnEnemies(int time) {
     int noobCount = 0, fireCount = 0, frostCount = 0, poisonCount = 0, totalCount = 0;
     Random rand = new Random();
@@ -419,8 +464,7 @@ class GameFrame extends JFrame {
     int randY;
     System.out.println(time);
     
-    
-    System.out.println("works");
+
     
     while (noobCount < 2 || fireCount < 1 || frostCount < 2 || poisonCount < 1) {
       for (int i = 0; i < world.length; i++) {
@@ -476,19 +520,7 @@ class GameFrame extends JFrame {
       }
     }
   }
-  private void updateActiveQuests() {
-    activeQuests.clear();
-    if (mainQuests.getActive()) {
-      activeQuests.add(mainQuests);
-    }
-    for (int i = 0; i < sideQuests.length; i++) {
-      if (sideQuests[i] != null) {
-        if (sideQuests[i].getActive()) {
-          activeQuests.add(sideQuests[i]);
-        }
-      }
-    }
-  }
+  
   class Clock {
     long elapsedTime;
     long lastTimeCheck;
@@ -554,6 +586,10 @@ class GameFrame extends JFrame {
       int mouseY = e.getY();
       int yToTile = ((mouseX / GridToScreenRatio) - 4) + playerX;
       int xToTile = ((mouseY / GridToScreenRatio) - 4) + playerY;
+      if (dialogue == true) {
+        advanceDialogue++;
+      }
+      
       
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
@@ -563,15 +599,11 @@ class GameFrame extends JFrame {
           }
         }
       }
-      System.out.println(mouseX);
-      System.out.println(mouseY);
       yToTile = ((mouseX / GridToScreenRatio) - 4) + playerY;
       xToTile = ((mouseY / GridToScreenRatio) - 4) + playerX;
       
       interact(world[playerX][playerY], world[xToTile][yToTile], world);
-      
-      
-      //System.out.println(xToTile + " " + yToTile);
+
     }
     
     public void interact(Object player, Object interactable, World[][] world) {
@@ -585,10 +617,10 @@ class GameFrame extends JFrame {
             if (((Quest)sideQuests[0]).getActive() && !((Quest)sideQuests[0]).getComplete()) {
               ((Quest)sideQuests[0]).setComplete(((Quest)sideQuests[0]).updateObjective(1));
               if (((Quest)sideQuests[0]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[0]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[0]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
             // MAIN QUEST
@@ -596,10 +628,10 @@ class GameFrame extends JFrame {
               ((Quest)mainQuests).updateObjective(1);
               
               if (((Quest)mainQuests).getCurrentTask() == 3) {
-                System.out.println("complete");
+                System.out.println("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -609,10 +641,10 @@ class GameFrame extends JFrame {
               ((Quest)mainQuests).updateObjective(2);
               System.out.println(mainQuests.getCurrentTask());
               if (((Quest)mainQuests).getCurrentTask() == 3) {
-                System.out.println("complete");
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -622,10 +654,10 @@ class GameFrame extends JFrame {
               
               ((Quest)sideQuests[1]).setComplete(((Quest)sideQuests[1]).updateObjective(1));
               if (((Quest)sideQuests[1]).getCurrentTask() == 7) {
-                System.out.println("complete");
+                System.out.println("Quest completed: " + ((Quest)sideQuests[1]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[1]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[1]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[1]).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
             // MAIN QUEST
@@ -633,10 +665,10 @@ class GameFrame extends JFrame {
               ((Quest)mainQuests).updateObjective(1);
               System.out.println(mainQuests.getCurrentTask());
               if (((Quest)mainQuests).getCurrentTask() == 7) {
-                System.out.println("complete");
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -644,10 +676,10 @@ class GameFrame extends JFrame {
             if (((Quest)sideQuests[1]).getActive() && !((Quest)sideQuests[1]).getComplete()) {
               ((Quest)sideQuests[1]).setComplete(((Quest)sideQuests[0]).updateObjective(2));
               if (((Quest)sideQuests[1]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[1]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[1]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[1]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[1]).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
             // MAIN QUEST
@@ -655,10 +687,10 @@ class GameFrame extends JFrame {
               ((Quest)mainQuests).updateObjective(2);
               System.out.println(mainQuests.getCurrentTask());
               if (((Quest)mainQuests).getCurrentTask() == 7) {
-                System.out.println("complete");
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -667,20 +699,20 @@ class GameFrame extends JFrame {
             if (((Quest)sideQuests[2]).getActive() && !((Quest)sideQuests[2]).getComplete()) {
               ((Quest)sideQuests[2]).setComplete(((Quest)sideQuests[2]).updateObjective(1));
               if (((Quest)sideQuests[2]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[2]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[2]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[2]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[2]).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
             // MAIN QUEST
             if (((Quest)mainQuests).getCurrentTask() > 11 && ((Quest)mainQuests).getCurrentTask() < 14 && !((Quest)mainQuests).getComplete()) {
               ((Quest)mainQuests).updateObjective(1);
               if (((Quest)mainQuests).getCurrentTask() == 14) {
-                System.out.println("complete");
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -688,20 +720,20 @@ class GameFrame extends JFrame {
             if (((Quest)sideQuests[2]).getActive() && !((Quest)sideQuests[2]).getComplete()) {
               ((Quest)sideQuests[2]).setComplete(((Quest)sideQuests[2]).updateObjective(2));
               if (((Quest)sideQuests[2]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[2]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[2]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[2]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[2]).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
             // MAIN QUEST
             if (((Quest)mainQuests).getCurrentTask() > 11 && ((Quest)mainQuests).getCurrentTask() < 14 && !((Quest)mainQuests).getComplete()) {
               ((Quest)mainQuests).updateObjective(1);
               if (((Quest)mainQuests).getCurrentTask() == 14) {
-                System.out.println("complete");
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -710,20 +742,20 @@ class GameFrame extends JFrame {
             if (((Quest)sideQuests[3]).getActive() && !((Quest)sideQuests[3]).getComplete()) {
               ((Quest)sideQuests[3]).setComplete(((Quest)sideQuests[3]).updateObjective(1));
               if (((Quest)sideQuests[3]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[3]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[3]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[3]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[3]).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
             // MAIN QUEST
             if (((Quest)mainQuests).getCurrentTask() > 18 && ((Quest)mainQuests).getCurrentTask() < 21 && !((Quest)mainQuests).getComplete()) {
               ((Quest)mainQuests).updateObjective(1);
-              if (((Quest)mainQuests).getCurrentTask() == 7) {
-                System.out.println("complete");
+              if (((Quest)mainQuests).getCurrentTask() == 21) {
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -731,20 +763,20 @@ class GameFrame extends JFrame {
             if (((Quest)sideQuests[3]).getActive() && !((Quest)sideQuests[3]).getComplete()) {
               ((Quest)sideQuests[3]).setComplete(((Quest)sideQuests[3]).updateObjective(2));
               if (((Quest)sideQuests[3]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[3]).getName());
                 ((Player)player).setExp(((Quest)sideQuests[3]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[3]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[3]).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
             // MAIN QUEST
             if (((Quest)mainQuests).getCurrentTask() > 18 && ((Quest)mainQuests).getCurrentTask() < 21 && !((Quest)mainQuests).getComplete()) {
               ((Quest)mainQuests).updateObjective(2);
-              if (((Quest)mainQuests).getCurrentTask() == 7) {
-                System.out.println("complete");
+              if (((Quest)mainQuests).getCurrentTask() == 21) {
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -754,20 +786,21 @@ class GameFrame extends JFrame {
             if (((Quest)sideQuests[4]).getActive() && !((Quest)sideQuests[4]).getComplete()) {
               ((Quest)sideQuests[4]).setComplete(((Quest)sideQuests[4]).updateObjective(1));
               if (((Quest)sideQuests[4]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[4]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[4]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
             // MAIN QUEST
             if (((Quest)mainQuests).getCurrentTask() == 9 && !((Quest)mainQuests).getComplete()) {
               ((Quest)mainQuests).updateObjective(1);
               if (((Quest)mainQuests).getCurrentTask() == 10) {
-                System.out.println(((Quest)mainQuests).getTask(9));
+                speechQueue.add("Task complete!");
+                speechQueue.add(((Quest)mainQuests).getTask(9));
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -775,20 +808,20 @@ class GameFrame extends JFrame {
             if (((Quest)sideQuests[4]).getActive() && !((Quest)sideQuests[4]).getComplete()) {
               ((Quest)sideQuests[4]).setComplete(((Quest)sideQuests[4]).updateObjective(2));
               if (((Quest)sideQuests[4]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[4]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[4]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[4]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[4]).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
             // MAIN QUEST
             if (((Quest)mainQuests).getCurrentTask() == 16 && !((Quest)mainQuests).getComplete()) {
              ((Quest)mainQuests).updateObjective(1);
-              if (((Quest)mainQuests).getCurrentTask() == 7) {
-                System.out.println("complete");
+              if (((Quest)mainQuests).getCurrentTask() == 17) {
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[4]).getName());
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -796,20 +829,20 @@ class GameFrame extends JFrame {
             if (((Quest)sideQuests[4]).getActive() && !((Quest)sideQuests[4]).getComplete()) {
               ((Quest)sideQuests[4]).setComplete(((Quest)sideQuests[4]).updateObjective(3));
               if (((Quest)sideQuests[4]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[4]).getName());
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)sideQuests[4]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[4]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[4]).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
             // MAIN QUEST
             if (((Quest)mainQuests).getCurrentTask() == 24 && !((Quest)mainQuests).getComplete()) {
               ((Quest)mainQuests).updateObjective(1);
               if (((Quest)mainQuests).getCurrentTask() == 25) {
-                System.out.println("complete");
+                speechQueue.add("complete");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -817,10 +850,10 @@ class GameFrame extends JFrame {
             if (((Quest)mainQuests).getCurrentTask() == 25 && !((Quest)mainQuests).getComplete()) {
               ((Quest)mainQuests).updateObjective(1);
               if (((Quest)mainQuests).getCurrentTask() == 26) {
-                System.out.println("complete");
+                speechQueue.add("You have slain Mangat!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -828,7 +861,6 @@ class GameFrame extends JFrame {
         
       }
       else if (interactable instanceof NPC) {
-        Inventory bag = new Inventory();
         //((NPC)interactable).speak();
         if (((NPC)interactable).getQuestGiver()) { // possibly start the quest by pressing a key not the mouse
           
@@ -837,11 +869,13 @@ class GameFrame extends JFrame {
           if (newQuest instanceof HuntQuest && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[0]).setActive(true);
             ((Quest)newQuest).initialize(world);
+            speechQueue.add("Please help me defeat these bandits!");
           }
           
           if (newQuest instanceof HuntQuestB && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[1]).setActive(true);
             ((Quest)newQuest).initialize(world);
+            speechQueue.add("Please help me kill myself tysm");
           }
           
           if (newQuest instanceof HuntQuestC && !((Quest)newQuest).getComplete()) {
@@ -879,42 +913,45 @@ class GameFrame extends JFrame {
           Quest mainQuest = ((NPC)interactable).getQuest();
           if (((NPC)interactable).getName() == "Bob" && mainQuest.getCurrentTask() == 0) {
             mainQuest.initialize(world);
-            Speech bobSpeech = new Speech("Hey can you help me?", 1,1);
+            speechQueue.add("Hey, buddy are you awake?");
+            speechQueue.add("You look kind of strong");
+            speechQueue.add("There's bandits and archers everywhere!");
+            speechQueue.add("Help me defeat these bandits and archers!");
           }
           else if (((NPC)interactable).getName() == "Bob" && mainQuest.getCurrentTask() == 3) {
             mainQuest.setCurrentTask(4);
-            System.out.println("Hello, please find the farmer");
-            System.out.println(mainQuest.getTask(3));
+            speechQueue.add("Hello, please find the farmer, he needs help");
+            speechQueue.add(mainQuest.getTask(4));
           }
           else if (((NPC)interactable).getName() == "Farmer" && mainQuest.getCurrentTask() == 4) {
             mainQuest.setCurrentTask(5);
-            System.out.println("kill the snakes plox ty very much");
-            System.out.println(mainQuest.getTask(4));
+            speechQueue.add("These snakes are killing my crops, help me get rid of dem");
+            speechQueue.add(mainQuest.getTask(5));
           }
           else if (((NPC)interactable).getName() == "Farmer" && mainQuest.getCurrentTask() == 7) {
             mainQuest.setCurrentTask(8);
-            System.out.println(mainQuest.getTask(7));
+            speechQueue.add(mainQuest.getTask(8));
           }
           else if (((NPC)interactable).getName() == "King Tagnam") {
             if (mainQuest.getCurrentTask() == 8) {
               mainQuest.setCurrentTask(9);
-              System.out.println(mainQuest.getTask(8));
+              speechQueue.add(mainQuest.getTask(9));
             }
             else if (mainQuest.getCurrentTask() == 10) {
               mainQuest.setCurrentTask(11);
-              System.out.println(mainQuest.getTask(10));
+              speechQueue.add(mainQuest.getTask(11));
             }
             else if (mainQuest.getCurrentTask() == 15) {
               mainQuest.setCurrentTask(16);
-              System.out.println(mainQuest.getTask(15));
+              speechQueue.add(mainQuest.getTask(16));
             }
             else if (mainQuest.getCurrentTask() == 17) {
               mainQuest.setCurrentTask(18);
-              System.out.println(mainQuest.getTask(17));
+              speechQueue.add(mainQuest.getTask(18));
             }
             else if (mainQuest.getCurrentTask() == 24) {
               mainQuest.setCurrentTask(25);
-              System.out.println(mainQuest.getTask(24));
+              speechQueue.add(mainQuest.getTask(25));
               World initialGround = world[60][86];
               world[60][86] = new MangatBoss(100,100,100,100,100,100,"u screwed",60,86,initialGround);
             }
@@ -922,30 +959,30 @@ class GameFrame extends JFrame {
           else if (((NPC)interactable).getName() == "Ice Fisher") {
             if (mainQuest.getCurrentTask() == 11) {
               mainQuest.setCurrentTask(12);
-              System.out.println(mainQuest.getTask(11));
+              speechQueue.add(mainQuest.getTask(12));
             }
             else if (mainQuest.getCurrentTask() == 14) {
               mainQuest.setCurrentTask(15);
-              System.out.println(mainQuest.getTask(14));
+              speechQueue.add(mainQuest.getTask(15));
             }
           }
           else if (((NPC)interactable).getName() == "Volat" && mainQuest.getCurrentTask() == 18) {
             mainQuest.setCurrentTask(19);
-            System.out.println(mainQuest.getTask(18));
+            speechQueue.add(mainQuest.getTask(19));
           } 
           else if (((NPC)interactable).getName() == "Vivian" && mainQuest.getCurrentTask() == 21) {
             mainQuest.setCurrentTask(22);
-            System.out.println(mainQuest.getTask(21));
+            speechQueue.add(mainQuest.getTask(22));
           } 
           else if (((NPC)interactable).getName() == "Chancellor") {
             if (mainQuest.getCurrentTask() == 24) {
               mainQuest.setCurrentTask(25);
-              System.out.println(mainQuest.getTask(24));
+              speechQueue.add(mainQuest.getTask(25));
             }
             else if(mainQuest.getCurrentTask() == 27) {
               mainQuest.setCurrentTask(28);
               mainQuest.setComplete(mainQuest.updateObjective(0));
-              System.out.println("A New King!");
+              speechQueue.add("A New King!");
             }
           } 
         }
