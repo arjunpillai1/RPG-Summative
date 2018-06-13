@@ -33,7 +33,6 @@ class GameFrame extends JFrame {
   World[][] world;
   Quest[] sideQuests = new Quest[5];
   ArrayList<String> speechQueue = new ArrayList<String>();
-  Speech[] speeches = new Speech[2];
   static Quest mainQuests;
   ArrayList<Quest> activeQuests = new ArrayList<Quest>();
   int spaceX; //elon musk?
@@ -1021,9 +1020,9 @@ class GameFrame extends JFrame {
               }
             } 
           } 
-        }
-      }else{
+        }else{
         speechQueue.add(((NPC)interactable).speak());
+      }
       }
       
     }
