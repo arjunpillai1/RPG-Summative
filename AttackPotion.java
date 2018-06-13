@@ -6,11 +6,10 @@
 
 abstract class AttackPotion extends TempPotion{
   
-  private int attackBoost;
+  private int attackBoost = (int)(Math.random()*5)+10;
   
-  AttackPotion(String name, int cost, int timer, int attackBoost){
+  AttackPotion(String name, int cost, int timer){
     super(name, cost, timer);
-    this.attackBoost=attackBoost;
   }
   
   public int getAttackBoost(){

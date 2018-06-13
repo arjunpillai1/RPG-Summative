@@ -6,14 +6,13 @@
 
 class DefensePotion extends TempPotion{
   
-  private double defenseBoost;
+  private int defenseBoost =(int)(Math.random()*5)+10;
   
-  DefensePotion(int cost, int timer, double defenseBoost){
+  DefensePotion(int cost, int timer){
   super("Defense Potion", cost, timer);
-  this.defenseBoost=defenseBoost;
   }
   
-  public double getDefenseBoost(){
+  public int getDefenseBoost(){
     return defenseBoost;
   }
 }
