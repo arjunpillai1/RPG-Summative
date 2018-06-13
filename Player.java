@@ -189,6 +189,9 @@ class Player extends CombatCharacter {
 //    }
   }
   
+    public World returnFutureStep(){
+    return futureStep;
+  }
 
 }
 
