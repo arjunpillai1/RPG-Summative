@@ -153,10 +153,10 @@ class GameFrame extends JFrame {
   }
   
   
-   public static void saveGame(World[][] world, Quest[] sideQuests, Quest mainQuestA) throws Exception{
+  public static void saveGame(World[][] world, Quest[] sideQuests, Quest mainQuestA) throws Exception{
     File saveGame = new File("saveGame.txt");
     File saveMap = new File("mapSave.txt");
-    Player player;
+    Player playerSave;
     PrintWriter output = new PrintWriter(saveMap);
     for (int i = 0; i < world.length; i++) {
       for (int j = 0; j < world.length; j++) {
@@ -188,32 +188,32 @@ class GameFrame extends JFrame {
           output.print("S");
         } else if (world[i][j] instanceof Player) {
           output.print("P");
-          player = ((Player)world[i][j]);
-          PrintWriter outputPlayer = new PrintWriter(saveGame) ;
-          //save player
-          outputPlayer.println(player.getName());
-          outputPlayer.println(player.getLvl());
-          outputPlayer.println(player.getInt());
-          outputPlayer.println(player.getStr());
-          outputPlayer.println(player.getDef());
-          outputPlayer.println(player.getHealth());
-          outputPlayer.println(player.getX());
-          outputPlayer.println(player.getY());
-          outputPlayer.println(player.getAccuracy());
-          //save quest
-          for (int k = 0; k < sideQuests.length; k++) {
-            if (sideQuests[i].getActive()) {
-              //outputPlayer.println(sideQuests[i].getCurrentTask());
-            }
-          }
-          //outputPlayer.println(mainQuestA.getCurrentTask());
-          outputPlayer.close();
         }
         
       }
       output.println("");
     }
     output.close();
+    playerSave = player;
+    PrintWriter outputPlayer = new PrintWriter(saveGame) ;
+    //save player
+    outputPlayer.println(player.getName());
+    outputPlayer.println(player.getLvl());
+    outputPlayer.println(player.getInt());
+    outputPlayer.println(player.getStr());
+    outputPlayer.println(player.getDef());
+    outputPlayer.println(player.getHealth());
+    outputPlayer.println(player.getX());
+    outputPlayer.println(player.getY());
+    outputPlayer.println(player.getAccuracy());
+    //save quest
+    for (int k = 0; k < sideQuests.length; k++) {
+      if (sideQuests[k].getActive()) {
+        //outputPlayer.println(sideQuests[i].getCurrentTask());
+      }
+    }
+    //outputPlayer.println(mainQuestA.getCurrentTask());
+    outputPlayer.close();
     
     
     
@@ -254,6 +254,7 @@ class GameFrame extends JFrame {
       Color royalYellow = new Color(250, 218, 94);
       Color farmer = new Color(176, 102, 84);
       Color speech = new Color(0,49,82);
+      Color sideQuest = new Color(0, 128, 255);
       
       for (int a = 0; a < world.length; a++) {
         for (int b = 0; b < world.length; b++) {
@@ -329,7 +330,7 @@ class GameFrame extends JFrame {
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
             //Enemies
-          
+            
           } else if (world[i][j] instanceof Enemy) {
             
             if (world[i][j] instanceof Bandit) {
@@ -383,9 +384,9 @@ class GameFrame extends JFrame {
       
       g.setColor(questLog);
       if (activeQuests.size() > 3) {
-        g.fillRect(0,0, (maxX/8), maxY/3);
+        g.fillRect(0,0, (maxX/8) + 20, maxY/3);
       } else {
-        g.fillRect(0,0, (maxX/8), maxY/4);
+        g.fillRect(0,0, (maxX/8) + 20, maxY/4);
       }
       g.setColor(royalYellow);
       g.drawLine(0,28, maxX/8, 28);
@@ -393,7 +394,7 @@ class GameFrame extends JFrame {
       g.drawString("Quest Log",10, 25);
       for (int i = 0; i < activeQuests.size(); i++) {
         if (activeQuests.get(i) instanceof MainQuestA) {
-          g.setColor(Color.RED);
+          g.setColor(Color.BLACK);
           g.setFont(questTitle);
           g.drawString(mainQuests.getName(), 15, 55 + i*30);
           g.setFont(questTask);
@@ -407,7 +408,7 @@ class GameFrame extends JFrame {
             g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 15, 55 + i*30 + 20);
           }
         } else {
-          g.setColor(Color.BLUE);
+          g.setColor(sideQuest);
           g.setFont(questTitle);
           g.drawString((activeQuests.get(i)).getName(),10, 65 + 60*i);
           g.setFont(questTask);
@@ -464,7 +465,7 @@ class GameFrame extends JFrame {
     int randY;
     System.out.println(time);
     
-
+    
     
     while (noobCount < 2 || fireCount < 1 || frostCount < 2 || poisonCount < 1) {
       for (int i = 0; i < world.length; i++) {
@@ -602,11 +603,11 @@ class GameFrame extends JFrame {
       yToTile = ((mouseX / GridToScreenRatio) - 4) + playerY;
       xToTile = ((mouseY / GridToScreenRatio) - 4) + playerX;
       
-      interact(world[playerX][playerY], world[xToTile][yToTile], world);
-
+      interact(((Player)world[playerX][playerY]), world[xToTile][yToTile], world);
+      
     }
     
-    public void interact(Object player, Object interactable, World[][] world) {
+    public void interact(Player player, World interactable, World[][] world) {
       
       if (interactable instanceof Enemy) {
         ((Player)player).attack(((Enemy)interactable));
@@ -628,7 +629,7 @@ class GameFrame extends JFrame {
               ((Quest)mainQuests).updateObjective(1);
               
               if (((Quest)mainQuests).getCurrentTask() == 3) {
-                System.out.println("Tasks completed!");
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
                 speechQueue.add("You have gained : something");
@@ -816,9 +817,9 @@ class GameFrame extends JFrame {
             }
             // MAIN QUEST
             if (((Quest)mainQuests).getCurrentTask() == 16 && !((Quest)mainQuests).getComplete()) {
-             ((Quest)mainQuests).updateObjective(1);
+              ((Quest)mainQuests).updateObjective(1);
               if (((Quest)mainQuests).getCurrentTask() == 17) {
-                speechQueue.add("Quest completed: " + ((Quest)sideQuests[4]).getName());
+                speechQueue.add("Task complete!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
                 speechQueue.add("You have gained : something");
@@ -839,7 +840,7 @@ class GameFrame extends JFrame {
             if (((Quest)mainQuests).getCurrentTask() == 24 && !((Quest)mainQuests).getComplete()) {
               ((Quest)mainQuests).updateObjective(1);
               if (((Quest)mainQuests).getCurrentTask() == 25) {
-                speechQueue.add("complete");
+                speechQueue.add("Task complete!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
                 speechQueue.add("You have gained : something");
@@ -861,8 +862,8 @@ class GameFrame extends JFrame {
         
       }
       else if (interactable instanceof NPC) {
-        //((NPC)interactable).speak();
-        if (((NPC)interactable).getQuestGiver()) { // possibly start the quest by pressing a key not the mouse
+        
+        if (((NPC)interactable).getQuestGiver()) { 
           
           Quest newQuest = ((NPC)interactable).getQuest();
           
@@ -875,22 +876,27 @@ class GameFrame extends JFrame {
           if (newQuest instanceof HuntQuestB && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[1]).setActive(true);
             ((Quest)newQuest).initialize(world);
-            speechQueue.add("Please help me kill myself tysm");
+            speechQueue.add("These poison monsters need a beating!");
           }
           
           if (newQuest instanceof HuntQuestC && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[2]).setActive(true);
             ((Quest)newQuest).initialize(world);
+            speechQueue.add("Help me with a little something eh?");
           }
           
           if (newQuest instanceof HuntQuestD && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[3]).setActive(true);
             ((Quest)newQuest).initialize(world);
+            speechQueue.add("Prove your worth to a master!");
           }
           
           if (newQuest instanceof HuntQuestE && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[4]).setActive(true);
             ((Quest)newQuest).initialize(world);
+            speechQueue.add("Show me what you got.");
+            speechQueue.add("If you defeat the strongest monsters in this realm,");
+            speechQueue.add("I'd consider you as a master hunter!");
           }
           
           if (newQuest instanceof FetchQuest && !((Quest)newQuest).getComplete()) {
@@ -902,97 +908,127 @@ class GameFrame extends JFrame {
             ((Quest)sideQuests[6]).setActive(true);
             ((Quest)newQuest).initialize(world);
           }
-                              
+          
           if (newQuest instanceof FetchQuestC && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[7]).setActive(true);
             ((Quest)newQuest).initialize(world);
           }
+          
+          // Main Quest handling
+          if (((NPC)interactable).getQuest() instanceof MainQuestA) {
+            Quest mainQuest = ((NPC)interactable).getQuest();
+            if (((NPC)interactable).getName() == "Bob" && mainQuest.getCurrentTask() == 0) {
+              mainQuest.initialize(world);
+              speechQueue.add("Hey buddy!");
+              speechQueue.add("You look kind of strong.");
+              speechQueue.add("There's bandits and archers everywhere!");
+              speechQueue.add("Help me defeat these bandits and archers!");
+            }
+            else if (((NPC)interactable).getName() == "Bob" && mainQuest.getCurrentTask() == 3) {
+              mainQuest.setCurrentTask(4);
+              speechQueue.add("Hey, please find my farmer friend,");
+              speechQueue.add("He needs help in the poison lands.");
+              speechQueue.add(mainQuest.getTask(4));
+            }
+            else if (((NPC)interactable).getName() == "Farmer" && mainQuest.getCurrentTask() == 4) {
+              mainQuest.setCurrentTask(5);
+              speechQueue.add("These snakes are killing my crops, help me get rid of dem");
+              speechQueue.add(mainQuest.getTask(5));
+            }
+            else if (((NPC)interactable).getName() == "Farmer" && mainQuest.getCurrentTask() == 7) {
+              mainQuest.setCurrentTask(8);
+              speechQueue.add("Damn, you're strong!");
+              speechQueue.add("I'm sure the king has the work for your kind");
+              speechQueue.add(mainQuest.getTask(8));
+            }
+            else if (((NPC)interactable).getName() == "King Tagnam") {
+              if (mainQuest.getCurrentTask() == 8) {
+                mainQuest.setCurrentTask(9);
+                speechQueue.add("Who're you?");
+                speechQueue.add(player.getName() + ":" + "I'm " + player.getName());
+                speechQueue.add("I've heard about your strength");
+                speechQueue.add("Let me see you test it");
+                speechQueue.add(mainQuest.getTask(9));
+              }
+              else if (mainQuest.getCurrentTask() == 10) {
+                mainQuest.setCurrentTask(11);
+                speechQueue.add("Not bad, but I still doubt your worth");
+                speechQueue.add("Prove it to me, speak with the ice fisher");    
+                speechQueue.add(mainQuest.getTask(11));
+              }
+              else if (mainQuest.getCurrentTask() == 15) {
+                mainQuest.setCurrentTask(16);
+                speechQueue.add("Well done I must say!");
+                speechQueue.add("But I'm sure you can do better!");
+                speechQueue.add(mainQuest.getTask(16));
+              }
+              else if (mainQuest.getCurrentTask() == 17) {
+                mainQuest.setCurrentTask(18);
+                speechQueue.add("I'm impressed");
+                speechQueue.add("There's one section where I'm reluctant to send my men");
+                speechQueue.add("I want you to make it safe for them to patrol");
+                speechQueue.add("For glory and honour of course!");
+                speechQueue.add(mainQuest.getTask(18));
+              }
+              else if (mainQuest.getCurrentTask() == 24) {
+                mainQuest.setCurrentTask(25);
+                speechQueue.add("You've managed to survive for this long, I don't know how,");
+                speechQueue.add("Anyways, I can't let you be the strongest, only I can.");
+                speechQueue.add(mainQuest.getTask(25));
+                World initialGround = world[60][86];
+                world[60][86] = new MangatBoss(100,100,100,100,100,100,"u screwed",60,86,initialGround);
+              }
+            }
+            else if (((NPC)interactable).getName() == "Ice Fisher") {
+              if (mainQuest.getCurrentTask() == 11) {
+                mainQuest.setCurrentTask(12);
+                speechQueue.add("Did the King send you? I need space for fishing man!");
+                speechQueue.add(mainQuest.getTask(12));
+              }
+              else if (mainQuest.getCurrentTask() == 14) {
+                mainQuest.setCurrentTask(15);
+                speechQueue.add("Thanks, the King will probably want to know about this.");
+                speechQueue.add(mainQuest.getTask(15));
+              }
+            }
+            else if (((NPC)interactable).getName() == "Volat" && mainQuest.getCurrentTask() == 18) {
+              mainQuest.setCurrentTask(19);
+              speechQueue.add("Burn burn BUURRRRN burrnnnnnn");
+              speechQueue.add("*You somehow understood what he said*");
+              speechQueue.add(mainQuest.getTask(19));
+            } 
+            else if (((NPC)interactable).getName() == "Vivian" && mainQuest.getCurrentTask() == 21) {
+              mainQuest.setCurrentTask(22);
+              speechQueue.add("Thanks for the help!");
+              speechQueue.add("And thanks for dealing up with Volat.");
+              speechQueue.add("I've already sent a message to the King about what you've done!");
+              speechQueue.add(mainQuest.getTask(22));
+            } 
+            else if (((NPC)interactable).getName() == "Chancellor") {
+              if (mainQuest.getCurrentTask() == 24) {
+                speechQueue.add("The King has told me to meet him in a house outside the capital");
+                speechQueue.add("Don't keep him waiting!");
+                mainQuest.setCurrentTask(25);
+                speechQueue.add(mainQuest.getTask(25));
+              }
+              else if(mainQuest.getCurrentTask() == 27) {
+                mainQuest.setCurrentTask(28);
+                speechQueue.add("Oh my, the King was evil all along?");
+                speechQueue.add("Thank you for saving our kingdom!");
+                speechQueue.add("Perhaps you shall be our new King!");
+                mainQuest.setComplete(mainQuest.updateObjective(0));
+                speechQueue.add("A New King!");
+              }
+            } 
+          } 
         }
-        // Main Quest handling
-        if (((NPC)interactable).getQuest() instanceof MainQuestA) {
-          Quest mainQuest = ((NPC)interactable).getQuest();
-          if (((NPC)interactable).getName() == "Bob" && mainQuest.getCurrentTask() == 0) {
-            mainQuest.initialize(world);
-            speechQueue.add("Hey, buddy are you awake?");
-            speechQueue.add("You look kind of strong");
-            speechQueue.add("There's bandits and archers everywhere!");
-            speechQueue.add("Help me defeat these bandits and archers!");
-          }
-          else if (((NPC)interactable).getName() == "Bob" && mainQuest.getCurrentTask() == 3) {
-            mainQuest.setCurrentTask(4);
-            speechQueue.add("Hello, please find the farmer, he needs help");
-            speechQueue.add(mainQuest.getTask(4));
-          }
-          else if (((NPC)interactable).getName() == "Farmer" && mainQuest.getCurrentTask() == 4) {
-            mainQuest.setCurrentTask(5);
-            speechQueue.add("These snakes are killing my crops, help me get rid of dem");
-            speechQueue.add(mainQuest.getTask(5));
-          }
-          else if (((NPC)interactable).getName() == "Farmer" && mainQuest.getCurrentTask() == 7) {
-            mainQuest.setCurrentTask(8);
-            speechQueue.add(mainQuest.getTask(8));
-          }
-          else if (((NPC)interactable).getName() == "King Tagnam") {
-            if (mainQuest.getCurrentTask() == 8) {
-              mainQuest.setCurrentTask(9);
-              speechQueue.add(mainQuest.getTask(9));
-            }
-            else if (mainQuest.getCurrentTask() == 10) {
-              mainQuest.setCurrentTask(11);
-              speechQueue.add(mainQuest.getTask(11));
-            }
-            else if (mainQuest.getCurrentTask() == 15) {
-              mainQuest.setCurrentTask(16);
-              speechQueue.add(mainQuest.getTask(16));
-            }
-            else if (mainQuest.getCurrentTask() == 17) {
-              mainQuest.setCurrentTask(18);
-              speechQueue.add(mainQuest.getTask(18));
-            }
-            else if (mainQuest.getCurrentTask() == 24) {
-              mainQuest.setCurrentTask(25);
-              speechQueue.add(mainQuest.getTask(25));
-              World initialGround = world[60][86];
-              world[60][86] = new MangatBoss(100,100,100,100,100,100,"u screwed",60,86,initialGround);
-            }
-          }
-          else if (((NPC)interactable).getName() == "Ice Fisher") {
-            if (mainQuest.getCurrentTask() == 11) {
-              mainQuest.setCurrentTask(12);
-              speechQueue.add(mainQuest.getTask(12));
-            }
-            else if (mainQuest.getCurrentTask() == 14) {
-              mainQuest.setCurrentTask(15);
-              speechQueue.add(mainQuest.getTask(15));
-            }
-          }
-          else if (((NPC)interactable).getName() == "Volat" && mainQuest.getCurrentTask() == 18) {
-            mainQuest.setCurrentTask(19);
-            speechQueue.add(mainQuest.getTask(19));
-          } 
-          else if (((NPC)interactable).getName() == "Vivian" && mainQuest.getCurrentTask() == 21) {
-            mainQuest.setCurrentTask(22);
-            speechQueue.add(mainQuest.getTask(22));
-          } 
-          else if (((NPC)interactable).getName() == "Chancellor") {
-            if (mainQuest.getCurrentTask() == 24) {
-              mainQuest.setCurrentTask(25);
-              speechQueue.add(mainQuest.getTask(25));
-            }
-            else if(mainQuest.getCurrentTask() == 27) {
-              mainQuest.setCurrentTask(28);
-              mainQuest.setComplete(mainQuest.updateObjective(0));
-              speechQueue.add("A New King!");
-            }
-          } 
-        }
+      }else{
+        speechQueue.add(((NPC)interactable).speak());
       }
       
     }
     public void mousePressed(MouseEvent e) {
-      
-      
-      
+
     }
     
     public void mouseReleased(MouseEvent e) {
