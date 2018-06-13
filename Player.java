@@ -97,6 +97,7 @@ class Player extends CombatCharacter {
     setEquippedArmour(true);
   }
   
+
   
   public void useAttackPotion(Inventory bag, int placement){
     AttackPotion potion = (AttackPotion)(bag.call(placement));
@@ -118,7 +119,20 @@ class Player extends CombatCharacter {
     setDef(getDef() + potion.getDefenseBoost());
     bag.tossItem(placement);
   }
-  
+
+  public void equip(Inventory bag, int placement){
+    if (bag.call(placement) instanceof Weapon){
+      equipWeapon(bag, placement);
+    } else if (bag.call(placement) instanceof Armour){
+      equipArmour(bag,placement);
+    } else if (bag.call(placement) instanceof AttackPotion){
+      useAttackPotion(bag, placement);
+    } else if (bag.call(placement) instanceof AttackPermanentPotion){
+      useAttackPermanentPotion(bag, placement);
+    } else if (bag.call(placement) instanceof DefensePermanentPotion){
+      useDefensePermanentPotion(bag, placement);
+    }
+  }
   public void attack(CombatCharacter target) {
     //target.setHealth((target.getHealth())- ((int) (Math.floor(( ( ( (2 * getLvl() + 2) * 60 * ( (getStr() + getWeaponBoost())/target.getDef() ) ) / 50 ) + 2) * ( ( (int)(Math.random()*16) + 85) / 100)))));
     target.setHealth(-1);
@@ -189,9 +203,6 @@ class Player extends CombatCharacter {
 //    }
   }
   
-    public World returnFutureStep(){
-    return futureStep;
-  }
 
 }
 
