@@ -1,3 +1,8 @@
+/*
+ * 
+ * 
+ * 
+ */
 class HuntQuestC extends Quest {
   int killsA=0, killsB=0, enemyCountA, enemyCountB, numTasks;
   HuntQuestC(int experience, String name, String[] objectives, Item itemReward) {
@@ -7,7 +12,7 @@ class HuntQuestC extends Quest {
   
   @Override
   void spawn(World[][] world) {
-    world[59][97] = new Peasant(10, "Hunter Zejak", true, this);
+    world[59][97] = new NPC(10, "Hunter Zejak", true, this);
   }
   @Override 
   void initialize(World[][] world) {
@@ -15,12 +20,10 @@ class HuntQuestC extends Quest {
     enemyCountA = 5;
     enemyCountB = 10;
     System.out.println("Quest started: " + getName());
-    for (int i = 0; i < numTasks; i++) {
-      System.out.println(getTask(i));
-    }
     setActive(true);
   }
   
+  @Override
   Boolean updateObjective(int task) {
     if (task == 1) {
       killsA++;
@@ -34,5 +37,14 @@ class HuntQuestC extends Quest {
     }
     return false;
   }
-
+  
+  @Override
+  public int trackTask(int task) {
+    if (task == 1) {
+      return killsA;
+    } else if (task == 2) {
+      return killsB;
+    }
+    return killsA;
+  }
 }
