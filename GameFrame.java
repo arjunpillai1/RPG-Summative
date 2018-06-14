@@ -261,17 +261,68 @@ class GameFrame extends JFrame {
         Toolkit.getDefaultToolkit().getImage("Frost Grass Texture.png"),
         Toolkit.getDefaultToolkit().getImage("Fire Grass Texture.png"),
         Toolkit.getDefaultToolkit().getImage("dirt.png"),
-        Toolkit.getDefaultToolkit().getImage("floor.jpg")
+        Toolkit.getDefaultToolkit().getImage("floor.jpg"),
+        Toolkit.getDefaultToolkit().getImage("Bridge tile.png")
       };
-      Image[] knights={Toolkit.getDefaultToolkit().getImage("Knight2_IDLE_000.png")};
-      Image[] trolls={Toolkit.getDefaultToolkit().getImage("Trolls1_IDLE_000.png")};
-      Image[] playerSprite={Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger_idle_000.png")};
-      Image[] spider={Toolkit.getDefaultToolkit().getImage("Spider_sprite_``                                                                                                                                                                                                                                                               walk_4.png")}; 
-      Image[] sorcerer={Toolkit.getDefaultToolkit().getImage("sorcerer attack_Animation 1_1.png")}; 
+      
+      Image[] knights={Toolkit.getDefaultToolkit().getImage("Knight1 IDLE.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight1 Attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight2 IDLE.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight2 Attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight3 IDLE.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight3 Attack.png")
+      };
+      
+      Image[] trolls={Toolkit.getDefaultToolkit().getImage("Troll1 IDLE.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll1 Attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll2 IDLE.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll2 Attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll3 IDLE.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll3 Attack.png")
+      };
+      
+      Image[] playerEmpty={Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite left.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite right.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger back idle.png")
+      };
+      
+      Image[] playerNoArmour={Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger left idle.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger left attack.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger right idle.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger right attack.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger front idle.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger front attack.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger back idle.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger back attack.png")
+      };
+      
+      Image[] playerArmour={Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger left idle.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger left attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger right idle.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger right attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger front idle.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger front attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger back idle.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger back attack.png")
+      };
+      
+      Image[] spider={Toolkit.getDefaultToolkit().getImage("Poison Spider IDLE.png"),
+      Toolkit.getDefaultToolkit().getImage("Frost Spider IDLE.png"),
+      Toolkit.getDefaultToolkit().getImage("Fire Spider IDLE.png")
+      }; 
+      
+      Image[] sorcerer={Toolkit.getDefaultToolkit().getImage("Poison sorcerer IDLE.png"),
+      Toolkit.getDefaultToolkit().getImage("Frost sorcerer IDLE.png"),
+      Toolkit.getDefaultToolkit().getImage("Fire sorcerer IDLE.png")
+      }; 
+      
       Image waterImage=Toolkit.getDefaultToolkit().getImage("Water.png");
       Image chestImage=Toolkit.getDefaultToolkit().getImage("chest texture.png");
+      Image treeImage=Toolkit.getDefaultToolkit().getImage("tree.png");
       Image castleWallImage=Toolkit.getDefaultToolkit().getImage("castle wall.png");
       Image wallImage=Toolkit.getDefaultToolkit().getImage("wall.png");
+      Image caveWallImage=Toolkit.getDefaultToolkit().getImage("cave wall tile.png");
       
       setDoubleBuffered(true); 
       Color myGreen = new Color(11, 215, 72);
@@ -345,12 +396,14 @@ class GameFrame extends JFrame {
           } else if (world[i][j] instanceof HouseFloor) {
             g.drawImage(floorTextures[5],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             
+          }else if (world[i][j] instanceof Bridge) {
+            g.drawImage(floorTextures[6],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            
           } else if (world[i][j] instanceof Tree) {
-            g.setColor(tree); //sets colour for printing organism
-            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
+            g.drawImage(treeImage,(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            
           } else if (world[i][j] instanceof CaveWall) {
-            g.setColor(Color.BLACK); //sets colour for printing organism
-            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
+            g.drawImage(caveWallImage,(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
           }
           //NPCs  
           if (world[i][j] instanceof NPC) {
@@ -372,6 +425,9 @@ class GameFrame extends JFrame {
             }
             if (characterImageBackground instanceof Grass) {  
               g.drawImage(floorTextures[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            
+            } else if (characterImageBackground instanceof PoisonGrass) {
+              g.drawImage(floorTextures[1],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
               
             } else if (characterImageBackground instanceof FrostGrass) {
               g.drawImage(floorTextures[2],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);            
@@ -382,12 +438,11 @@ class GameFrame extends JFrame {
             } else if (characterImageBackground instanceof Dirt) {
               g.drawImage(floorTextures[4],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
               
-            } else if (characterImageBackground instanceof PoisonGrass) {
-              g.drawImage(floorTextures[1],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
-              
-            }else if (characterImageBackground instanceof HouseFloor) {
+            } else if (characterImageBackground instanceof HouseFloor) {
               g.drawImage(floorTextures[5],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
               
+            }else if (characterImageBackground instanceof Bridge) {
+              g.drawImage(floorTextures[5],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             }
           }
           if (world[i][j] instanceof Bandit) {
@@ -405,14 +460,34 @@ class GameFrame extends JFrame {
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
+          else if (world[i][j] instanceof FrostSpider) {
+            g.drawImage(spider[1],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.setColor(Color.WHITE);
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+          }
+          else if (world[i][j] instanceof FireSpider) {
+            g.drawImage(spider[2],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.setColor(Color.WHITE);
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+          }
           else if (world[i][j] instanceof PoisonSnake) {
             g.drawImage(sorcerer[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
+          else if (world[i][j] instanceof FrostSnake) {
+            g.drawImage(sorcerer[1],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.setColor(Color.WHITE);
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+          }
+          else if (world[i][j] instanceof FireSnake) {
+            g.drawImage(sorcerer[2],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.setColor(Color.WHITE);
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+          }
           //Player
           else if (world[i][j] instanceof Player) {
-            g.drawImage(playerSprite[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.drawImage(playerEmpty[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
             g.drawString("Lv:" + ((Player)world[i][j]).getLvl(), (j - (j - (countY %9))) * GridToScreenRatio + 30, (i - (i - countX)) * GridToScreenRatio + 30);
