@@ -1,7 +1,8 @@
-/** 
- * this template can be used for a start menu
- * for your final project
- **/
+/* [StartingFrame.java]
+ * Starting menu 
+ * @author Albert, Arjun, Guy, Aiden, Johann
+ * 06/13/2018
+ */
 
 
 //Imports
@@ -46,7 +47,7 @@ class StartingFrame extends JFrame {
     ImageIcon exitGame = new ImageIcon ( "ExitGame.png" );
     ImageIcon welcome = new ImageIcon ( "Medieval Fantasy.png" );
     ImageIcon background = new ImageIcon ( "backgorund.png" );
- //JPanel startPanel = new JPanel();
+    //JPanel startPanel = new JPanel();
     BoxLayout mainLayout = new BoxLayout(mainPanel,BoxLayout.Y_AXIS);
     mainPanel.setLayout(mainLayout);
     mainPanel.setBackground(Color.WHITE);
