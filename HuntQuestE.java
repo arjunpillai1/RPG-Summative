@@ -16,9 +16,6 @@ class HuntQuestE extends Quest {
     enemyCountB = 1;
     enemyCountC = 1;
     System.out.println("Quest started: " + getName());
-    for (int i = 0; i < numTasks; i++) {
-      System.out.println(getTask(i));
-    }
     setActive(true);
   }
   

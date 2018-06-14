@@ -12,7 +12,6 @@ class HuntQuest extends Quest {
   void initialize(World[][] world) {
     System.out.println(getTask(0));
     enemyCount = 5;
-    System.out.println("Quest started: " + getName());
     setActive(true);
   }
   

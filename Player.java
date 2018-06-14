@@ -125,7 +125,8 @@ class Player extends CombatCharacter {
   }
   
  public void move(World[][] world, int value) {
-    if (value == 1) {
+ 
+   if (value == 1) {
 
       if (world[getX() - 1][getY()] instanceof Floor) { //checks if spot is walkable
         futureStep = world[getX() - 1][getY()];
@@ -168,7 +169,6 @@ class Player extends CombatCharacter {
         previousStep = futureStep;
         setY(getY()-1);
 
-
       }
     }
   }
@@ -179,6 +179,63 @@ class Player extends CombatCharacter {
   
   public void setExp(int newExp){
     this.exp = newExp;
+    // normal levels (1-5)
+    // poison levels (5-10)
+    // frost levels (10-15)
+    // fire levels (15-20)
+    // end game (20-30)
+    
+    //levels 1-5
+    if (exp < 51) {
+      if (exp >= 10 && exp < 20) {
+        setLvl(2);
+      } else if(exp >= 20 && exp < 30) {
+        setLvl(3);
+      } else if(exp >= 30 && exp < 40) {
+        setLvl(4);
+      } else if(exp >= 40) {
+        setLvl(5);
+      }
+      
+    } else if (exp < 151) {
+      if (exp >= 51 && exp < 70) {
+        setLvl(6);
+      } else if (exp >= 70 && exp < 90) {
+        setLvl(7);
+      } else if (exp >= 90 && exp < 110) {
+        setLvl(8);
+      } else if (exp >= 110 && exp < 130) {
+        setLvl(9);
+      } else if (exp >= 130) {
+        setLvl(10);
+      }
+      
+    } else if (exp < 351) {
+      if (exp >= 151 && exp < 190) {
+        setLvl(11);
+      } else if (exp >= 190 && exp < 230) {
+        setLvl(12);
+      } else if (exp >= 230 && exp < 270) {
+        setLvl(13);
+      } else if (exp >= 270 && exp < 310) {
+        setLvl(14);
+      } else if (exp >= 310) {
+        setLvl(15);
+      }
+      
+    } else if (exp < 751) {
+      if (exp >= 351 && exp < 430) {
+        setLvl(16);
+      } else if(exp >= 430 && exp < 510) {
+        setLvl(17);
+      } else if (exp >= 510 && exp < 590) {
+        setLvl(18); 
+      } else if (exp >= 590 && exp < 670) {
+        setLvl(19);
+      } else if (exp >= 670) {
+        setLvl(20);
+      }
+    }
   }
   
   public void interact (Object interObj) {

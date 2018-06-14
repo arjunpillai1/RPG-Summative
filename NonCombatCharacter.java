@@ -4,7 +4,7 @@ abstract class NonCombatCharacter extends Character{
     super(health,name);
   }
   
-  NonCombatCharacter(int health, String name, Object associatedQuest){
+  NonCombatCharacter(int health, String name, World associatedQuest){
     super(health,name,associatedQuest);
   }
 }

@@ -137,24 +137,11 @@ class StartingFrame extends JFrame {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new Bandit(1,1,1,1,1,1,"Bandit", i, j, initialGround);
+              world[i][j] = new Bandit(6,1,1,1,3,100,"Bandit", i, j, initialGround);
             }else {
-              world[i][j] = new Archer(1,1,1,1,1,1,"Archer", i, j, initialGround);
+              world[i][j] = new Archer(4,1,3,0,5,95,"Archer", i, j, initialGround);
             }
             noobEnemyCount--;
-          }
-        } else if (value.substring(j, j + 1).equals("D")) {
-          world[i][j] = new FireGrass();
-          int enemyChance = rand.nextInt(5);
-          if ((enemyChance == 1) && (fireEnemyCount > 0)) {
-            initialGround = world[i][j];
-            enemyChance = rand.nextInt(2);
-            if (enemyChance == 1) {
-              world[i][j] = new FireSnake(1,1,1,1,1,1,"Fire Snake", i, j, initialGround);
-            }else {
-              world[i][j] = new FireSpider(1,1,1,1,1,1,"Fire Spider", i, j, initialGround);
-            }
-            fireEnemyCount--;
           }
         } else if (value.substring(j, j + 1).equals("M")) {
           world[i][j] = new PoisonGrass();
@@ -163,12 +150,12 @@ class StartingFrame extends JFrame {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new PoisonSnake(1,1,1,1,1,1,"Venom Snake", i, j, initialGround);
+              world[i][j] = new PoisonSnake(12,6,3,6,8,100,"Venom Snake", i, j, initialGround);
             }else {
-              world[i][j] = new PoisonSpider(1,1,1,1,1,1,"Venom Spider", i, j, initialGround);
+              world[i][j] = new PoisonSpider(8,6,8,8,7,96,"Venom Spider", i, j, initialGround);
             }
             poisonEnemyCount--;
-          }
+          } 
         } else if (value.substring(j, j + 1).equals("I")) {
           world[i][j] = new FrostGrass();
           int enemyChance = rand.nextInt(5);
@@ -176,11 +163,24 @@ class StartingFrame extends JFrame {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new FrostSpider(1,1,1,1,1,1,"Frost Spider", i, j, initialGround);
+              world[i][j] = new FrostSpider(24,14,7,10,13,100,"Frost Spider", i, j, initialGround);
             }else {
-              world[i][j] = new FrostSnake(1,1,1,1,1,1,"Frost Snake", i, j, initialGround);
+              world[i][j] = new FrostSnake(16,8,12,1,15,98,"Frost Snake", i, j, initialGround);
             }
             frostEnemyCount--;
+          }
+        } else if (value.substring(j, j + 1).equals("D")) {
+          world[i][j] = new FireGrass();
+          int enemyChance = rand.nextInt(5);
+          if ((enemyChance == 1) && (fireEnemyCount > 0)) {
+            initialGround = world[i][j];
+            enemyChance = rand.nextInt(2);
+            if (enemyChance == 1) {
+              world[i][j] = new FireSnake(48,30,20,14,20,100,"Fire Snake", i, j, initialGround);
+            }else {
+              world[i][j] = new FireSpider(32,20,20,8,20,100,"Fire Spider", i, j, initialGround);
+            }
+            fireEnemyCount--;
           }
         } else if (value.substring(j, j + 1).equals("B")) {
           world[i][j] = new Bridge();
@@ -199,8 +199,7 @@ class StartingFrame extends JFrame {
         } else if (value.substring(j, j + 1).equals("E")) {
           world[i][j] = new Grass();
         } else if (value.substring(j, j + 1).equals("L")) {
-          Item chestItems[] = new Item[1];
-          world[i][j] = new Chest(chestItems);
+          world[i][j] = new Chest();
         }  
       }
       frostEnemyCount += 1;
@@ -211,13 +210,15 @@ class StartingFrame extends JFrame {
     
     
     //Set up Grid Panel
-    world[23][21] = new Player(100,100,100,100,100,100, playerName, 23, 21);
+    world[23][21] = new Player(25,1,1,0,1,100, playerName, 23, 21);
+    RustySword first = new RustySword();
+    world[22][19] = new Chest(first);
     mainStory = createStory(mainStory);
     
     sideQuests = createSide(sideQuests);
      // all quests in here
     
-    //start all side quests and first main quest \
+    //start all side quests and first main quest 
     mainStory.spawn(world);
     for(int i = 0; i < sideQuests.length; i++) {
       if (sideQuests[i] != null) {
@@ -228,7 +229,7 @@ class StartingFrame extends JFrame {
   }
   
   public static Quest createStory(Quest questline) { 
-    String[] objectives = {"Filler text","Kill 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", 
+    String[] objectives = {"Text to fix indexing","Kill 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", 
       "Kill 5 Spiders", "Kill 5 Snakes", "Talk to The Farmer", 
       "Go to the capital and meet The King", "Kill the poisonous creature",
       "Talk to King Tagnam", "Find the Ice Fisherman in the Frost Lands", "Kill 7 Snakes", "Kill 7 Spiders",
@@ -296,52 +297,55 @@ class StartingFrame extends JFrame {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new Bandit(1,1,1,1,1,1,"Bandit", i, j, initialGround);
+              world[i][j] = new Bandit(24,3,1,1,3,100,"Bandit", i, j, initialGround);
             }else {
-              world[i][j] = new Archer(1,1,1,1,1,1,"Archer", i, j, initialGround);
+              world[i][j] = new Archer(12,1,3,0,4,95,"Archer", i, j, initialGround);
             }
             noobEnemyCount--;
           }
-        } else if (value.substring(j, j + 1).equals("M")) {
-          world[i][j] = new FireGrass();
-          int enemyChance = rand.nextInt(5);
-          if ((enemyChance == 1) && (fireEnemyCount > 0)) {
-            initialGround = world[i][j];
-            enemyChance = rand.nextInt(2);
-            if (enemyChance == 1) {
-              world[i][j] = new FireSnake(1,1,1,1,1,1,"Fire Snake", i, j, initialGround);
-            }else {
-              world[i][j] = new FireSpider(1,1,1,1,1,1,"Fire Spider", i, j, initialGround);
-            }
-            fireEnemyCount--;
-          }
-        } else if (value.substring(j, j + 1).equals("D")) {
+        }
+        else if (value.substring(j, j + 1).equals("D")) {
           world[i][j] = new PoisonGrass();
           int enemyChance = rand.nextInt(5);
           if ((enemyChance == 1) && (poisonEnemyCount > 0)) {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new PoisonSnake(1,1,1,1,1,1,"Venom Snake", i, j, initialGround);
+              world[i][j] = new PoisonSnake(72,9,4,10,8,100,"Venom Snake", i, j, initialGround);
             }else {
-              world[i][j] = new PoisonSpider(1,1,1,1,1,1,"Venom Spider", i, j, initialGround);
+              world[i][j] = new PoisonSpider(24,3,9,6,9,96,"Venom Spider", i, j, initialGround);
             }
             poisonEnemyCount--;
           }
-        } else if (value.substring(j, j + 1).equals("I")) {
+        } 
+        else if (value.substring(j, j + 1).equals("I")) {
           world[i][j] = new FrostGrass();
           int enemyChance = rand.nextInt(5);
           if ((enemyChance == 1) && (frostEnemyCount > 0)) {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new FrostSpider(1,1,1,1,1,1,"Frost Spider", i, j, initialGround);
+              world[i][j] = new FrostSpider(108,24,22,16,14,100,"Frost Spider", i, j, initialGround);
             }else {
-              world[i][j] = new FrostSnake(1,1,1,1,1,1,"Frost Snake", i, j, initialGround);
+              world[i][j] = new FrostSnake(84,16,25,12,14,98,"Frost Snake", i, j, initialGround);
             }
             frostEnemyCount--;
           }
-        } else if (value.substring(j, j + 1).equals("B")) {
+        } 
+        else if (value.substring(j, j + 1).equals("M")) {
+          world[i][j] = new FireGrass();
+          int enemyChance = rand.nextInt(5);
+          if ((enemyChance == 1) && (fireEnemyCount > 0)) {
+            initialGround = world[i][j];
+            enemyChance = rand.nextInt(2);
+            if (enemyChance == 1) {
+              world[i][j] = new FireSnake(324,26,36,30,19,100,"Fire Snake", i, j, initialGround);
+            }else {
+              world[i][j] = new FireSpider(224,26,36,30,19,100,"Fire Spider", i, j, initialGround);
+            }
+            fireEnemyCount--;
+          }
+        }  else if (value.substring(j, j + 1).equals("B")) {
           world[i][j] = new Bridge();
         } else if (value.substring(j, j + 1).equals("c")) {
           world[i][j] = new CaveWall();
@@ -358,8 +362,7 @@ class StartingFrame extends JFrame {
         } else if (value.substring(j, j + 1).equals("E")) {
           world[i][j] = new Grass();
         } else if (value.substring(j, j + 1).equals("L")) {
-          Item chestItems[] = new Item[1];
-          world[i][j] = new Chest(chestItems);
+          world[i][j] = new Chest();
         }  
       }
 //      if (i % 2 == 0) {

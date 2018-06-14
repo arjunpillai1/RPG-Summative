@@ -11,13 +11,9 @@ class HuntQuestB extends Quest {
   }
   @Override 
   void initialize(World[][] world) {
-    System.out.println(getTask(0));
     enemyCountA = 5;
     enemyCountB = 10;
     System.out.println("Quest started: " + getName());
-    for (int i = 0; i < numTasks; i++) {
-      System.out.println(getTask(i));
-    }
     setActive(true);
   }
   

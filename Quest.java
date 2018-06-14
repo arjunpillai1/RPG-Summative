@@ -1,4 +1,4 @@
-abstract class Quest {
+abstract class Quest extends World{
   private int xpReward;
   private Item itemReward;
   private String name;
@@ -33,6 +33,9 @@ abstract class Quest {
   
   public void setActive(Boolean active){
     this.active = active;
+  }
+  public int getNumTasks() {
+    return this.objectives.length;
   }
   
   public Boolean getActive(){
