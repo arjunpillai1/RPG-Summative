@@ -1,0 +1,8 @@
+//new health bar code 
+ 
+ g.setColor(Color.BLACK);
+      g.fillRect((maxX/4) - 205 , maxY - 150, 410, 35); 
+      g.setColor(Color.RED);
+      g.fillRect((maxX/4) - 200 , maxY - 145, (player.getHealth() * 400) / player.getMaxHealth(), 25);
+      g.drawString(player.getHealth() + " / " + player.getMaxHealth(), maxX/5, maxY - 100);
+      
