@@ -6,17 +6,22 @@
 
 class Player extends CombatCharacter {
   private int exp;
-  private Object futureStep;
-  private Object previousStep;
+  
+  private World futureStep;
+  private World previousStep = new HouseFloor();
+  
   private int weaponBoost = 0;
   private int armourBoost = 0;
   private boolean equippedWeapon = false;
   private boolean equippedArmour = false;
+  private int maxHealth;
   
-  Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name) {
-    super(health, strength, intelligence, defence, level, accuracy, name);
+  Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY) {
+    super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
+    this.maxHealth = 50;
+    
   }
-//<<<<<<< HEAD
+  
   
   public boolean getEquippedWeapon(){
     return equippedWeapon;
@@ -50,79 +55,149 @@ class Player extends CombatCharacter {
     armourBoost=value;
   }
   
-  public void equipWeapon(Weapon weapon){
-    if (equippedWeapon == false){
-      weapon.setEquipped(true);
-      setWeaponBoost(weapon.getAttackBoost());
-      setEquippedWeapon(true);
-    }
+  public void levelUp () {
+    setMaxHealth(getMaxHealth() + 25);
+    setHealth(getMaxHealth());
   }
   
-  public void unequipWeapon(Weapon weapon){
+  int getMaxHealth() {
+    return maxHealth;
+  }
+  
+  void setMaxHealth(int amount) {
+    this.maxHealth = amount;
+  }
+  
+  public void unequipWeapon(Inventory bag, int placement){
     if (getEquippedWeapon() == true){
-      weapon.setEquipped(false);
-      setWeaponBoost(0);
-      setEquippedWeapon(false);
+      for (int i=0; i<bag.amount(); i++){
+        if ((i!=placement) && (bag.call(i) instanceof Weapon)){
+          Weapon weapon =(Weapon)( bag.call(i));
+          weapon.setEquipped(false);
+        }
+        setWeaponBoost(0);
+        setEquippedWeapon(false);
+      }
     }
+  }  
+  
+  public void equipWeapon(Inventory bag, int placement){
+    unequipWeapon(bag, placement);
+    
+    Weapon weapon =(Weapon)( bag.call(placement));
+    weapon.setEquipped(true);
+    setWeaponBoost(weapon.getAttackBoost());
+    setEquippedWeapon(true);
+    
   }
   
-  public void equipArmour(Armour armour){
-    if (equippedArmour == false){
-      armour.setEquipped(true);
-      setArmourBoost(armour.getDefenseBoost());
-      setEquippedArmour(true);
-    }
-  }
-  
-  public void unequipArmour(Armour armour){
+  public void unequipArmour(Inventory bag, int placement){
     if (getEquippedArmour() == true){
-      armour.setEquipped(false);
-      setArmourBoost(0);
-      setEquippedArmour(false);
+      for (int i=0; i<bag.amount(); i++){
+        if ((i!=placement) && (bag.call(i) instanceof Armour)){
+          Armour armour =(Armour)( bag.call(i));
+          armour.setEquipped(false);
+        }
+        setArmourBoost(0);
+        setEquippedArmour(false);
+      }
     }
   }
   
-  
-  public void attack(int strength, int intelligence) {
-    
+  public void equipArmour(Inventory bag, int placement){
+    unequipArmour(bag, placement);
+    Armour armour =(Armour)( bag.call(placement));
+    armour.setEquipped(true);
+    setArmourBoost(armour.getDefenseBoost());
+    setEquippedArmour(true);
   }
   
-  public void attack(Object enemy) {
-    
+  
+  
+  public void useAttackPotion(Inventory bag, int placement){
+    AttackPotion potion = (AttackPotion)(bag.call(placement));
+    setWeaponBoost((weaponBoost + potion.getAttackBoost()));
+    bag.tossItem(placement);
+    for(int i=0; i<=(potion.getTimer()); i++){
+      try{ Thread.sleep(100); }catch(Exception e) {};
+    }
+    setWeaponBoost((weaponBoost -= potion.getAttackBoost()));
   }
   
-  public void move(Object[][] world, int coordX, int coordY, int value) {
-    
+  public void useAttackPermanentPotion(Inventory bag, int placement){
+    AttackPermanentPotion potion = (AttackPermanentPotion)(bag.call(placement));
+    setStr(getStr() + potion.getAttackBoost());
+    bag.tossItem(placement);
+  }
+  public void useDefensePermanentPotion(Inventory bag, int placement){
+    DefensePermanentPotion potion = (DefensePermanentPotion)(bag.call(placement));
+    setDef(getDef() + potion.getDefenseBoost());
+    bag.tossItem(placement);
+  }
+  
+  public void equip(Inventory bag, int placement){
+    if (bag.call(placement) instanceof Weapon){
+      equipWeapon(bag, placement);
+    } else if (bag.call(placement) instanceof Armour){
+      equipArmour(bag,placement);
+    } else if (bag.call(placement) instanceof AttackPotion){
+      useAttackPotion(bag, placement);
+    } else if (bag.call(placement) instanceof AttackPermanentPotion){
+      useAttackPermanentPotion(bag, placement);
+    } else if (bag.call(placement) instanceof DefensePermanentPotion){
+      useDefensePermanentPotion(bag, placement);
+    }
+  }
+  public void attack(CombatCharacter target) {
+    //target.setHealth((target.getHealth())- ((int) (Math.floor(( ( ( (2 * getLvl() + 2) * 60 * ( (getStr() + getWeaponBoost())/target.getDef() ) ) / 50 ) + 2) * ( ( (int)(Math.random()*16) + 85) / 100)))));
+    target.setHealth(-1);
+  }
+  
+  public void move(World[][] world, int value) {
     if (value == 1) {
-      if (world[coordX - 1][coordY] instanceof Grass || world[coordX - 1][coordY] instanceof Floor) { //checks if spot is walkable
-        futureStep = world[coordX - 1][coordY];
-        world[coordX - 1][coordY] = world[coordX][coordY];
-        world[coordX][coordY] = previousStep;
+      
+      if (world[getX() - 1][getY()] instanceof Floor) { //checks if spot is walkable
+        futureStep = world[getX() - 1][getY()];
+        world[getX() - 1][getY()] = world[getX()][getY()];
+        world[getX()][getY()] = previousStep;
         previousStep = futureStep;
+        setX(getX()-1);
+        
       }
     } 
-    else if (value == 2) {
-      if (world[coordX][coordY + 1] instanceof Grass || world[coordX][coordY + 1] instanceof Floor) {
-        futureStep = world[coordX][coordY + 1];
-        world[coordX][coordY + 1] = world[coordX][coordY];
-        world[coordX][coordY] = previousStep;
+    else if (value == 4) {
+      
+      if (world[getX()][getY() + 1] instanceof Floor) {
+        
+        futureStep = world[getX()][getY() + 1];
+        world[getX()][getY() + 1] = world[getX()][getY()];
+        world[getX()][getY()] = previousStep;
         previousStep = futureStep;
+        setY(getY()+1);
+        
       }
     }  
-    else if (value == 3) {
-      if (world[coordX + 1][coordY] instanceof Grass || world[coordX + 1][coordY] instanceof Floor) {
-        futureStep = world[coordX + 1][coordY];
-        world[coordX + 1][coordY] = world[coordX][coordY];
-        world[coordX][coordY] = previousStep;
+    else if (value == 2) {
+      
+      if (world[getX() + 1][getY()] instanceof Floor) {
+        futureStep = world[getX() + 1][getY()];
+        world[getX() + 1][getY()] = world[getX()][getY()];
+        world[getX()][getY()] = previousStep;
         previousStep = futureStep;
+        setX(getX()+1);
+        
       }
     }
-    else if (value == 4) {
-      if (world[coordX][coordY - 1] instanceof Grass || world[coordX][coordY - 1] instanceof Floor) {
-        futureStep = world[coordX][coordY - 1];
-        world[coordX][coordY - 1] = world[coordX][coordY];
-        world[coordX][coordY] = previousStep;
+    else if (value == 3) {
+      
+      if (world[getX()][getY() - 1] instanceof Floor) {
+        futureStep = world[getX()][getY() - 1];
+        world[getX()][getY() - 1] = world[getX()][getY()];
+        world[getX()][getY()] = previousStep;
         previousStep = futureStep;
+        setY(getY()-1);
+        
+        
       }
     }
   }
@@ -143,7 +218,5 @@ class Player extends CombatCharacter {
 //    }
   }
   
+  
 }
-
-
-
