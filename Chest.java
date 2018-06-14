@@ -1,3 +1,7 @@
+/*
+ * 
+ * 
+ */
 import java.util.Random;
 
 class Chest extends World{

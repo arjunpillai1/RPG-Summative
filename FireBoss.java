@@ -4,14 +4,22 @@
  * 
  */
 class FireBoss extends Type{
-    
+  /*
+   * 
+   * 
+   */
   FireBoss(int health, int strength, int intelligence, int defence, int level, int accuracy, 
            String name,  int posX, int posY, World initialGround){
     super(health, strength, intelligence, defence, level, accuracy,"fire", "The Volcano", posX, posY
-         , initialGround);
+            , initialGround);
   }
   
   
+  
+  /*
+   * 
+   * 
+   */
   @Override
   public void move(World[][] world, int coordX, int coordY){
     for (int i=coordX-2; i < coordX+3; i++) {

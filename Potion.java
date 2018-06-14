@@ -8,8 +8,8 @@ abstract class Potion extends Consumable{
   private int timer;
   
   Potion(String name, int cost, int timer){
-  super(name, cost);
-  this.timer = timer;
+    super(name, cost);
+    this.timer = timer;
   }
   public int getTimer(){
     return timer;

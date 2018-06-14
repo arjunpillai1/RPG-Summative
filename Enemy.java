@@ -1,4 +1,8 @@
-  // imports
+/*
+ * 
+ * 
+ */
+// imports
 import java.util.Random;
 
 abstract class Enemy extends CombatCharacter{
@@ -6,17 +10,28 @@ abstract class Enemy extends CombatCharacter{
   private World futureStep;
   private World previousStep;
   
+  /*
+   * 
+   * 
+   */
   Enemy(int health, int strength, int intelligence, int defence, int level, int accuracy,
         String name, int posX, int posY, World initialGround){
     super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
     this.previousStep = initialGround;
   }
   
-
+  /*
+   * 
+   * 
+   */
   void attack(World player) {
     int damage = getStr() + getInt() * 2;
     ((Character)player).setHealth(((Character)player).getHealth()-damage);
   }
+  /*
+   * 
+   * 
+   */
   void move(World[][] world, int coordX, int coordY) {
     Random rand = new Random();
     int decision;
@@ -68,6 +83,10 @@ abstract class Enemy extends CombatCharacter{
       }
     }
   }
+  /*
+   * 
+   * 
+   */
   void death(Object[][] world, int coordX, int coordY) {
     world[coordX][coordY] = previousStep;
   }

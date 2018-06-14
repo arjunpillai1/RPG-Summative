@@ -106,7 +106,6 @@ class GameFrame extends JFrame {
   //the main gameloop - this is where the game state is updated
   public void animate() { 
     boolean firstTime = true;
-    boolean stamina = true;
     
     while(player.getHealth() > 0){
       if (((int)clock.getElapsedTime()) == 6) {
@@ -164,7 +163,7 @@ class GameFrame extends JFrame {
   }
   
   
-  public static void saveGame() throws Exception{
+  public void saveGame() throws Exception{
     File saveGame = new File("saveGame.txt");
     File saveMap = new File("mapSave.txt");
     PrintWriter output = new PrintWriter(saveMap);
@@ -216,7 +215,7 @@ class GameFrame extends JFrame {
     outputPlayer.println(player.getY());
     outputPlayer.println(player.getAccuracy());
     //save quest
-    outputPlayer.println(mainQuestA.getCurrentTask());
+    outputPlayer.println(mainQuests.getCurrentTask());
     for (int k = 0; k < sideQuests.length; k++) {
       if (sideQuests[k].getComplete()) {
         outputPlayer.println("true");
@@ -257,7 +256,6 @@ class GameFrame extends JFrame {
       
       setDoubleBuffered(true); 
       Color myGreen = new Color(11, 215, 72);
-      Color myBeige = new Color(245,245,220);
       Color myBeigeFemale = new Color(227, 220, 192);
       Color myBrown = new Color(176, 102, 96);
       Color myBlue = new Color(0, 168, 252);
@@ -268,7 +266,6 @@ class GameFrame extends JFrame {
       Color tree = new Color(20, 51, 6);
       Color bandit = new Color(139, 60, 100);
       Color archer = new Color(11, 110, 80);
-      Color yellow = new Color(255,255,0);
       Color royalYellow = new Color(250, 218, 94);
       Color farmer = new Color(176, 102, 84);
       Color speech = new Color(0,49,82);
@@ -283,7 +280,7 @@ class GameFrame extends JFrame {
         { 
           
           // Environment
-          if (world[i][j] instanceof Grass) {  
+          if (world[i][j] instanceof NormalGrass || world[i][j] instanceof CityGrounds) {  
             g.setColor(myGreen); //sets colour for printing organism
             g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
             
@@ -663,7 +660,8 @@ class GameFrame extends JFrame {
                 speechQueue.add("Quest completed: " + ((Quest)sideQuests[0]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[0]).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
+                bag.find(sideQuests[0].getItemReward());
+                speechQueue.add((sideQuests[0].getItemReward()).getName());
               }
             }
             // MAIN QUEST
@@ -674,7 +672,6 @@ class GameFrame extends JFrame {
                 speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -686,7 +683,8 @@ class GameFrame extends JFrame {
                 speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
+                bag.find(sideQuests[0].getItemReward());
+                speechQueue.add((sideQuests[0].getItemReward()).getName());
               }
             }
           }
@@ -698,7 +696,8 @@ class GameFrame extends JFrame {
               if (((Quest)sideQuests[1]).getCurrentTask() == 7) {
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[1]).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)sideQuests[1]).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
+                bag.find(sideQuests[1].getItemReward());
+                speechQueue.add((sideQuests[1].getItemReward()).getName());
               }
             }
             // MAIN QUEST
@@ -709,7 +708,6 @@ class GameFrame extends JFrame {
                 speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -720,7 +718,8 @@ class GameFrame extends JFrame {
                 speechQueue.add("Quest completed: " + ((Quest)sideQuests[1]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[1]).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)sideQuests[1]).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
+                bag.find(sideQuests[1].getItemReward());
+                speechQueue.add((sideQuests[1].getItemReward()).getName());
               }
             }
             // MAIN QUEST
@@ -731,7 +730,6 @@ class GameFrame extends JFrame {
                 speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -743,7 +741,8 @@ class GameFrame extends JFrame {
                 speechQueue.add("Quest completed: " + ((Quest)sideQuests[2]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[2]).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)sideQuests[2]).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
+                bag.find(sideQuests[2].getItemReward());
+                speechQueue.add((sideQuests[2].getItemReward()).getName());
               }
             }
             // MAIN QUEST
@@ -754,7 +753,6 @@ class GameFrame extends JFrame {
                 speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -765,7 +763,8 @@ class GameFrame extends JFrame {
                 speechQueue.add("Quest completed: " + ((Quest)sideQuests[2]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[2]).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)sideQuests[2]).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
+                bag.find(sideQuests[2].getItemReward());
+                speechQueue.add((sideQuests[2].getItemReward()).getName());
               }
             }
             // MAIN QUEST
@@ -776,7 +775,6 @@ class GameFrame extends JFrame {
                 speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -788,7 +786,8 @@ class GameFrame extends JFrame {
                 speechQueue.add("Quest completed: " + ((Quest)sideQuests[3]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[3]).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)sideQuests[3]).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
+                bag.find(sideQuests[3].getItemReward());
+                speechQueue.add((sideQuests[3].getItemReward()).getName());
               }
             }
             // MAIN QUEST
@@ -799,7 +798,6 @@ class GameFrame extends JFrame {
                 speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -810,7 +808,8 @@ class GameFrame extends JFrame {
                 speechQueue.add("Quest completed: " + ((Quest)sideQuests[3]).getName());
                 ((Player)player).setExp(((Quest)sideQuests[3]).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)sideQuests[3]).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
+                bag.find(sideQuests[3].getItemReward());
+                speechQueue.add((sideQuests[3].getItemReward()).getName());
               }
             }
             // MAIN QUEST
@@ -821,7 +820,6 @@ class GameFrame extends JFrame {
                 speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -834,7 +832,8 @@ class GameFrame extends JFrame {
                 speechQueue.add("Quest completed: " + ((Quest)sideQuests[4]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[4]).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
+                bag.find(sideQuests[4].getItemReward());
+                speechQueue.add((sideQuests[4].getItemReward()).getName());
               }
             }
             // MAIN QUEST
@@ -845,7 +844,6 @@ class GameFrame extends JFrame {
                 speechQueue.add(((Quest)mainQuests).getTask(9));
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -856,7 +854,8 @@ class GameFrame extends JFrame {
                 speechQueue.add("Quest completed: " + ((Quest)sideQuests[4]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[4]).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)sideQuests[4]).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
+                bag.find(sideQuests[4].getItemReward());
+                speechQueue.add((sideQuests[4].getItemReward()).getName());
               }
             }
             // MAIN QUEST
@@ -866,7 +865,6 @@ class GameFrame extends JFrame {
                 speechQueue.add("Task complete!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -877,7 +875,8 @@ class GameFrame extends JFrame {
                 speechQueue.add("Quest completed: " + ((Quest)sideQuests[4]).getName());
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)sideQuests[4]).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)sideQuests[4]).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
+                bag.find(mainQuests.getItemReward());
+                speechQueue.add((sideQuests[4].getItemReward()).getName());
               }
             }
             // MAIN QUEST
@@ -887,7 +886,6 @@ class GameFrame extends JFrame {
                 speechQueue.add("Task complete!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                speechQueue.add("You have gained : something");
               }
             }
           }
@@ -898,6 +896,7 @@ class GameFrame extends JFrame {
                 speechQueue.add("You have slain Mangat!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
                 speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                bag.find(sideQuests[0].getItemReward());
                 speechQueue.add("You have gained : something");
               }
             }

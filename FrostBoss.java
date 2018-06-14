@@ -7,13 +7,20 @@
 
 class FrostBoss extends Type{
 
-
+  /*
+   * 
+   * 
+   */
     FrostBoss(int health, int strength, int intelligence, int defence, int level, int accuracy, 
            String name,  int posX, int posY, World initialGround){
         super(health, strength, intelligence, defence, level, accuracy,"frost" , 
               "The King of Winter", posX, posY, initialGround);
     }
-
+    
+    /*
+     * 
+     * 
+     */
 
     @Override
     public void move(World[][] world, int coordX, int coordY){

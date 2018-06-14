@@ -247,13 +247,6 @@ class Player extends CombatCharacter {
       useDefensePermanentPotion(bag, placement);
     }
   }
-  public void attack(CombatCharacter target) {
-    //target.setHealth((target.getHealth())- ((int) (Math.floor(( ( ( (2 * getLvl() + 2) * 60 * ( (getStr() + getWeaponBoost())/target.getDef() ) ) / 50 ) + 2) * ( ( (int)(Math.random()*16) + 85) / 100)))));
-    target.setHealth(-1);
-  }
-  
- public void move(World[][] world, int value) {
-    if (value == 1) {
 
 
   /*
@@ -262,7 +255,6 @@ class Player extends CombatCharacter {
    * 
    */
   public void attack(CombatCharacter target) {
-    System.out.println(target.getDef());
     target.setHealth((target.getHealth())- (3 + ((int)(Math.floor(( ( ( (2 * getLvl() + 2) * 60 * ( (getStr() + getWeaponBoost())/target.getDef() ) ) / 50 ) + 2) * ( ( (int)(Math.random()*16) + 85) / 100))))));
     
     

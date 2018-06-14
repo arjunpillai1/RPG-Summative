@@ -19,7 +19,7 @@ import javax.swing.SwingUtilities;
 import java.io.File;
 import java.util.Scanner;
 import java.util.Random;
-
+import javax.swing.JTextField;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -27,8 +27,11 @@ import javax.sound.sampled.DataLine;
 import javax.swing.ImageIcon;
 import javax.swing.BoxLayout;
 import javax.swing.BorderFactory;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+
 
 class StartingFrame extends JFrame { 
   
@@ -131,6 +134,32 @@ class StartingFrame extends JFrame {
     }
   }
     
+  //****************** An internal class to repond to the button event ******
+  /*
+   * Each listener requires the code below in order to respond to an event. The name of this
+   * class much match the listener that was added to the JComponent. In our case, the button.
+   * Note - this is not in the main method, but is still within our class
+   *  
+   */
+  
+  static class clickButtonListener implements ActionListener {  //this is the required class definition
+    private JFrame nameFrame;
+          clickButtonListener(JFrame nameFrame){
+      this.nameFrame = nameFrame;
+      }
+    public void actionPerformed(ActionEvent event)  {     //this is the only method in this class and it will run automatically when the button is activated
+    // **** This is where the code to respond to the button event goes
+      try{
+        String name;
+        name = nameField.getText();
+        new StartingFrame();
+        mapInitialize(name);
+        nameFrame.dispose();
+    
+    // ****
+      }catch (Exception E){};
+    }
+  } // ******* end of action listener
 
   /*
  * 
@@ -234,11 +263,10 @@ class StartingFrame extends JFrame {
         } else if (value.substring(j, j + 1).equals("E")) {
           world[i][j] = new Grass();
         } else if (value.substring(j, j + 1).equals("L")) {
-
           world[i][j] = new Chest();
-        }  else if (value.substring(j, j + 1).equals("X")) {
-          System.out.println("villager" + i + " " + j);
-        } 
+        } else if (value.substring(j, j + 1).equals("Y")) {
+          world[i][j] = new CityGrounds();
+        }
       }
       if (i % 2 == 0) {
         frostEnemyCount += 1;
@@ -275,7 +303,7 @@ class StartingFrame extends JFrame {
     RustySword first = new RustySword();
     world[22][19] = new Chest(first);
     world[8][83] = new PoisonBoss(100,30,10,10,1,10, "Poison Boss", 8, 83, world[8][83]);
-    world[91][89] = new FrostBoss(300,30,30,12,1,15, "Frost Boss", 92, 89, world[92][89] );
+    world[91][89] = new FrostBoss(300,30,30,12,1,15, "Frost Boss", 92, 89, world[92][89]);
     world[97][10] = new FireBoss(500,30,60,15,1,20, "Fire Boss", 97, 10, world[97][10]);
     
     //add the main story content
@@ -303,14 +331,13 @@ class StartingFrame extends JFrame {
     String[] objectives = {"Text to fix indexing","Kill 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", 
       "Kill 5 Spiders", "Kill 5 Snakes", "Talk to The Farmer", 
       "Go to the capital and meet The King", "Kill the poisonous creature",
-
       "Talk to King Tagnam", "Find the Ice Fisherman in the Frost Lands", "Kill 7 Snakes", "Kill 7 Spiders",
       "Talk to Fisherman James", "Go back to the capital and speak with King Tagnam", "Kill the Frost Boss",
       "Talk to Tagnam", "Find the Pyromaniac in the Firelands", "Defeat 10 Spiders", "Defeat 10 Snakes", "Talk to Vivian",
       "Go talk to Tagnam at the capital", "Kill the Flaming Entity", "Talk to the king", "Meet the king near the abandoned hut",
       "Defeat Mangat", "Speak with the counsellor"};
     KingsCrown kingsCrown = new KingsCrown(69);
-    questline = new MainQuestA(100, "Awakening", objectives, kingsCrown);
+    questline = new MainQuestA(100, "A Far Journey", objectives, kingsCrown);
 
     return questline;
   }
@@ -326,15 +353,16 @@ class StartingFrame extends JFrame {
     String[] objectivesC = {"Kill 5 Frost Snakes", "Kill 10 Frost Spiders"};
     String[] objectivesD = {"Kill 3 Fire Snakes", "Kill 4 Fire Spiders"};
     String[] objectivesE = {"Kill the Poison Boss", "Kill the Frost Boss", "Kill the Fire Boss"};
-    String[] objectivesF = {"Find a Wood Staff", "Give the Wood Staff to John"};
-    String[] objectivesG = {"Find a Defence Potion", "Give the Defence Potion to John"};
-    String[] objectivesH = {"Find a Wood Staff", "Give the Wood Staff to John"};
-    Item item = new RustySword();
-    quests[0] = new HuntQuest(1, "Evening the Odds", objectivesA, item);
-    quests[1] = new HuntQuestB(1, "Poison Conquerer", objectivesB, item);
-    quests[2] = new HuntQuestC(1, "Frost Conquerer", objectivesC, item);
-    quests[3] = new HuntQuestD(1, "Fire Conquerer", objectivesD, item);
-    quests[4] = new HuntQuestE(1, "World Conquerer", objectivesE, item);
+//    String[] objectivesF = {"Find a Wood Staff", "Give the Wood Staff to John"};
+//    String[] objectivesG = {"Find a Defence Potion", "Give the Defence Potion to John"};
+//    String[] objectivesH = {"Find a Wood Staff", "Give the Wood Staff to John"};
+    Item itemA = new AttackPermanentPotion(10);
+    Item itemB = new DefensePermanentPotion(10);
+    quests[0] = new HuntQuest(1, "Evening the Odds", objectivesA, itemA);
+    quests[1] = new HuntQuestB(1, "Poison Conquerer", objectivesB, itemB);
+    quests[2] = new HuntQuestC(1, "Frost Conquerer", objectivesC, itemA);
+    quests[3] = new HuntQuestD(1, "Fire Conquerer", objectivesD, itemB);
+    quests[4] = new HuntQuestE(1, "World Conquerer", objectivesE, itemA);
 
 //    quests[5] = new FetchQuest(1, "Birthday Gift", objectivesF, item);
 //    quests[6] = new FetchQuestB(1, "More Protection", objectivesG, item);
@@ -353,7 +381,6 @@ class StartingFrame extends JFrame {
  * 
  * 
  */
-
   public static void loadGame() throws Exception{
     File map = new File("saveMap.txt");
     File player = new File("savePlayer.txt");
@@ -481,9 +508,9 @@ class StartingFrame extends JFrame {
     world[62][79] = new NPC(100, "Guy", false);
     world[68][37] = new NPC(100, "Johann", false);
     world[69][36] = new NPC(100, "Alphonso", false);
-    world[71][61] = new NPC(100, "Albert", false);
-    world[71][62] = new NPC(100, "Alberto", false);
-    world[71][65] = new NPC(100, "Mason", false);
+    world[71][61] = new NPC(100, "Steve", false);
+    world[71][62] = new NPC(100, "Sharon", false);
+    world[71][65] = new NPC(100, "Albert", false);
     world[71][70] = new NPC(100, "Jill", false);
     
     //initial objects
@@ -540,7 +567,7 @@ class StartingFrame extends JFrame {
     
   }
     
-  }
+  
   //Main method starts this application
   
   /* All Jcomponents (buttons, fields, etc) that you want to access in the actionPerformed method
@@ -623,33 +650,7 @@ class StartingFrame extends JFrame {
   
   } // *** end of main method
   
-  //****************** An internal class to repond to the button event ******
-  /*
-   * Each listener requires the code below in order to respond to an event. The name of this
-   * class much match the listener that was added to the JComponent. In our case, the button.
-   * Note - this is not in the main method, but is still within our class
-   *  
-   */
   
-  static class clickButtonListener implements ActionListener {  //this is the required class definition
-    private JFrame nameFrame;
-          clickButtonListener(JFrame nameFrame){
-      this.nameFrame = nameFrame;
-      }
-    public void actionPerformed(ActionEvent event)  {     //this is the only method in this class and it will run automatically when the button is activated
-    // **** This is where the code to respond to the button event goes
-      try{
-    String name;
-    name = nameField.getText();
-       new StartingFrame();
-       mapInitialize(name);
-       nameFrame.dispose();
-    //saveGame(world);
-    
-    // ****
-      }catch (Exception E){};
-    }
-  } // ******* end of action listener
   
 
   
