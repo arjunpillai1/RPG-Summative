@@ -1,3 +1,3 @@
-class CaveWall {
+class CaveWall extends Wall{
   CaveWall(){}
 }

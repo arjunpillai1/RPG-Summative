@@ -2,23 +2,21 @@
  * Johann Muth
  * May 24 2018
  * Abstract class of potions that boost your attack
-*/  
+ */  
 
 abstract class AttackPotion extends Potion{
   
-  double attackMultiplier;
+  private int attackBoost;
   
-  AttackPotion(int cost, int timer, double attackMultiplier){
-  super(cost, timer);
-  this.attackMultiplier=attackMultiplier;
+  AttackPotion(String name, int cost, int timer, int attackBoost){
+    super(name, cost, timer);
+    this.attackBoost=attackBoost;
   }
   
-  public double getAttackBoost(){
-    return attackMultiplier;
+
+  public int getAttackBoost(){
+    return attackBoost;
   }
   
-  public void use(){
-    //player.setStrenth((player.getStrength) * (attackMultiplier))
-    used = true;
-  }
+
 }

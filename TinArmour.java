@@ -7,6 +7,6 @@
 abstract class TinArmour extends Armour{
   
   TinArmour(){
-    super(10, 20, -0.5); //cost, defenseboost, speed
+    super("Tin armour", 10, 20, -0.5); //cost, defenseboost, speed
   }
 }

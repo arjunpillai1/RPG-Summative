@@ -6,15 +6,18 @@
 
 abstract class Item{
   
-
+  
   int cost;
   
   int inventoryNum;
   
+  String name;
   
-  Item(int cost, int inventoryNum){ //Constructor
+  
+  Item(String name, int cost, int inventoryNum){ //Constructor
     this.cost = cost; 
     this.inventoryNum = inventoryNum;
+    this.name = name;
   }
   
   public int getCost(){
@@ -23,5 +26,9 @@ abstract class Item{
   
   public int getInventoryNum(){
     return this.inventoryNum;
+  }
+  
+  public String getName(){
+    return this.name;
   }
 }

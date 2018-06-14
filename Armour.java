@@ -6,8 +6,8 @@ abstract class Armour extends Item{
   
   boolean equipped;
   
-  Armour(int cost, int defenseBoost, double speed){
-    super(cost, 2);
+  Armour(String name, int cost, int defenseBoost, double speed){
+    super(name, cost, 2);
     
     this.defenseBoost=defenseBoost;
     
@@ -37,11 +37,24 @@ abstract class Armour extends Item{
     return equipped;
   }
   
-  public void equipArmour(){
+  public void setEquipped(boolean value){
+    equipped = value;
+  }
+  /*
+  public void equipArmour(Player user){
+    if (user.getEquippedArmour() == false){
     equipped=true;
+    user.setDef(user.getDef()+defenseBoost);
+    user.setEquippedArmour(false);
+    }
   }
   
-  public void unequipArmour(){
-    equipped = false;
+  public void unequipArmour(Player user){
+     if (user.getEquippedArmour() == true){
+    equipped=false;
+    user.setDef(user.getDef()-defenseBoost);
+    user.setEquippedWeapon(false);
+    }
   }
+  */
 }

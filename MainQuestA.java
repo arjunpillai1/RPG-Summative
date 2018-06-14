@@ -1,0 +1,145 @@
+class MainQuestA extends Quest {
+  int killsA = 0, killsB = 0, killsC = 0, currentTask;
+  //items to fetch
+  /*
+   * 
+   * 
+   * 
+   */
+  MainQuestA(int experience, String name, String[] objectives, Item itemReward) {
+    super(experience, name, objectives, itemReward);
+  }
+  /*
+   * 
+   * 
+   * 
+   */
+  @Override
+  void spawn(World[][] world) {
+    world[22][20] = new NPC(10, "Bob", true, this);
+  }
+  /*
+   * 
+   * 
+   * 
+   */
+  @Override
+  void initialize(World[][] world) {
+    setCurrentTask(1);
+    world[8][14] = new NPC(10, "Farmer", false, this);
+    world[54][40] = new NPC(1000000, "King Mangat", false, this);
+    world[52][40] = new NPC(1000000, "Chancellor", false, this);
+    world[63][70] = new NPC(1000, "Ice Fisher", false, this);
+    world[91][73] = new NPC(1000, "Voltan", false, this);
+    world[91][74] = new NPC(1000, "Vivian", false, this);
+    setActive(true);
+  }
+  /*
+   * 
+   * 
+   * 
+   */
+  Boolean updateObjective(int task) {
+    //update these conditions for the objectives
+    if (task == 1) {
+      killsA++;
+    }
+    if (task == 2) {
+      killsB++;
+    }
+    if (task == 3) {
+      killsC++;
+    }
+    // quest conditions fulfilled
+    //normal enemies
+    // Killed 5 archers and bandits
+    if (killsA >= 5 && killsB >= 5 && getCurrentTask() < 3) {
+      setCurrentTask(3);
+      killsA = 0;
+      killsB = 0;
+    }
+    //poison enemies
+    else if (killsB >= 5 && killsB >= 5 && getCurrentTask() > 4 && getCurrentTask() < 7) {
+      setCurrentTask(7);
+      killsA = 0;
+      killsB = 0;
+    }
+    //poison boss
+    else if ((killsA >= 1) && getCurrentTask() == 9) {
+      setCurrentTask(10);
+      killsA = 0;
+    }
+    //frost enemies
+    else if ((killsA >= 7) && (killsB >= 7) && (getCurrentTask() > 11) && (getCurrentTask() < 14)) {
+      setCurrentTask(14);
+      killsA = 0;
+      killsB = 0;
+    }
+    //frost boss
+    else if (killsA >= 1 && getCurrentTask() >= 16) {
+      setCurrentTask(17);
+      killsA = 0;
+    }
+    // fire monsters
+    else if (killsA >= 10 && killsB >= 10 && getCurrentTask() > 18 && getCurrentTask() < 21) {
+      setCurrentTask(21);
+      killsA = 0;
+      killsB = 0;
+    }
+    //fire boss
+    else if (killsA >= 1 && getCurrentTask() == 24) {
+      setCurrentTask(25);
+      killsA = 0;
+    }
+    //mangat
+    else if (killsA >= 1 && getCurrentTask() == 26) {
+      setCurrentTask(27);
+      killsA = 0;
+    }
+    else if (getCurrentTask() == 28) {
+      return true;
+    }
+    return false;
+  }
+  @Override
+  /**
+   * 
+   * 
+   * 
+   */
+  public int trackTask(int task) {
+    if (task == 1) {
+      return killsA;
+    } else if (task == 2) {
+      return killsB;
+    }
+    return killsA;
+  }
+  /*
+   * 
+   * 
+   * 
+   */
+  @Override
+  public int getXPReward() {
+    if (getCurrentTask() == 3) { //1,2
+      return 10;
+    }
+    else if (getCurrentTask() == 7) { //5,6
+      return 25;
+    }
+    else if (getCurrentTask() == 14) { //12,13
+      return 50;
+    }
+    else if (getCurrentTask() == 21) { //19,20
+      return 100;
+    }
+    else if (getCurrentTask() == 25) {
+      return 200;
+    }
+    else if (getCurrentTask() == 29) {
+      return 500;
+    }
+    return 0;
+  }
+}
