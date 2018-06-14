@@ -1,9 +1,9 @@
 
-/**
- * This template can be used as reference or a starting point
- * for your final summative project
- * @author Mangat
- **/
+/* class GameFrame
+ * Mangat, Aiden, Albert, Guy, Arjun, Johann
+ * June 14th, 2018
+ * class that shows the map and runs constant updates on the game
+*/
 
 //Graphics &GUI imports
 import javax.swing.JFrame;

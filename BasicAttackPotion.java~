@@ -9,5 +9,6 @@ class BasicAttackPotion extends AttackPotion{
   BasicAttackPotion(){
   super("Attack Potion", 50, 10, 10);
   }
-
+  
+  
 }

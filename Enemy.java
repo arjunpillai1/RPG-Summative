@@ -1,4 +1,10 @@
-  // imports
+/* class Enemy
+ * Aiden Gimpel
+ * June 14th, 2018
+ * abstract object for the and enemy that attacks the player
+*/ 
+
+// imports
 import java.util.Random;
 
 abstract class Enemy extends CombatCharacter{
@@ -12,11 +18,26 @@ abstract class Enemy extends CombatCharacter{
     this.previousStep = initialGround;
   }
   
-
+    /**
+* attack
+* This method accepts a world object and allows the enemy to attack the player
+* the method returns a void
+* @param A  world array that holds data representing the game map
+* @return void
+*/
   void attack(World player) {
     int damage = getStr() + getInt();
     ((Character)player).setHealth(((Character)player).getHealth()-damage);
   }
+    /**
+* move
+* This method accepts a world, x Coord and a y coord as a parameter and moves the enemy.
+* the method returns a void
+* @param A  world array that holds data representing the game map
+* @param B integer holding the x coordinate of the enemy
+* @param C integer holding the y coordinate of the enemy
+* @return void
+*/
   void move(World[][] world, int coordX, int coordY) {
     //System.out.println("works" + getX() + getY());
     //System.out.println(coordX + " d" + coordY);

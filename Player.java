@@ -1,99 +1,58 @@
 /**
  * Player Class
- * @author Guy
- * @author Arjun Pillai
+ * Guy and Arjun
  * May 24 2018
  */
 
 class Player extends CombatCharacter {
   private int exp;
 
-  //variables to ensure characters do not leave an empty space
   private World futureStep;
   private World previousStep = new HouseFloor();
 
-  //Equipment variables
   private int weaponBoost = 0;
   private int armourBoost = 0;
   private boolean equippedWeapon = false;
   private boolean equippedArmour = false;
 
-  /**
-  * Creates a player with certain stats
-  */
   Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY) {
     super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
   }
 
-  /**
-  *checks if there has been a weapon equipped
-  *@return true if the player is wielding a weapon
-  */
+  
   public boolean getEquippedWeapon(){
     return equippedWeapon;
   }
   
-  /**
-  *changes the state of whether the player is wielding a weapon
-  *@param the state of weapon equip
-  */
   public void setEquippedWeapon(boolean state){
     equippedWeapon=state;
   }
   
-  /**
-  *checks if there has been a armour equipped
-  *@return true if the player is wielding a armour
-  */
   public boolean getEquippedArmour(){
     return equippedArmour;
   }
   
-  /**
-  *changes the state of whether the player is wielding armour
-  *@param the state of armour equip
-  */
   public void setEquippedArmour(boolean state){
     equippedArmour=state;
   }
   
-   /**
-  * gets the boost the player receives from their weapon
-  *@return the value of the weapon boost
-  */
   public int getWeaponBoost(){
     return weaponBoost;
   }
   
-  /**
-  * sets the value of the weapon boost
-  * @param the value that the weapon boost should be set to
-  */
   public void setWeaponBoost(int value){
     weaponBoost=value;
   }
   
-  /**
-  * gets the boost the player receives from their armour
-  *@return the value of the armour boost
-  */
   public int getArmourBoost(){
     return armourBoost;
   }
   
-  /**
-  * sets the value of the armour boost
-  * @param the value that the armour boost should be set to
-  */
   public void setArmourBoost(int value){
     armourBoost=value;
   }
   
-  /**
-  *cause the weapon at that slot to stop affecting the character
-  * @param bag the container that the weapon is stored within
-  * @param placement the slot in which the weapon is stored
-  */
+
   public void unequipWeapon(Inventory bag, int placement){
     if (getEquippedWeapon() == true){
       for (int i=0; i<bag.amount(); i++){
@@ -107,9 +66,6 @@ class Player extends CombatCharacter {
     }
   }  
   
-  /**
-  * equips a weapon at the necessary slot
-  * @param 
   public void equipWeapon(Inventory bag, int placement){
     unequipWeapon(bag, placement);
     

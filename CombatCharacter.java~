@@ -22,13 +22,7 @@ abstract class CombatCharacter extends Character {
   }
 
   
-      /**
-* attack
-* This method accepts a world object and allows the enemy to attack the player
-* and the player attack the enemy, the method returns a void
-* @param A  world array that holds data representing the game map
-* @return void
-*/
+  
   public void attack(CombatCharacter enemy) {
     
   }

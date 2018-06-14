@@ -1,8 +1,3 @@
-/* class PoisonBoss
- * Aiden Gimpel
- * June 14th, 2018
- * object for the poisonous boss
-*/
 class PoisonBoss extends Type{
   
   PoisonBoss(int health, int strength, int intelligence, int defence, int level, int accuracy, 
@@ -23,15 +18,6 @@ class PoisonBoss extends Type{
     // 2 seconds between attacks
   }
   
-      /**
-* move
-* This method accepts a world, x Coord and a y coord as a parameter and moves the enemy.
-* method returns a void
-* @param A  world array that holds data representing the game map
-* @param B integer holding the x coordinate of the enemy
-* @param C integer holding the y coordinate of the enemy
-* @return void
-*/
   public void move(){
     //if he is close to the player, he will melee attack
     //if he is farther from the player, he will used a ranged attack

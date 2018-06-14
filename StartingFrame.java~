@@ -1,8 +1,7 @@
-/* class StartingFrame
- * Aiden, Albert, Guy, Arjun, Johann
- * June 14th, 2018
- * creates the starting screen and allows the game to run upon clicking new game/load game
-*/
+/** 
+ * this template can be used for a start menu
+ * for your final project
+ **/
 
 
 //Imports
@@ -101,14 +100,6 @@ class StartingFrame extends JFrame {
   
   //This is an inner class that is used to detect a button press
   class StartButtonListener implements ActionListener {  //this is the required class definition
-    
-        /**
-* actionPerformed
-* This method accepts an ActionEvent and starts the game when the new game button
-* is clicked. method returns a void
-* @param A  ActionEvent represtning the start button being clicked
-* @return void
-*/
     public void actionPerformed(ActionEvent event) {  
       System.out.println("Starting new Game");
       thisFrame.dispose();
@@ -119,14 +110,6 @@ class StartingFrame extends JFrame {
     
   }
   class LoadButtonListener implements ActionListener {  //this is the required class definition
-    
-            /**
-* actionPerformed
-* This method accepts an ActionEvent and starts a loaded save game when the load game button
-* is clicked. method returns a void
-* @param A  ActionEvent represtning the load button being clicked
-* @return void
-*/
     public void actionPerformed(ActionEvent event) {  
       System.out.println("Loading previous save");
       thisFrame.dispose();
@@ -135,21 +118,12 @@ class StartingFrame extends JFrame {
     }
   }
   class ExitButtonListener implements ActionListener {  //this is the required class definition
-    
-            /**
-* actionPerformed
-* This method accepts an ActionEvent and exits the game when the exit button
-* is clicked. method returns a void
-* @param A  ActionEvent represtning the exit button being clicked
-* @return void
-*/
     public void actionPerformed(ActionEvent event) {  
       
       System.exit(0);
     }
   }
     
-  
   public static void mapInitialize(String playerName) throws Exception {
     File map = new File("map.txt");
     Scanner fileIn = new Scanner(map);

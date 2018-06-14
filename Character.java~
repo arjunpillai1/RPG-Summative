@@ -1,8 +1,4 @@
-/* class Character
- * Aiden Gimpel
- * June 14th, 2018
- * abstract object for any character
-*/
+
 abstract class Character extends World{
   
   private String name;
