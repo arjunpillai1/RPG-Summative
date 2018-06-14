@@ -134,8 +134,9 @@ class Player extends CombatCharacter {
 
   
   /**
-  * equips a weapon at the necessary slot
-  * @param 
+   * equips a weapon at the necessary slot
+   * @param Inventory, index 
+   */
 
   public void equipWeapon(Inventory bag, int placement){
     unequipWeapon(bag, placement);

@@ -21,7 +21,10 @@ class Archer extends Normal{
     imageChoice=((int)(Math.random()*3))*4;//0,4,8
   }
   
-  
+  /**
+   * Archer image
+   * @return the image index for archer
+   */
   public int getImageChoice(){
    return this.imageChoice; 
   }
