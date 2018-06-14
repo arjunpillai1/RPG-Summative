@@ -1,12 +1,14 @@
 /**
  * Player Class
- * Guy and Arjun
+ * @author Guy
+ * @author Arjun Pillai
  * May 24 2018
  */
 
 class Player extends CombatCharacter {
   //leveling
   private int exp;
+
   private int maxHealth;
   //movement
   private World futureStep;
@@ -26,44 +28,48 @@ class Player extends CombatCharacter {
     this.maxHealth = 50;
     
   }
+
   
-  /**
-   * Return the weapon equipped for player
-   * @return boolean value of if weapon is equipped
-   */
+ /**
+  *checks if there has been a weapon equipped
+  *@return true if the player is wielding a weapon
+  */
   public boolean getEquippedWeapon(){
     return equippedWeapon;
   }
+  
   /**
-   * 
-   * 
-   * 
-   */
+  *changes the state of whether the player is wielding a weapon
+  *@param the state of weapon equip
+  */
   public void setEquippedWeapon(boolean state){
     equippedWeapon=state;
   }
+  
   /**
-   * 
-   * 
-   * 
-   */
+  *checks if there has been a armour equipped
+  *@return true if the player is wielding a armour
+  */
   public boolean getEquippedArmour(){
     return equippedArmour;
   }
+  
   /**
-   * Set the state if armour is equipped
-   * @param boolean value of equipped
-   */
+  *changes the state of whether the player is wielding armour
+  *@param the state of armour equip
+  */
   public void setEquippedArmour(boolean state){
     equippedArmour=state;
   }
-  /**
-   * Get the weapon boost
-   * @return weapon boosted value
-   */
+  
+   /**
+  * gets the boost the player receives from their weapon
+  *@return the value of the weapon boost
+  */
   public int getWeaponBoost(){
     return weaponBoost;
   }
+
   /**
    * Sets the weapon bonus damage
    * @param the weapon damage to set
@@ -112,6 +118,7 @@ class Player extends CombatCharacter {
    * Unequips an item for player
    * @param inventory, index of item
    */
+
   public void unequipWeapon(Inventory bag, int placement){
     if (getEquippedWeapon() == true){
       for (int i=0; i<bag.amount(); i++){
@@ -125,10 +132,11 @@ class Player extends CombatCharacter {
     }
   }  
 
+  
   /**
-   * Equips a weapon for player
-   * @param inventory, placement of item
-   */
+  * equips a weapon at the necessary slot
+  * @param 
+
   public void equipWeapon(Inventory bag, int placement){
     unequipWeapon(bag, placement);
     
