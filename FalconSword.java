@@ -7,6 +7,6 @@
 abstract class FalconSword extends Sword{
   
   FalconSword(){
-    super(4000, 28, 2); //cost, attackBoost, speed
+    super("Falcon Sword",4000, 28, 2); //cost, attackBoost, speed
   }
 }

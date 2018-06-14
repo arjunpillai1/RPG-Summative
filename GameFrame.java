@@ -13,9 +13,18 @@ import java.awt.Graphics;
 import java.awt.Color;
 import java.io.PrintWriter;
 import java.io.File;
+import java.util.Random;
 import java.util.ArrayList;
-import javax.swing.*;
-import java.awt.*;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+
+//import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.Image;
 
 //Keyboard imports
 import java.awt.event.KeyEvent;
@@ -28,26 +37,56 @@ import java.awt.event.MouseEvent;
 class GameFrame extends JFrame { 
   private static JFrame frame;
   private static int maxX,maxY, GridToScreenRatio;
-  World[][] world;
-  Quest[] sideQuests = new Quest[6];
+  static World[][] world;
+  Quest[] sideQuests = new Quest[8];
+  ArrayList<String> speechQueue = new ArrayList<String>();
   static Quest mainQuests;
   ArrayList<Quest> activeQuests = new ArrayList<Quest>();
-  
+  int spaceX; //elon musk?
+  int spaceY;
+  int advanceDialogue = 0;
+  Clock clock = new Clock();
+  Clock enemyDelay = new Clock();
+  Clock total = new Clock();
+  Clock bossTimer = new Clock();
+  JPanel mainPanel = new JPanel();
+  Boolean dialogue = false;
+  boolean playerMove = true;
+  Boolean allowRespawn = false;
+  Inventory bag = new Inventory();
+  int playerState=0;
+
   //class variable (non-static)
   static double x, y;
   static GameAreaPanel gamePanel;
+  static Player player;
   
-  
-  
+  //Music variables
+  static File menuMusicFile ;
+  static AudioInputStream menuMusicStream ;
+  static DataLine.Info info;
+  static Clip clip ;
   
   //Constructor - this runs first
-  GameFrame(World[][] world, Quest[] sideQuests, Quest mainQuests) { 
-    super("My Game");  
+  GameFrame(World[][] world, Quest[] sideQuests, Quest mainQuests, Player player) { 
+    super("Epic Medieval Fantasy");  
     this.world = world;
+    this.player = player;
     
     maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
     maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
     GridToScreenRatio = maxY / (10);  //ratio to fit in screen as square map
+    
+    //Music initalisation
+    try {
+      menuMusicFile = new File("Skyrim Music - Dragonborn (Main Theme).wav");
+      menuMusicStream = AudioSystem.getAudioInputStream(menuMusicFile);
+      info = new DataLine.Info(Clip.class, menuMusicStream.getFormat());
+      clip = (Clip) AudioSystem.getLine(info);
+      clip.open(menuMusicStream);
+    }catch (Exception e) {};
+    
+    clip.start();
     
     System.out.println("Map size: "+world.length+" by "+world[0].length + "\nScreen size: "+ maxX +"x"+maxY+ " Ratio: " + GridToScreenRatio);
     
@@ -91,8 +130,34 @@ class GameFrame extends JFrame {
   
   //the main gameloop - this is where the game state is updated
   public void animate() { 
+    boolean firstTime = true;
     
-    while(true){
+    while(player.getHealth() > 0){
+      if (((int)clock.getElapsedTime()) == 6) {
+        respawnEnemies();
+        clock.update();
+      }
+      
+      
+      if (((int)bossTimer.getElapsedTime()) == 60) {
+        respawnBoss();
+        bossTimer.update();
+        
+      }
+      
+      for (int i = 0; i < world.length; i++) {
+        for (int j = 0; j < world.length; j++) {
+          if (world[i][j] instanceof Enemy) {
+            if (((Enemy)world[i][j]).getHealth() <= 0)
+              ((Enemy)world[i][j]).death(world, i, j);
+          }
+        }
+      }
+      
+      if (Math.round(total.getElapsedTime() * 10.0) / 10.0 == 0.1) {
+        playerMove = true;
+        total.update();
+      }
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
           // this is for when enemies are in vision range
@@ -100,30 +165,32 @@ class GameFrame extends JFrame {
           if (world[i][j] instanceof Player) {
             int playX = ((Player)world[i][j]).getX();
             int playY = ((Player)world[i][j]).getY();
-            for (int m = playX - 4; m < playX+5; m++) {
-              for (int n = playY - 4; n < playY+5; n++) {
-                if (world[m][n] instanceof Enemy) {
-                  if (((Enemy)world[m][n]).getHealth() <= 0) {
-                    ((Enemy)world[m][n]).death(world, m, n);
-                  } else {
+            if (firstTime == true) {
+              enemyDelay.update();
+              firstTime = false;
+            }
+            
+            if (((int)enemyDelay.getElapsedTime()) % 2 == 0 && ((int)enemyDelay.getElapsedTime()) > 0 ) {
+              for (int m = playX - 4; m < playX+5; m++) {
+                for (int n = playY - 4; n < playY+5; n++) {
+                  if (world[m][n] instanceof Enemy) {
                     ((Enemy)world[m][n]).move(world, m, n);
-                  }
+                    enemyDelay.update();
+                  }                 
                 }
               }
             }
           }
         }
       }
-      try{ Thread.sleep(500);} catch (Exception exc){}  //delay
       this.repaint();
     }
   }
   
   
-  public static void saveGame(World[][] world, Quest[] sideQuests, Quest mainQuestA) throws Exception{
+  public void saveGame() throws Exception{
     File saveGame = new File("saveGame.txt");
     File saveMap = new File("mapSave.txt");
-    Player player;
     PrintWriter output = new PrintWriter(saveMap);
     for (int i = 0; i < world.length; i++) {
       for (int j = 0; j < world.length; j++) {
@@ -153,32 +220,41 @@ class GameFrame extends JFrame {
           output.print("M");
         } else if (world[i][j] instanceof Water) {
           output.print("S");
-        } else if (world[i][j] instanceof Enemy) {
-          output.print("A");
         } else if (world[i][j] instanceof Player) {
           output.print("P");
-          player = ((Player)world[i][j]);
-          PrintWriter outputPlayer = new PrintWriter(saveGame) ;
-          //save player
-          outputPlayer.println(player.getName());
-          outputPlayer.println(player.getExp());
-          outputPlayer.println(player.getInt());
-          outputPlayer.println(player.getStr());
-          //save quest
-          for (int k = 0; k < sideQuests.length; k++) {
-            if (sideQuests[i].getActive()) {
-              //outputPlayer.println(sideQuests[i].getCurrentTask());
-            }
-          }
-          outputPlayer.println(((Quest)mainQuests).getCurrentTask());
-          //outputPlayer.println(mainQuestA.getCurrentTask());
-          outputPlayer.close();
         }
         
       }
       output.println("");
     }
     output.close();
+    PrintWriter outputPlayer = new PrintWriter(saveGame) ;
+    //save player
+    outputPlayer.println(player.getName());
+    outputPlayer.println(player.getLvl());
+    outputPlayer.println(player.getInt());
+    outputPlayer.println(player.getStr());
+    outputPlayer.println(player.getDef());
+    outputPlayer.println(player.getHealth());
+    outputPlayer.println(player.getX());
+    outputPlayer.println(player.getY());
+    outputPlayer.println(player.getAccuracy());
+    //save quest
+    outputPlayer.println(mainQuests.getCurrentTask());
+    for (int k = 0; k < sideQuests.length; k++) {
+      if (sideQuests[k].getComplete()) {
+        outputPlayer.println("true");
+      } else {
+        outputPlayer.println("false");
+      }
+      if (sideQuests[k].getActive()) {
+        outputPlayer.println(sideQuests[k].getCurrentTask());
+      } else {
+        outputPlayer.println(0);
+      }
+    }
+    
+    outputPlayer.close();
     
     
     
@@ -187,6 +263,7 @@ class GameFrame extends JFrame {
   /** --------- INNER CLASSES ------------- **/
   
   // Inner class for the the game area - This is where all the drawing of the screen occurs
+  
   private class GameAreaPanel extends JPanel {
     public void paintComponent(Graphics g) {   
       
@@ -194,54 +271,125 @@ class GameFrame extends JFrame {
       super.paintComponent(g);
       maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
       maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
+      int playerX = player.getX();
+      int playerY = player.getY();
+      int countX = 0;
+      int countY = 0;
+      Font questTitle = new Font("Arial", Font.BOLD, 16);
+      Font questTask = new Font("Berlin Sans FB", Font.PLAIN, 15);
+      Font questLogTitle = new Font("Verdana", Font.BOLD, 14);
+      int imageChoice;
+      int enemyDirection=1;
       
       Image[] floorTextures={Toolkit.getDefaultToolkit().getImage("Grass Texture.png"),
         Toolkit.getDefaultToolkit().getImage("Poison Grass Texture.png"),
         Toolkit.getDefaultToolkit().getImage("Frost Grass Texture.png"),
         Toolkit.getDefaultToolkit().getImage("Fire Grass Texture.png"),
         Toolkit.getDefaultToolkit().getImage("dirt.png"),
-        Toolkit.getDefaultToolkit().getImage("floor.jpg")
+        Toolkit.getDefaultToolkit().getImage("floor.jpg"),
+        Toolkit.getDefaultToolkit().getImage("Bridge tile.png")
       };
-      Image[] knights={Toolkit.getDefaultToolkit().getImage("Knight2_IDLE_000.png")};
-      Image[] trolls={Toolkit.getDefaultToolkit().getImage("Trolls1_IDLE_000.png")};
-      Image[] player={Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger_idle_000.png")};
-      Image[] spider={Toolkit.getDefaultToolkit().getImage("Spider_sprite_walk_4.png")}; 
-      Image[] sorcerer={Toolkit.getDefaultToolkit().getImage("sorcerer attack_Animation 1_1.png")}; 
+      
+      Image[] playerEmpty={Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite left.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite right.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger back idle.png")
+      };
+      
+      Image[] playerNoArmour={Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger left idle.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger left attack.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger right idle.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger right attack.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger front idle.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger front attack.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger back idle.png"),
+        Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite with Dagger back attack.png")
+      };
+      
+      Image[] playerArmour={Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger left idle.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger left attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger right idle.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger right attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger front idle.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger front attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger back idle.png"),
+        Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger back attack.png")
+      };
+      
+      Image[] npcSprites={Toolkit.getDefaultToolkit().getImage("NPC 1.png"),
+        Toolkit.getDefaultToolkit().getImage("NPC 2.png"),
+        Toolkit.getDefaultToolkit().getImage("NPC 3.png"),
+        Toolkit.getDefaultToolkit().getImage("NPC 4.png"),
+        Toolkit.getDefaultToolkit().getImage("NPC 5.png")
+      };
+      
+      Image[] knights={Toolkit.getDefaultToolkit().getImage("Knight1 IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight1 IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight1 Attack left.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight1 Attack right.png"),
+        Toolkit.getDefaultToolkit().getImage("knight2 IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("knight2 IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("knight2 Attack left.png"),
+        Toolkit.getDefaultToolkit().getImage("knight2 Attack right.png"),
+        Toolkit.getDefaultToolkit().getImage("knight3 IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("knight3 IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("knight3 Attack left.png"),
+        Toolkit.getDefaultToolkit().getImage("knight3 Attack right.png"),
+      };
+      
+      Image[] trolls={Toolkit.getDefaultToolkit().getImage("Troll1 IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll1 IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll1 Attack left.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll1 Attack right.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll2 IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll2 IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll2 Attack left.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll2 Attack right.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll3 IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll3 IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll3 Attack left.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll3 Attack right.png"),
+      };
+      
+      Image[] spider={Toolkit.getDefaultToolkit().getImage("Poison Spider IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Poison Spider IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Frost Spider IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Frost Spider IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Fire Spider IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Fire Spider IDLE right.png")
+      }; 
+      
+      Image[] sorcerer={Toolkit.getDefaultToolkit().getImage("Poison sorcerer IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Poison sorcerer IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Frost sorcerer IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Frost sorcerer IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Fire sorcerer IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Fire sorcerer IDLE right.png"),
+      }; 
+      
       Image waterImage=Toolkit.getDefaultToolkit().getImage("Water.png");
       Image chestImage=Toolkit.getDefaultToolkit().getImage("chest texture.png");
+      Image treeImage=Toolkit.getDefaultToolkit().getImage("tree.png");
       Image castleWallImage=Toolkit.getDefaultToolkit().getImage("castle wall.png");
       Image wallImage=Toolkit.getDefaultToolkit().getImage("wall.png");
-      
-      int playerX = 0;
-      int playerY = 0;
-      int countX = 0;
-      int countY = 0;
+      Image caveWallImage=Toolkit.getDefaultToolkit().getImage("cave wall tile.png");
       
       setDoubleBuffered(true); 
       Color myGreen = new Color(11, 215, 72);
-      Color myBeige = new Color(245,245,220);
       Color myBeigeFemale = new Color(227, 220, 192);
       Color myBrown = new Color(176, 102, 96);
       Color myBlue = new Color(0, 168, 252);
       Color mySaddleBrown = new Color(139,69,19);
+      Color questLog = new Color(205, 133, 63);
       Color wood = new Color(102, 51, 0);
       Color floor = new Color(20, 80, 40); 
       Color tree = new Color(20, 51, 6);
-      Color bandit = new Color(139, 60, 100);
-      Color archer = new Color(11, 110, 80);
-      Color yellow = new Color(255,255,0);
+      Color fallenKnight = new Color(139, 60, 100);
+      Color troll = new Color(11, 110, 80);
+      Color royalYellow = new Color(250, 218, 94);
       Color farmer = new Color(176, 102, 84);
-      
-      for (int a = 0; a < world.length; a++) {
-        for (int b = 0; b < world.length; b++) {
-          if (world[a][b] instanceof Player) {
-            playerX = a;
-            ((Player)world[a][b]).setX(playerX);
-            playerY = b;
-            ((Player)world[a][b]).setY(playerY);
-          }
-        }
-      }
+      Color speech = new Color(0,49,82);
+      Color sideQuest = new Color(0, 128, 255);
       
       
       
@@ -252,8 +400,10 @@ class GameFrame extends JFrame {
         { 
           
           // Environment
-          if (world[i][j] instanceof Grass) {  
+
+          if (world[i][j] instanceof NormalGrass || world[i][j] instanceof CityGrounds) {  
             g.drawImage(floorTextures[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+
             
           } else if (world[i][j] instanceof FrostGrass) {
             g.drawImage(floorTextures[2],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);            
@@ -285,31 +435,39 @@ class GameFrame extends JFrame {
           } else if (world[i][j] instanceof HouseFloor) {
             g.drawImage(floorTextures[5],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             
+          }else if (world[i][j] instanceof Bridge) {
+            g.drawImage(floorTextures[6],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            
           } else if (world[i][j] instanceof Tree) {
-            g.setColor(tree); //sets colour for printing organism
-            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
+            g.drawImage(treeImage,(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            
           } else if (world[i][j] instanceof CaveWall) {
-            g.setColor(Color.BLACK); //sets colour for printing organism
-            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio); 
+            g.drawImage(caveWallImage,(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
           }
-            //NPCs  
+          //NPCs  
           if (world[i][j] instanceof NPC) {
-            g.setColor(farmer); //sets colour for printing organism
-            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            imageChoice=((NPC)(world[i][j])).getImageChoice();
+            g.drawImage(npcSprites[imageChoice],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
             
           } 
           //Enemies
           if (world[i][j] instanceof Enemy || world[i][j] instanceof Player){
+            
             World characterImageBackground=null;
             if (world[i][j] instanceof Enemy){
-              characterImageBackground=((Enemy)world[i][j]).returnFutureStep();
+              characterImageBackground=((Enemy)world[i][j]).getPreviousStep();
+              enemyDirection=((Enemy)world[i][j]).getDirection();
             }else if(world[i][j] instanceof Player){
-              characterImageBackground=((Player)world[i][j]).returnFutureStep();
+              characterImageBackground=((Player)world[i][j]).getPreviousStep();
             }
-            if (characterImageBackground instanceof Grass) {  
+            
+            if (characterImageBackground instanceof NormalGrass) {  
               g.drawImage(floorTextures[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            
+            } else if (characterImageBackground instanceof PoisonGrass) {
+              g.drawImage(floorTextures[1],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
               
             } else if (characterImageBackground instanceof FrostGrass) {
               g.drawImage(floorTextures[2],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);            
@@ -320,37 +478,66 @@ class GameFrame extends JFrame {
             } else if (characterImageBackground instanceof Dirt) {
               g.drawImage(floorTextures[4],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
               
-            } else if (characterImageBackground instanceof PoisonGrass) {
-              g.drawImage(floorTextures[1],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } else if (characterImageBackground instanceof HouseFloor) {
+              g.drawImage(floorTextures[5],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
               
-            }else if (characterImageBackground instanceof HouseFloor) {
-            g.drawImage(floorTextures[5],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
-            
+            }else if (characterImageBackground instanceof Bridge) {
+              g.drawImage(floorTextures[6],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             }
           }
-          if (world[i][j] instanceof Bandit) {
-            g.drawImage(knights[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+          if (world[i][j] instanceof FallenKnight) {
+            imageChoice=((FallenKnight)(world[i][j])).getImageChoice();
+            g.drawImage(knights[imageChoice+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
-          else if (world[i][j] instanceof Archer) {
-            g.drawImage(trolls[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+          else if (world[i][j] instanceof Troll) {
+            imageChoice=((Troll)(world[i][j])).getImageChoice();
+            g.drawImage(trolls[imageChoice+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           else if (world[i][j] instanceof PoisonSpider) {
-            g.drawImage(spider[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.drawImage(spider[0+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
-          else if (world[i][j] instanceof PoisonSnake) {
-            g.drawImage(sorcerer[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+          else if (world[i][j] instanceof FrostSpider) {
+            g.drawImage(spider[2+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.setColor(Color.WHITE);
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+          }
+          else if (world[i][j] instanceof FireSpider) {
+            g.drawImage(spider[4+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.setColor(Color.WHITE);
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+          }
+          else if (world[i][j] instanceof PoisonSorcerer) {
+            g.drawImage(sorcerer[0+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.setColor(Color.WHITE);
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+          }
+          else if (world[i][j] instanceof FrostSorcerer) {
+            g.drawImage(sorcerer[2+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.setColor(Color.WHITE);
+            g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
+          }
+          else if (world[i][j] instanceof FireSorcerer) {
+            g.drawImage(sorcerer[4+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           //Player
           else if (world[i][j] instanceof Player) {
-            g.drawImage(player[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            if (((Player)(world[i][j])).getEquippedArmour()){
+              g.drawImage(playerArmour[playerState],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } 
+            else if (((Player)(world[i][j])).getEquippedWeapon()){
+              g.drawImage(playerNoArmour[playerState],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            }
+            else{
+              g.drawImage(playerEmpty[playerState/2],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            }
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
             g.drawString("Lv:" + ((Player)world[i][j]).getLvl(), (j - (j - (countY %9))) * GridToScreenRatio + 30, (i - (i - countX)) * GridToScreenRatio + 30);
@@ -360,52 +547,231 @@ class GameFrame extends JFrame {
         }
         countX++;
       }
-      //updateActiveQuests();
+      g.setColor(Color.BLACK);
+      g.fillRect((maxX/4) - 205 , maxY - 150, 410, 35); 
+      g.setColor(Color.RED);
+      g.fillRect((maxX/4) - 200 , maxY - 145, (player.getHealth() * 400) / player.getMaxHealth(), 25);
+      g.drawString(player.getHealth() + " / " + player.getMaxHealth(), maxX/5, maxY - 100);
       
-//      for (int i = 0; i < activeQuests.size(); i++) {
-//        if (activeQuests.get(i) instanceof MainQuestA) {
-//          g.setColor(Color.RED);
-//          g.drawString(mainQuests.getName(), maxX / 2 - 100, maxY / 8);
-//        }
-//      }
-    }
-  }
-//  private void updateActiveQuests() {
-//    if (mainQuests.getActive()) {
-//      activeQuests.add(mainQuests);
-//    }
-//    for (int i = 0; i < sideQuests.length; i++) {
-//      if (sideQuests[i].getActive()) {
-//        activeQuests.add(sideQuests[i]);
-//      }
-//    }
-//  }
-  // -----------  Inner class for the keyboard listener - this detects key presses and runs the corresponding code
-  private class MyKeyListener implements KeyListener {
-    int playerX = 0;
-    int playerY = 0;
-    public void keyTyped(KeyEvent e) {  
-    }
-    
-    public void keyPressed(KeyEvent e) {
-      //System.out.println("keyPressed="+KeyEvent.getKeyText(e.getKeyCode()));
-      for (int i = 0; i < world.length; i++) {
-        for (int j = 0; j < world.length; j++) {
-          if (world[i][j] instanceof Player) {
-            playerX = i;
-            playerY = j;
+      updateActiveQuests();
+      
+      g.setColor(questLog);
+      if (activeQuests.size() > 3) {
+        g.fillRect(0,0, (maxX/8) + 20, maxY/3);
+      } else {
+        g.fillRect(0,0, (maxX/8) + 20, maxY/4);
+      }
+      g.setColor(royalYellow);
+      g.drawLine(0,28, maxX/8, 28);
+      g.setFont(questLogTitle);
+      g.drawString("Quest Log",10, 25);
+      for (int i = 0; i < activeQuests.size(); i++) {
+        if (activeQuests.get(i) instanceof MainQuestA) {
+          g.setColor(Color.BLACK);
+          g.setFont(questTitle);
+          g.drawString(mainQuests.getName(), 15, 55 + i*30);
+          g.setFont(questTask);
+          if (mainQuests.getCurrentTask() == 1 || mainQuests.getCurrentTask() == 5 || mainQuests.getCurrentTask() == 12 || 
+              mainQuests.getCurrentTask() == 19) {
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()) + " (" + ((MainQuestA)mainQuests).trackTask(1) + ")", 15, 55 + i*30 + 20);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()+1) + " (" + ((MainQuestA)mainQuests).trackTask(2) + ")", 15, 55 + i*30 + 40);
+          } else {
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()) + " (" + ((MainQuestA)mainQuests).trackTask(1) + ")", 15, 55 + i*30 + 20);
+          }
+        } else {
+          g.setColor(sideQuest);
+          g.setFont(questTitle);
+          g.drawString((activeQuests.get(i)).getName(),10, 65 + 60*i);
+          g.setFont(questTask);
+          if ((activeQuests.get(i)).getNumTasks() > 1) {
+            for (int k = 0; k < (activeQuests.get(i)).getNumTasks(); k++) {
+              g.drawString("- " +(activeQuests.get(i)).getTask((activeQuests.get(i)).getCurrentTask() + k), 15, 65 + 60*i + 20*(k+1));
+            }  
+          } else {
+            g.drawString("- " +(activeQuests.get(i)).getTask((activeQuests.get(i)).getCurrentTask()), 15, 65 + 60*i + 20);
           }
         }
       }
       
-      if (KeyEvent.getKeyText(e.getKeyCode()).equals("W")) {  //If 'W' is pressed
-        ((Player)world[playerX][playerY]).move(world,1);
-      } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("S")) {  //If 'S' is pressed
-        ((Player)world[playerX][playerY]).move(world, 2);
-      } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("A")) {
-        ((Player)world[playerX][playerY]).move(world, 3);      
-      } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("D")) {
-        ((Player)world[playerX][playerY]).move(world, 4);
+      
+      if (speechQueue.size() > 0) {
+        dialogue = true; 
+        
+        if (advanceDialogue == speechQueue.size()) {
+          dialogue = false;
+          speechQueue.clear();
+          speechQueue.trimToSize();
+          advanceDialogue=0;
+        } else {
+          g.setColor(Color.BLACK);
+          g.fillRect((maxX/4) - 220, maxY - 250, maxX/3 - 150, 142);
+          g.setColor(speech);
+          g.fillRect((maxX/4) - 210, maxY - 240, maxX/3 - 170, 122);
+          g.setFont(questTask);
+          g.setColor(Color.WHITE);
+          g.drawString(speechQueue.get(advanceDialogue), (maxX/4)-100, ((maxY - 250) + 142 / 2));
+        }
+      }
+    }
+  }
+  
+  /*
+   * 
+   * 
+   * 
+   */
+  private void updateActiveQuests() {
+    activeQuests.clear();
+    if (mainQuests.getActive()) {
+      activeQuests.add(mainQuests);
+    }
+    for (int i = 0; i < sideQuests.length; i++) {
+      if (sideQuests[i] != null) {
+        if (sideQuests[i].getActive()) {
+          activeQuests.add(sideQuests[i]);
+        }
+      }
+    }
+  }
+  /*
+   * 
+   * 
+   * 
+   */
+  void respawnBoss() {
+    if (!(world[8][83] instanceof PoisonBoss)) {
+      world[8][83] = new PoisonGrass();
+      world[8][83] = new PoisonBoss(1,1,1,1,1,1, "Poison Boss", 8, 83,world[8][83] );
+    }
+    
+    if (!(world[91][89] instanceof FrostBoss)) {
+      world[91][89] = new Bridge();
+      world[92][89] = new FrostBoss(1,1,1,1,1,1, "Frost Boss", 91, 89, world[91][89] );
+    }
+    
+    if (!(world[97][10] instanceof FireBoss)) {
+      world[97][10] = new FireGrass();
+      world[97][10] = new FireBoss(1,1,1,1,1,1, "Fire Boss", 97, 10, world[97][10]);
+    }
+  }
+  /*
+   * 
+   * 
+   * 
+   */
+  void respawnEnemies() {
+    System.out.println("respawn");
+    int noobCount = 0, fireCount = 0, frostCount = 0, poisonCount = 0, totalCount = 0;
+    Random rand = new Random();
+    int enemyType;
+    int randX;
+    int randY;
+    
+    for (int i = 0; i < world.length; i++) {
+      for (int j = 0; j < world.length; j++) {
+        randX = rand.nextInt(97) + 4;
+        randY = rand.nextInt(97) + 4;
+        if (noobCount < 2) {
+          if (world[randX][randY] instanceof NormalGrass) {
+            enemyType = rand.nextInt(2);
+            if (enemyType == 1) {
+              noobCount++;
+              world[randX][randY] = new FallenKnight(18,3,1,2,3,100,"Fallen Knight", randX, randY, world[randX][randY]);
+            } else {
+              noobCount++;
+              world[randX][randY] = new Troll(10,3,1,1,3,94,"Troll", randX, randY, world[randX][randY]);
+            }
+          } 
+        }
+        if (poisonCount < 1) { 
+          if (world[randX][randY] instanceof PoisonGrass) {
+            enemyType = rand.nextInt(2);
+            if (enemyType == 1) {
+              poisonCount++;
+              world[randX][randY] = new PoisonSorcerer(72,9,4,10,8,100,"PoisonSorcerer", randX, randY, world[randX][randY]);
+            } else {
+              poisonCount++;
+              world[randX][randY] = new PoisonSpider(48,3,9,6,10,96,"PoisonSpider", randX, randY, world[randX][randY]);
+            }
+          }
+        }
+        if (frostCount < 2) { 
+          if (world[randX][randY] instanceof FrostGrass) {
+            enemyType = rand.nextInt(2);
+            if (enemyType == 1) {
+              frostCount++;
+              world[randX][randY] = new FrostSorcerer(108,24,22,16,14,100,"FrostSorcerer", randX, randY, world[randX][randY]);
+            } else {
+              frostCount++;
+              world[randX][randY] = new FrostSpider(84,16,25,12,15,98,"FrostSpider", randX, randY, world[randX][randY]);
+            }
+          }
+        } 
+        if (fireCount < 1) {
+          if (world[randX][randY] instanceof FireGrass) {
+            enemyType = rand.nextInt(2);
+            if (enemyType == 1) {
+              fireCount++;
+              world[randX][randY] = new FireSorcerer(324,32,36,30,20,100,"FireSorcerer", randX, randY, world[randX][randY]);
+            } else {
+              fireCount++;
+              world[randX][randY] = new FireSpider(224,26,36,30,20,100,"FireSpider", randX, randY, world[randX][randY]);
+            }
+          }
+        } 
+      }
+    }
+    allowRespawn = false;
+  }
+  
+  class Clock {
+    long elapsedTime;
+    long lastTimeCheck;
+    long currentTime;
+    
+    public Clock() { 
+      lastTimeCheck=System.nanoTime();
+      elapsedTime=0;
+    }
+    
+    public void update() {
+      //if the computer is fast you need more precision
+      currentTime = System.nanoTime();
+      elapsedTime=currentTime - lastTimeCheck;
+      lastTimeCheck=currentTime;
+    }
+    
+    //return elapsed time in milliseconds
+    public double getElapsedTime() {
+      currentTime = System.nanoTime();
+      return (currentTime - lastTimeCheck)/1.0E9;
+    }
+  }
+  // -----------  Inner class for the keyboard listener - this detects key presses and runs the corresponding code
+  private class MyKeyListener implements KeyListener {
+    
+    public void keyTyped(KeyEvent e) {  
+    }
+    
+    public void keyPressed(KeyEvent e) {
+      int playerX = player.getX();
+      int playerY = player.getY();
+      if (playerMove == true) {
+        if (KeyEvent.getKeyText(e.getKeyCode()).equals("W")) {  //If 'W' is pressed
+          ((Player)world[playerX][playerY]).move(world, 1);
+          playerState=6;
+        } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("S")) {  //If 'S' is pressed
+          ((Player)world[playerX][playerY]).move(world, 2);
+          playerState=4;
+        } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("A")) {
+          ((Player)world[playerX][playerY]).move(world, 3);
+          playerState=0;
+        } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("D")) {
+          ((Player)world[playerX][playerY]).move(world, 4);
+          playerState=2;
+        }
+        playerMove = false;
+
       }
     }   
     
@@ -417,397 +783,478 @@ class GameFrame extends JFrame {
   private class MyMouseListener implements MouseListener {
     
     public void mouseClicked(MouseEvent e) {
-      int playerX = 0;
-      int playerY = 0;
       int mouseX = e.getX();
       int mouseY = e.getY();
-      int yToTile = ((mouseX / GridToScreenRatio) - 4) + playerX;
-      int xToTile = ((mouseY / GridToScreenRatio) - 4) + playerY;
+      int yToTile = ((mouseX / GridToScreenRatio) - 4) + player.getX();
+      int xToTile = ((mouseY / GridToScreenRatio) - 4) + player.getY();
       
-      for (int i = 0; i < world.length; i++) {
-        for (int j = 0; j < world.length; j++) {
-          if (world[i][j] instanceof Player) {
-            playerX = i;
-            playerY = j;
-          }
-        }
+      // advance the active dialogue if someone is talking
+      if (dialogue == true) {
+        advanceDialogue++;
       }
-      System.out.println(mouseX);
-      System.out.println(mouseY);
-      yToTile = ((mouseX / GridToScreenRatio) - 4) + playerY;
-      xToTile = ((mouseY / GridToScreenRatio) - 4) + playerX;
-      
-      interact(world[playerX][playerY], world[xToTile][yToTile], world);
       
       
-      //System.out.println(xToTile + " " + yToTile);
+      yToTile = ((mouseX / GridToScreenRatio) - 4) + player.getY();
+      xToTile = ((mouseY / GridToScreenRatio) - 4) + player.getX();
+      spaceX = Math.abs(xToTile - player.getX());
+      spaceY = Math.abs(yToTile - player.getY());
+      
+      interact(world[xToTile][yToTile]);
+      
     }
     
-    public void interact(Object player, Object interactable, World[][] world) {
+    public void interact(World interactable) {
       
       if (interactable instanceof Enemy) {
-        ((Player)player).attack(((Enemy)interactable));
+        if (spaceX <= 1 && spaceY <= 1) {
+          player.attack(((Enemy)interactable));
+        }
         
         //Quests interaction
         if (((Enemy)interactable).getHealth() <= 0) {
-          if (interactable instanceof Bandit) {
-            if (((Quest)sideQuests[0]).getActive() && !((Quest)sideQuests[0]).getComplete()) {
+          int enemyLevel = ((CombatCharacter)interactable).getLvl();
+          int giveXP = 0;
+          allowRespawn = true;
+          Random randXP = new Random();
+          if (enemyLevel <= 5) {
+            giveXP = randXP.nextInt(3);
+          } else if (enemyLevel < 10) {
+            giveXP = randXP.nextInt(6) + 3;
+          } else if (enemyLevel <= 15) {
+            giveXP = randXP.nextInt(8) + 4;
+          } else if (enemyLevel <= 20) {
+            giveXP = randXP.nextInt(11) + 10;
+          }
+          
+          if (interactable instanceof FallenKnight) {
+            if (((Quest)sideQuests[0]).getActive() && !((Quest)sideQuests[0]).getComplete() && ((Quest)sideQuests[0]).getActive()) {
               ((Quest)sideQuests[0]).setComplete(((Quest)sideQuests[0]).updateObjective(1));
               if (((Quest)sideQuests[0]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[0]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[0]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+                bag.find(sideQuests[0].getItemReward());
+                speechQueue.add((sideQuests[0].getItemReward()).getName());
               }
             }
             // MAIN QUEST
-            if (((Quest)mainQuests).getCurrentTask() < 3 && !((Quest)mainQuests).getComplete()) {
+            if (((Quest)mainQuests).getCurrentTask() < 3 && !((Quest)mainQuests).getComplete() && ((Quest)mainQuests).getActive()) {
               ((Quest)mainQuests).updateObjective(1);
               
               if (((Quest)mainQuests).getCurrentTask() == 3) {
-                System.out.println("complete");
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
               }
             }
           }
-          else if (interactable instanceof Archer) {
+          else if (interactable instanceof Troll) {
             //MAIN QUEST
-            if (((Quest)mainQuests).getCurrentTask() < 3 && !((Quest)mainQuests).getComplete()) {
+            if (((Quest)mainQuests).getCurrentTask() < 3 && !((Quest)mainQuests).getComplete() && ((Quest)mainQuests).getActive()) {
               ((Quest)mainQuests).updateObjective(2);
-              System.out.println(mainQuests.getCurrentTask());
               if (((Quest)mainQuests).getCurrentTask() == 3) {
-                System.out.println("complete");
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                bag.find(sideQuests[0].getItemReward());
+                speechQueue.add((sideQuests[0].getItemReward()).getName());
               }
             }
           }
           //Poison Quest (huntquestB/(1 in index)
-          else if (interactable instanceof PoisonSnake) {
-            if (((Quest)sideQuests[1]).getActive() && !((Quest)sideQuests[1]).getComplete()) {
+          else if (interactable instanceof PoisonSorcerer) {
+            if (((Quest)sideQuests[1]).getActive() && !((Quest)sideQuests[1]).getComplete() && ((Quest)sideQuests[1]).getActive()) {
               
               ((Quest)sideQuests[1]).setComplete(((Quest)sideQuests[1]).updateObjective(1));
               if (((Quest)sideQuests[1]).getCurrentTask() == 7) {
-                System.out.println("complete");
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[1]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[1]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[1]).getXPReward() + " XP");
+                bag.find(sideQuests[1].getItemReward());
+                speechQueue.add((sideQuests[1].getItemReward()).getName());
               }
             }
             // MAIN QUEST
-            if (((Quest)mainQuests).getCurrentTask() > 4 && ((Quest)mainQuests).getCurrentTask() < 7 && !((Quest)mainQuests).getComplete()) {
+            if (((Quest)mainQuests).getCurrentTask() > 4 && ((Quest)mainQuests).getCurrentTask() < 7 && !((Quest)mainQuests).getComplete()
+                  && ((Quest)mainQuests).getActive()) {
               ((Quest)mainQuests).updateObjective(1);
-              System.out.println(mainQuests.getCurrentTask());
               if (((Quest)mainQuests).getCurrentTask() == 7) {
-                System.out.println("complete");
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
               }
             }
           }
           else if (interactable instanceof PoisonSpider) {
-            if (((Quest)sideQuests[1]).getActive() && !((Quest)sideQuests[1]).getComplete()) {
+            if (((Quest)sideQuests[1]).getActive() && !((Quest)sideQuests[1]).getComplete() && ((Quest)mainQuests).getActive()) {
               ((Quest)sideQuests[1]).setComplete(((Quest)sideQuests[0]).updateObjective(2));
               if (((Quest)sideQuests[1]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[1]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[1]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[1]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[1]).getXPReward() + " XP");
+                bag.find(sideQuests[1].getItemReward());
+                speechQueue.add((sideQuests[1].getItemReward()).getName());
               }
             }
             // MAIN QUEST
-            if (((Quest)mainQuests).getCurrentTask() > 4 && ((Quest)mainQuests).getCurrentTask() < 7 && !((Quest)mainQuests).getComplete()) {
+            if (((Quest)mainQuests).getCurrentTask() > 4 && ((Quest)mainQuests).getCurrentTask() < 7 && !((Quest)mainQuests).getComplete()
+                  && ((Quest)mainQuests).getActive()) {
               ((Quest)mainQuests).updateObjective(2);
-              System.out.println(mainQuests.getCurrentTask());
               if (((Quest)mainQuests).getCurrentTask() == 7) {
-                System.out.println("complete");
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
               }
             }
           }
           //Frost Quest (huntquestC/(2 in index)
-          else if (interactable instanceof FrostSnake) {
-            if (((Quest)sideQuests[2]).getActive() && !((Quest)sideQuests[2]).getComplete()) {
+          else if (interactable instanceof FrostSorcerer) {
+            if (((Quest)sideQuests[2]).getActive() && !((Quest)sideQuests[2]).getComplete() && ((Quest)sideQuests[2]).getActive()) {
               ((Quest)sideQuests[2]).setComplete(((Quest)sideQuests[2]).updateObjective(1));
               if (((Quest)sideQuests[2]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[2]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[2]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[2]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[2]).getXPReward() + " XP");
+                bag.find(sideQuests[2].getItemReward());
+                speechQueue.add((sideQuests[2].getItemReward()).getName());
               }
             }
             // MAIN QUEST
-            if (((Quest)mainQuests).getCurrentTask() > 11 && ((Quest)mainQuests).getCurrentTask() < 14 && !((Quest)mainQuests).getComplete()) {
+            if (((Quest)mainQuests).getCurrentTask() > 11 && ((Quest)mainQuests).getCurrentTask() < 14 && !((Quest)mainQuests).getComplete()
+                  && ((Quest)mainQuests).getActive()) {
               ((Quest)mainQuests).updateObjective(1);
               if (((Quest)mainQuests).getCurrentTask() == 14) {
-                System.out.println("complete");
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
               }
             }
           }
           else if (interactable instanceof FrostSpider) {
-            if (((Quest)sideQuests[2]).getActive() && !((Quest)sideQuests[2]).getComplete()) {
+            if (((Quest)sideQuests[2]).getActive() && !((Quest)sideQuests[2]).getComplete() && ((Quest)sideQuests[2]).getActive()) {
               ((Quest)sideQuests[2]).setComplete(((Quest)sideQuests[2]).updateObjective(2));
               if (((Quest)sideQuests[2]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[2]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[2]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[2]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[2]).getXPReward() + " XP");
+                bag.find(sideQuests[2].getItemReward());
+                speechQueue.add((sideQuests[2].getItemReward()).getName());
               }
             }
             // MAIN QUEST
-            if (((Quest)mainQuests).getCurrentTask() > 11 && ((Quest)mainQuests).getCurrentTask() < 14 && !((Quest)mainQuests).getComplete()) {
+            if (((Quest)mainQuests).getCurrentTask() > 11 && ((Quest)mainQuests).getCurrentTask() < 14 && !((Quest)mainQuests).getComplete()
+                  && ((Quest)mainQuests).getActive()) {
               ((Quest)mainQuests).updateObjective(1);
               if (((Quest)mainQuests).getCurrentTask() == 14) {
-                System.out.println("complete");
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
               }
             }
           }
           //Fire Quest (huntquestD/(3 in index)
-          else if (interactable instanceof FireSnake) {
-            if (((Quest)sideQuests[3]).getActive() && !((Quest)sideQuests[3]).getComplete()) {
+          else if (interactable instanceof FireSorcerer) {
+            if (((Quest)sideQuests[3]).getActive() && !((Quest)sideQuests[3]).getComplete() && ((Quest)sideQuests[3]).getActive()) {
               ((Quest)sideQuests[3]).setComplete(((Quest)sideQuests[3]).updateObjective(1));
               if (((Quest)sideQuests[3]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[3]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[3]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[3]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[3]).getXPReward() + " XP");
+                bag.find(sideQuests[3].getItemReward());
+                speechQueue.add((sideQuests[3].getItemReward()).getName());
               }
             }
             // MAIN QUEST
-            if (((Quest)mainQuests).getCurrentTask() > 18 && ((Quest)mainQuests).getCurrentTask() < 21 && !((Quest)mainQuests).getComplete()) {
+            if (((Quest)mainQuests).getCurrentTask() > 18 && ((Quest)mainQuests).getCurrentTask() < 21 && !((Quest)mainQuests).getComplete() && 
+                ((Quest)mainQuests).getActive()) {
               ((Quest)mainQuests).updateObjective(1);
-              if (((Quest)mainQuests).getCurrentTask() == 7) {
-                System.out.println("complete");
+              if (((Quest)mainQuests).getCurrentTask() == 21) {
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
               }
             }
           }
           else if (interactable instanceof FireSpider) {
-            if (((Quest)sideQuests[3]).getActive() && !((Quest)sideQuests[3]).getComplete()) {
+            if (((Quest)sideQuests[3]).getActive() && !((Quest)sideQuests[3]).getComplete() && ((Quest)sideQuests[3]).getActive()) {
               ((Quest)sideQuests[3]).setComplete(((Quest)sideQuests[3]).updateObjective(2));
               if (((Quest)sideQuests[3]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[3]).getName());
                 ((Player)player).setExp(((Quest)sideQuests[3]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[3]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[3]).getXPReward() + " XP");
+                bag.find(sideQuests[3].getItemReward());
+                speechQueue.add((sideQuests[3].getItemReward()).getName());
               }
             }
             // MAIN QUEST
-            if (((Quest)mainQuests).getCurrentTask() > 18 && ((Quest)mainQuests).getCurrentTask() < 21 && !((Quest)mainQuests).getComplete()) {
+            if (((Quest)mainQuests).getCurrentTask() > 18 && ((Quest)mainQuests).getCurrentTask() < 21 && !((Quest)mainQuests).getComplete()
+                  && ((Quest)mainQuests).getActive()) {
               ((Quest)mainQuests).updateObjective(2);
-              if (((Quest)mainQuests).getCurrentTask() == 7) {
-                System.out.println("complete");
+              if (((Quest)mainQuests).getCurrentTask() == 21) {
+                speechQueue.add("Tasks completed!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
               }
             }
           }
           
           //Boss Quest (HuntQuestE/(4 in index)
           else if (interactable instanceof PoisonBoss) {
-            if (((Quest)sideQuests[4]).getActive() && !((Quest)sideQuests[4]).getComplete()) {
+            if (((Quest)sideQuests[4]).getActive() && !((Quest)sideQuests[4]).getComplete() && ((Quest)sideQuests[4]).getActive()) {
               ((Quest)sideQuests[4]).setComplete(((Quest)sideQuests[4]).updateObjective(1));
               if (((Quest)sideQuests[4]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[4]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[4]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[0]).getXPReward() + " XP");
+                bag.find(sideQuests[4].getItemReward());
+                speechQueue.add((sideQuests[4].getItemReward()).getName());
               }
             }
             // MAIN QUEST
-            if (((Quest)mainQuests).getCurrentTask() == 9 && !((Quest)mainQuests).getComplete()) {
+            if (((Quest)mainQuests).getCurrentTask() == 9 && !((Quest)mainQuests).getComplete() && ((Quest)mainQuests).getActive()) {
               ((Quest)mainQuests).updateObjective(1);
               if (((Quest)mainQuests).getCurrentTask() == 10) {
-                System.out.println(((Quest)mainQuests).getTask(9));
+                speechQueue.add("Task complete!");
+                speechQueue.add(((Quest)mainQuests).getTask(9));
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
               }
             }
           }
           else if (interactable instanceof FrostBoss) {
-            if (((Quest)sideQuests[4]).getActive() && !((Quest)sideQuests[4]).getComplete()) {
+            if (((Quest)sideQuests[4]).getActive() && !((Quest)sideQuests[4]).getComplete() && ((Quest)sideQuests[4]).getActive()) {
               ((Quest)sideQuests[4]).setComplete(((Quest)sideQuests[4]).updateObjective(2));
               if (((Quest)sideQuests[4]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[4]).getName());
                 ((Player)player).setExp(((Player)player).getExp() +((Quest)sideQuests[4]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[4]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[4]).getXPReward() + " XP");
+                bag.find(sideQuests[4].getItemReward());
+                speechQueue.add((sideQuests[4].getItemReward()).getName());
               }
             }
             // MAIN QUEST
-            if (((Quest)mainQuests).getCurrentTask() == 16 && !((Quest)mainQuests).getComplete()) {
+            if (((Quest)mainQuests).getCurrentTask() == 16 && !((Quest)mainQuests).getComplete() && ((Quest)mainQuests).getActive()) {
               ((Quest)mainQuests).updateObjective(1);
-              if (((Quest)mainQuests).getCurrentTask() == 7) {
-                System.out.println("complete");
+              if (((Quest)mainQuests).getCurrentTask() == 17) {
+                speechQueue.add("Task complete!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
               }
             }
           }
           else if (interactable instanceof FireBoss) {
-            if (((Quest)sideQuests[4]).getActive() && !((Quest)sideQuests[4]).getComplete()) {
+            if (((Quest)sideQuests[4]).getActive() && !((Quest)sideQuests[4]).getComplete() && ((Quest)sideQuests[4]).getActive()) {
               ((Quest)sideQuests[4]).setComplete(((Quest)sideQuests[4]).updateObjective(3));
               if (((Quest)sideQuests[4]).getComplete()) {
-                System.out.println("complete");
+                speechQueue.add("Quest completed: " + ((Quest)sideQuests[4]).getName());
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)sideQuests[4]).getXPReward());
-                System.out.println("You have gained : " + ((Quest)sideQuests[4]).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)sideQuests[4]).getXPReward() + " XP");
+                bag.find(mainQuests.getItemReward());
+                speechQueue.add((sideQuests[4].getItemReward()).getName());
               }
             }
             // MAIN QUEST
-            if (((Quest)mainQuests).getCurrentTask() == 24 && !((Quest)mainQuests).getComplete()) {
+            if (((Quest)mainQuests).getCurrentTask() == 24 && !((Quest)mainQuests).getComplete() && ((Quest)mainQuests).getActive()) {
               ((Quest)mainQuests).updateObjective(1);
               if (((Quest)mainQuests).getCurrentTask() == 25) {
-                System.out.println("complete");
+                speechQueue.add("Task complete!");
                 ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-                System.out.println("You have gained : something");
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
               }
             }
           }
-          // else if (interactable instanceof MangatBoss) {
-//          if (((Quest)mainQuests).getCurrentTask() == 24 && !((Quest)mainQuests).getComplete()) {
-//              ((Quest)mainQuests).updateObjective(1);
-//              if (((Quest)mainQuests).getCurrentTask() == 25) {
-//                System.out.println("complete");
-//                ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
-//                System.out.println("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
-//                System.out.println("You have gained : something");
-//              }
-//            }
-          //}
+          else if (interactable instanceof MangatBoss) {
+            if (((Quest)mainQuests).getCurrentTask() == 25 && !((Quest)mainQuests).getComplete() && ((Quest)mainQuests).getActive()) {
+              ((Quest)mainQuests).updateObjective(1);
+              if (((Quest)mainQuests).getCurrentTask() == 26) {
+                speechQueue.add("You have slain Mangat!");
+                ((Player)player).setExp(((Player)player).getExp() + ((Quest)mainQuests).getXPReward());
+                speechQueue.add("You have gained : " + ((Quest)mainQuests).getXPReward() + " XP");
+                bag.find(sideQuests[0].getItemReward());
+                speechQueue.add("You have gained : something");
+              }
+            }
+          }
         }
-        
+      } else if (interactable instanceof Chest){
+        if (((Chest)interactable).getChestItems() != null) {
+          bag.find(((Chest)interactable).getChestItems());
+          System.out.println(bag.getItemName(0));
+          System.out.println(bag.getItemName(1));
+          System.out.println(bag.getItemName(2));
+          System.out.println(bag.getItemName(3));
+          ((Chest)interactable).removeItem();
+        }
       }
       else if (interactable instanceof NPC) {
-        //((NPC)interactable).speak();
-        if (((NPC)interactable).getQuestGiver()) { // possibly start the quest by pressing a key not the mouse
+        
+        if (((NPC)interactable).getQuestGiver()) { 
           
           Quest newQuest = ((NPC)interactable).getQuest();
           
           if (newQuest instanceof HuntQuest && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[0]).setActive(true);
             ((Quest)newQuest).initialize(world);
+            speechQueue.add("Please help me defeat these Fallen Knights!");
           }
           
           if (newQuest instanceof HuntQuestB && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[1]).setActive(true);
             ((Quest)newQuest).initialize(world);
+            speechQueue.add("These poison monsters need a beating!");
           }
           
           if (newQuest instanceof HuntQuestC && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[2]).setActive(true);
             ((Quest)newQuest).initialize(world);
+            speechQueue.add("Help me with a little something eh?");
           }
           
           if (newQuest instanceof HuntQuestD && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[3]).setActive(true);
             ((Quest)newQuest).initialize(world);
+            speechQueue.add("Prove your worth to a master!");
           }
           
           if (newQuest instanceof HuntQuestE && !((Quest)newQuest).getComplete()) {
             ((Quest)sideQuests[4]).setActive(true);
             ((Quest)newQuest).initialize(world);
+            speechQueue.add("Show me what you got.");
+            speechQueue.add("If you defeat the strongest monsters in this realm,");
+            speechQueue.add("I'd consider you as a master hunter!");
           }
-        }
-        // Main Quest handling
-        if (((NPC)interactable).getQuest() instanceof MainQuestA) {
-          Quest mainQuest = ((NPC)interactable).getQuest();
-          if (((NPC)interactable).getName() == "Bob" && mainQuest.getCurrentTask() == 0) {
-            mainQuest.initialize(world);
-            Speech bobSpeech = new Speech("Hey can you help me?", 1,1);
+          
+          if (newQuest instanceof FetchQuest && !((Quest)newQuest).getComplete()) {
+            ((Quest)sideQuests[5]).setActive(true);
+            ((Quest)newQuest).initialize(world);
           }
-          else if (((NPC)interactable).getName() == "Bob" && mainQuest.getCurrentTask() == 3) {
-            mainQuest.setCurrentTask(4);
-            System.out.println("Hello, please find the farmer");
-            System.out.println(mainQuest.getTask(3));
+          
+          if (newQuest instanceof FetchQuestB && !((Quest)newQuest).getComplete()) {
+            ((Quest)sideQuests[6]).setActive(true);
+            ((Quest)newQuest).initialize(world);
           }
-          else if (((NPC)interactable).getName() == "Farmer" && mainQuest.getCurrentTask() == 4) {
-            mainQuest.setCurrentTask(5);
-            System.out.println("kill the snakes plox ty very much");
-            System.out.println(mainQuest.getTask(4));
+          
+          if (newQuest instanceof FetchQuestC && !((Quest)newQuest).getComplete()) {
+            ((Quest)sideQuests[7]).setActive(true);
+            ((Quest)newQuest).initialize(world);
           }
-          else if (((NPC)interactable).getName() == "Farmer" && mainQuest.getCurrentTask() == 7) {
-            mainQuest.setCurrentTask(8);
-            System.out.println(mainQuest.getTask(7));
-          }
-          else if (((NPC)interactable).getName() == "King Tagnam") {
-            if (mainQuest.getCurrentTask() == 8) {
-              mainQuest.setCurrentTask(9);
-              System.out.println(mainQuest.getTask(8));
+          
+          // Main Quest handling
+          if (((NPC)interactable).getQuest() instanceof MainQuestA) {
+            Quest mainQuest = ((NPC)interactable).getQuest();
+            if (((NPC)interactable).getName() == "Bob" && mainQuest.getCurrentTask() == 0) {
+              mainQuest.initialize(world);
+              speechQueue.add("Hey buddy!");
+              speechQueue.add("You look kind of strong.");
+              speechQueue.add("There's Fallen Knights and Trolls everywhere!");
+              speechQueue.add("I have stuff in this chest, take it!");
+              speechQueue.add("Help me defeat these Fallen Knights and Trolls!");
+              speechQueue.add(mainQuest.getTask(1));
+              speechQueue.add(mainQuest.getTask(2));
             }
-            else if (mainQuest.getCurrentTask() == 10) {
-              mainQuest.setCurrentTask(11);
-              System.out.println(mainQuest.getTask(10));
+            else if (((NPC)interactable).getName() == "Bob" && mainQuest.getCurrentTask() == 3) {
+              mainQuest.setCurrentTask(4);
+              speechQueue.add("Hey, please find my farmer friend,");
+              speechQueue.add("He needs help in the poison lands.");
+              speechQueue.add(mainQuest.getTask(4));
             }
-            else if (mainQuest.getCurrentTask() == 15) {
-              mainQuest.setCurrentTask(16);
-              System.out.println(mainQuest.getTask(15));
+            else if (((NPC)interactable).getName() == "Farmer" && mainQuest.getCurrentTask() == 4) {
+              mainQuest.setCurrentTask(5);
+              speechQueue.add("These Sorcerers are killing my crops, help me get rid of dem");
+              speechQueue.add(mainQuest.getTask(5));
             }
-            else if (mainQuest.getCurrentTask() == 17) {
-              mainQuest.setCurrentTask(18);
-              System.out.println(mainQuest.getTask(17));
+            else if (((NPC)interactable).getName() == "Farmer" && mainQuest.getCurrentTask() == 7) {
+              mainQuest.setCurrentTask(8);
+              speechQueue.add("Damn, you're strong!");
+              speechQueue.add("I'm sure the King has the work for your kind");
+              speechQueue.add(mainQuest.getTask(8));
             }
-            else if (mainQuest.getCurrentTask() == 24) {
-              mainQuest.setCurrentTask(25);
-              System.out.println(mainQuest.getTask(24));
-              World initialGround = world[60][86];
-              world[60][86] = new MangatBoss(100,100,100,100,100,100,"u screwed",60,86,initialGround);
+            else if (((NPC)interactable).getName() == "King Tagnam") {
+              if (mainQuest.getCurrentTask() == 8) {
+                mainQuest.setCurrentTask(9);
+                speechQueue.add("Who're you?");
+                speechQueue.add(player.getName() + ":" + "I'm " + player.getName());
+                speechQueue.add("I've heard about your strength");
+                speechQueue.add("Let me see you test it");
+                speechQueue.add(mainQuest.getTask(9));
+              }
+              else if (mainQuest.getCurrentTask() == 10) {
+                mainQuest.setCurrentTask(11);
+                speechQueue.add("Not bad, but I still doubt your worth");
+                speechQueue.add("Prove it to me, speak with the ice fisher");    
+                speechQueue.add(mainQuest.getTask(11));
+              }
+              else if (mainQuest.getCurrentTask() == 15) {
+                mainQuest.setCurrentTask(16);
+                speechQueue.add("Well done I must say!");
+                speechQueue.add("But I'm sure you can do better!");
+                speechQueue.add(mainQuest.getTask(16));
+              }
+              else if (mainQuest.getCurrentTask() == 17) {
+                mainQuest.setCurrentTask(18);
+                speechQueue.add("I'm impressed");
+                speechQueue.add("There's one section where I'm reluctant to send my men");
+                speechQueue.add("I want you to make it safe for them to patrol");
+                speechQueue.add("For glory and honour of course!");
+                speechQueue.add(mainQuest.getTask(18));
+              }
+              else if (mainQuest.getCurrentTask() == 24) {
+                mainQuest.setCurrentTask(25);
+                speechQueue.add("You've managed to survive for this long, I don't know how,");
+                speechQueue.add("Anyways, I can't let you be the strongest, only I can.");
+                speechQueue.add(mainQuest.getTask(25));
+                World initialGround = world[60][86];
+                world[60][86] = new MangatBoss(100,100,100,100,100,100,"u screwed",60,86,initialGround);
+              }
             }
-          }
-          else if (((NPC)interactable).getName() == "Ice Fisher") {
-            if (mainQuest.getCurrentTask() == 11) {
-              mainQuest.setCurrentTask(12);
-              System.out.println(mainQuest.getTask(11));
+            else if (((NPC)interactable).getName() == "Ice Fisher") {
+              if (mainQuest.getCurrentTask() == 11) {
+                mainQuest.setCurrentTask(12);
+                speechQueue.add("Did the King send you? I need space for fishing man!");
+                speechQueue.add(mainQuest.getTask(12));
+              }
+              else if (mainQuest.getCurrentTask() == 14) {
+                mainQuest.setCurrentTask(15);
+                speechQueue.add("Thanks, the King will probably want to know about this.");
+                speechQueue.add(mainQuest.getTask(15));
+              }
             }
-            else if (mainQuest.getCurrentTask() == 14) {
-              mainQuest.setCurrentTask(15);
-              System.out.println(mainQuest.getTask(14));
-            }
-          }
-          else if (((NPC)interactable).getName() == "Volat" && mainQuest.getCurrentTask() == 18) {
-            mainQuest.setCurrentTask(19);
-            System.out.println(mainQuest.getTask(18));
+            else if (((NPC)interactable).getName() == "Volat" && mainQuest.getCurrentTask() == 18) {
+              mainQuest.setCurrentTask(19);
+              speechQueue.add("Burn burn BUURRRRN burrnnnnnn");
+              speechQueue.add("*You somehow understood what he said*");
+              speechQueue.add(mainQuest.getTask(19));
+            } 
+            else if (((NPC)interactable).getName() == "Vivian" && mainQuest.getCurrentTask() == 21) {
+              mainQuest.setCurrentTask(22);
+              speechQueue.add("Thanks for the help!");
+              speechQueue.add("And thanks for dealing up with Volat.");
+              speechQueue.add("I've already sent a message to the King about what you've done!");
+              speechQueue.add(mainQuest.getTask(22));
+            } 
+            else if (((NPC)interactable).getName() == "Chancellor") {
+              if (mainQuest.getCurrentTask() == 24) {
+                speechQueue.add("The King has told me to meet him in a house outside the capital");
+                speechQueue.add("Don't keep him waiting!");
+                mainQuest.setCurrentTask(25);
+                speechQueue.add(mainQuest.getTask(25));
+              }
+              else if(mainQuest.getCurrentTask() == 27) {
+                mainQuest.setCurrentTask(28);
+                speechQueue.add("Oh my, the King was evil all along?");
+                speechQueue.add("Thank you for saving our kingdom!");
+                speechQueue.add("Perhaps you shall be our new King!");
+                mainQuest.setComplete(mainQuest.updateObjective(0));
+                speechQueue.add("A New King!");
+              }
+            } 
           } 
-          else if (((NPC)interactable).getName() == "Vivian" && mainQuest.getCurrentTask() == 21) {
-            mainQuest.setCurrentTask(22);
-            System.out.println(mainQuest.getTask(21));
-          } 
-          else if (((NPC)interactable).getName() == "Chancellor") {
-            if (mainQuest.getCurrentTask() == 24) {
-              mainQuest.setCurrentTask(25);
-              System.out.println(mainQuest.getTask(24));
-            }
-            else if(mainQuest.getCurrentTask() == 27) {
-              mainQuest.setCurrentTask(28);
-              mainQuest.setComplete(mainQuest.updateObjective(0));
-              System.out.println("A New King!");
-            }
-          } 
+        }else{
+          speechQueue.add(((NPC)interactable).speak());
         }
       }
       
     }
     public void mousePressed(MouseEvent e) {
-      
-      
       
     }
     

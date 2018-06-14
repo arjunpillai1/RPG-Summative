@@ -1,13 +1,5 @@
-class PoisonGrass extends Floor {
+class PoisonGrass extends Grass {
 
-  private int difficulty;
   PoisonGrass(){}
 
-  PoisonGrass(int num) {
-    this.difficulty = num;
-  }
-
-  public int getDifficulty() {
-    return this.difficulty;
-  }
 }

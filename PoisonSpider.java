@@ -8,9 +8,4 @@ class PoisonSpider extends Type{
   }
   
   
-  public void attack(int strength, int intelligence){
-    //if enemy hits the player, deal 10% damage to player(Tentative) and 
-    //deal a poison effect causing 1 damage over time for 5 hits
-    //once it attacks it will wait 1 second to attack again
-  }
 }

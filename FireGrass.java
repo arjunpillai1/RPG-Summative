@@ -1,13 +1,5 @@
-class FireGrass extends Floor {
+class FireGrass extends Grass {
 
-  private int difficulty;
   FireGrass(){}
 
-  FireGrass(int num) {
-    this.difficulty = num;
-  }
-
-  public int getDifficulty() {
-    return this.difficulty;
-  }
 }

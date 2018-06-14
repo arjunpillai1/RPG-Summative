@@ -25,10 +25,12 @@ class Inventory{
       Armour armour = (Armour)(inventory.get(placement));
       user.unequipArmour(armour);
       user.equipArmour(armour);
+
     } else if ( (inventory.get(placement)).getInventoryNum() == 3){// it's armour
       AttackPotion potion = (AttackPotion)(inventory.get(placement));
       user.useAttackPotion(potion);
       inventory.remove(placement);
+
     }
   }
   */
@@ -36,16 +38,14 @@ class Inventory{
     inventory.remove(placement);
   }
   
-  public void pickUpItem(Item found, Object[][] map, int xSpot, int ySpot){
-    int invNum = found.getInventoryNum();
-    for (int i=0; i <= inventory.size(); i++){
-      if (invNum == (inventory.get(i)).getInventoryNum()){
-        inventory.add(i, found);
-        return;
-      }
-    }
-    map[xSpot][ySpot] = map[xSpot+1][ySpot];
-  }
+
+//  public void useConsumable(int placement){
+//    if ( (inventory.get(placement)).getInventoryNum() == 3){ //it's consumable
+//      ((Consumable)(inventory.get(placement))).use();
+//      inventory.remove(placement);
+//    }
+//    map[xSpot][ySpot] = map[xSpot+1][ySpot];
+//  }
   
   public String getItemName(int placement){
     return (inventory.get(placement)).getName();
@@ -61,4 +61,29 @@ class Inventory{
   public int amount(){
     return inventory.size();
   }
+  public boolean getState(int placement){
+    if ((inventory.get(placement)) instanceof Weapon){
+      Weapon weapon = (Weapon)(inventory.get(placement));
+      return(weapon.getEquipped());
+    } else if ((inventory.get(placement)) instanceof Armour){
+      Armour armour = (Armour)(inventory.get(placement));
+      return(armour.getEquipped());
+    } else {
+      return(false);
+    }
+  }
+  public void pickUpItem(Item found, World[][] map, int xSpot, int ySpot){
+    int invNum = found.getInventoryNum();
+    for (int i=0; i <= inventory.size(); i++){
+      if (invNum == (inventory.get(i)).getInventoryNum()){
+        inventory.add(i, found);
+        return;
+      } else {
+        inventory.add(found);
+      }
+    }
+    map[xSpot][ySpot] = map[xSpot+1][ySpot];
+  }
+  
+  
 }

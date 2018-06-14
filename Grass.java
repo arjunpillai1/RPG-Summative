@@ -7,14 +7,7 @@
 
 class Grass extends Floor {
   
-  private int difficulty;
   Grass(){}
   
-  Grass(int num) {
-    this.difficulty = num;
-  }
-  
-  int getDifficulty() {
-    return this.difficulty;
-  }
+
 }

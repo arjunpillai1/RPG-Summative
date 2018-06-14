@@ -1,23 +1,23 @@
+/*
+ * [HuntQuestB.java]
+ * Hunt quest/side quest
+ * Albert Quon
+ * 06/14/2018
+ */
 class HuntQuestB extends Quest {
-  int killsA=0, killsB=0, enemyCountA, enemyCountB, numTasks;
+  int killsA=0, killsB=0, enemyCountA, enemyCountB;
   HuntQuestB(int experience, String name, String[] objectives, Item itemReward) {
     super(experience, name, objectives, itemReward);
-    numTasks = objectives.length;
   }
   
   @Override
   void spawn(World[][] world) {
-    world[60][60] = new Peasant(10, "bobo", true, this);
+    world[10][61] = new NPC(10, "Hunter Dylan", true, this);
   }
   @Override 
   void initialize(World[][] world) {
-    System.out.println(getTask(0));
     enemyCountA = 5;
     enemyCountB = 10;
-    System.out.println("Quest started: " + getName());
-    for (int i = 0; i < numTasks; i++) {
-      System.out.println(getTask(i));
-    }
     setActive(true);
   }
   
@@ -34,5 +34,13 @@ class HuntQuestB extends Quest {
     }
     return false;
   }
-
+  
+  public int trackTasks(int task) {
+    if (task == 1) {
+      return killsA;
+    } else if (task == 2) {
+      return killsB;
+    }
+    return killsA;
+  }
 }

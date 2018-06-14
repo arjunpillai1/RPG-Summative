@@ -1,14 +1,5 @@
-class FrostGrass extends Floor{
+class FrostGrass extends Grass{
  
-  private int difficulty;
-  FrostGrass(){
-  }
+  FrostGrass(){}
 
-  FrostGrass(int num) {
-    this.difficulty = num;
-  }
-
-  public int getDifficulty() {
-    return this.difficulty;
-  }
 }

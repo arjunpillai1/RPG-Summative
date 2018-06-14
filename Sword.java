@@ -18,4 +18,6 @@ abstract class Sword extends ShortRangeWeapon{
     }
   }
   
+
+  
 }

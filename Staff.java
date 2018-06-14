@@ -5,8 +5,8 @@
  */ 
 
 abstract class Staff extends LongRangeWeapon{
-  Staff(int cost, int attackBoost, double speed, int range){
-    super(cost, attackBoost, speed, range);
+  Staff(String name, int cost, int attackBoost, double speed, int range){
+    super(name, cost, attackBoost, speed, range);
   }
   
 

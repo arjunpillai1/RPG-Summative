@@ -7,9 +7,9 @@
 abstract class LongRangeWeapon extends Weapon{
 
 
-  LongRangeWeapon(int cost, int attackBoost, double speed, int range){
+  LongRangeWeapon(String name, int cost, int attackBoost, double speed, int range){
 
-    super(cost, attackBoost, speed, range);
+    super(name, cost, attackBoost, speed, range);
 
 
   }

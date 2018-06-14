@@ -1,36 +1,51 @@
 class MainQuestA extends Quest {
   int killsA = 0, killsB = 0, killsC = 0, currentTask;
   //items to fetch
+  /*
+   * 
+   * 
+   * 
+   */
   MainQuestA(int experience, String name, String[] objectives, Item itemReward) {
     super(experience, name, objectives, itemReward);
   }
-
+  /*
+   * 
+   * 
+   * 
+   */
   @Override
   void spawn(World[][] world) {
-    world[8][12] = new Peasant(10, "Bob", true, this);
+    world[22][20] = new NPC(10, "Bob", true, this);
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   @Override
   void initialize(World[][] world) {
-    System.out.println(getTask(0));
-    System.out.println(getTask(1));
     setCurrentTask(1);
-    System.out.println("Quest started: " + getName());
-    world[8][14] = new Peasant(10, "Farmer", false, this);
-    world[54][40] = new Peasant(1000000, "King Mangat", false, this);
-    world[63][70] = new Peasant(1000, "Ice Fisher", false, this);
+    world[8][14] = new NPC(10, "Farmer", false, this);
+    world[54][40] = new NPC(1000000, "King Mangat", false, this);
+    world[52][40] = new NPC(1000000, "Chancellor", false, this);
+    world[63][70] = new NPC(1000, "Ice Fisher", false, this);
+    world[91][73] = new NPC(1000, "Voltan", false, this);
+    world[91][74] = new NPC(1000, "Vivian", false, this);
     setActive(true);
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   Boolean updateObjective(int task) {
     //update these conditions for the objectives
     if (task == 1) {
       killsA++;
-      //System.out.println("A:" + killsA);
     }
     if (task == 2) {
       killsB++;
-      //System.out.println("B:" + killsB);
     }
     if (task == 3) {
       killsC++;
@@ -38,7 +53,7 @@ class MainQuestA extends Quest {
     // quest conditions fulfilled
     //normal enemies
     // Killed 5 archers and bandits
-    if (killsA >= 5 && killsB >= 5 && getCurrentTask() > 0 && getCurrentTask() < 3) {
+    if (killsA >= 5 && killsB >= 5 && getCurrentTask() < 3) {
       setCurrentTask(3);
       killsA = 0;
       killsB = 0;
@@ -86,26 +101,44 @@ class MainQuestA extends Quest {
     }
     return false;
   }
-  
+  @Override
+  /**
+   * 
+   * 
+   * 
+   */
+  public int trackTask(int task) {
+    if (task == 1) {
+      return killsA;
+    } else if (task == 2) {
+      return killsB;
+    }
+    return killsA;
+  }
+  /*
+   * 
+   * 
+   * 
+   */
   @Override
   public int getXPReward() {
-    if (getCurrentTask() < 3 && getCurrentTask() > 0) {
+    if (getCurrentTask() == 3) { //1,2
       return 10;
     }
-    else if (getCurrentTask() < 7 && getCurrentTask() > 4) {
+    else if (getCurrentTask() == 7) { //5,6
       return 25;
     }
-    else if (getCurrentTask() < 14 && (getCurrentTask() > 11)) {
+    else if (getCurrentTask() == 14) { //12,13
       return 50;
     }
-    else if (getCurrentTask() < 21 && getCurrentTask() > 18) {
-      return 1000;
+    else if (getCurrentTask() == 21) { //19,20
+      return 100;
     }
     else if (getCurrentTask() == 25) {
-      return 10000;
+      return 200;
     }
     else if (getCurrentTask() == 29) {
-      return 1000000;
+      return 500;
     }
     return 0;
   }
