@@ -6,19 +6,22 @@
 
 class Player extends CombatCharacter {
   private int exp;
-
+  
   private World futureStep;
   private World previousStep = new HouseFloor();
-
+  
   private int weaponBoost = 0;
   private int armourBoost = 0;
   private boolean equippedWeapon = false;
   private boolean equippedArmour = false;
-
+  private int maxHealth;
+  
   Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY) {
     super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
+    this.maxHealth = 50;
+    
   }
-
+  
   
   public boolean getEquippedWeapon(){
     return equippedWeapon;
@@ -52,7 +55,19 @@ class Player extends CombatCharacter {
     armourBoost=value;
   }
   
-
+  public void levelUp () {
+    setMaxHealth(getMaxHealth() + 25);
+    setHealth(getMaxHealth());
+  }
+  
+  int getMaxHealth() {
+    return maxHealth;
+  }
+  
+  void setMaxHealth(int amount) {
+    this.maxHealth = amount;
+  }
+  
   public void unequipWeapon(Inventory bag, int placement){
     if (getEquippedWeapon() == true){
       for (int i=0; i<bag.amount(); i++){
@@ -98,6 +113,7 @@ class Player extends CombatCharacter {
   }
   
   
+  
   public void useAttackPotion(Inventory bag, int placement){
     AttackPotion potion = (AttackPotion)(bag.call(placement));
     setWeaponBoost((weaponBoost + potion.getAttackBoost()));
@@ -119,56 +135,69 @@ class Player extends CombatCharacter {
     bag.tossItem(placement);
   }
   
+  public void equip(Inventory bag, int placement){
+    if (bag.call(placement) instanceof Weapon){
+      equipWeapon(bag, placement);
+    } else if (bag.call(placement) instanceof Armour){
+      equipArmour(bag,placement);
+    } else if (bag.call(placement) instanceof AttackPotion){
+      useAttackPotion(bag, placement);
+    } else if (bag.call(placement) instanceof AttackPermanentPotion){
+      useAttackPermanentPotion(bag, placement);
+    } else if (bag.call(placement) instanceof DefensePermanentPotion){
+      useDefensePermanentPotion(bag, placement);
+    }
+  }
   public void attack(CombatCharacter target) {
-    //target.setHealth((target.getHealth())- ((int) (Math.floor(( ( ( (2 * getLvl() + 2) * 60 * ( (getStr() + getWeaponBoost())/target.getDef() ) ) / 50 ) + 2) * ( ( (int)(Math.random()*16) + 85) / 100)))));
-    target.setHealth(-1);
+    target.setHealth((target.getHealth())- ((int) (Math.floor(( ( ( (2 * getLvl() + 2) * 60 * ( (getStr() + getWeaponBoost())/target.getDef() ) ) / 50 ) + 2) * ( ( (int)(Math.random()*16) + 85) / 100)))));
+    //target.setHealth(-1);
   }
   
- public void move(World[][] world, int value) {
- 
-   if (value == 1) {
-
+  public void move(World[][] world, int value) {
+    if (value == 1) {
+      
       if (world[getX() - 1][getY()] instanceof Floor) { //checks if spot is walkable
         futureStep = world[getX() - 1][getY()];
         world[getX() - 1][getY()] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
         setX(getX()-1);
-
+        
       }
     } 
     else if (value == 4) {
-
+      
       if (world[getX()][getY() + 1] instanceof Floor) {
-
+        
         futureStep = world[getX()][getY() + 1];
         world[getX()][getY() + 1] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
         setY(getY()+1);
-
+        
       }
     }  
     else if (value == 2) {
-
+      
       if (world[getX() + 1][getY()] instanceof Floor) {
         futureStep = world[getX() + 1][getY()];
         world[getX() + 1][getY()] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
         setX(getX()+1);
-
+        
       }
     }
     else if (value == 3) {
-
+      
       if (world[getX()][getY() - 1] instanceof Floor) {
         futureStep = world[getX()][getY() - 1];
         world[getX()][getY() - 1] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
         setY(getY()-1);
-
+        
+        
       }
     }
   }
@@ -248,6 +277,5 @@ class Player extends CombatCharacter {
 //    }
   }
   
-
+  
 }
-

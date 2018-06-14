@@ -1,3 +1,10 @@
+/* [Quest.java]
+ * Quest super class for all quests
+ * Albert Quon
+ * 06/13/2018
+ */
+
+
 abstract class Quest extends World{
   private int xpReward;
   private Item itemReward;
@@ -29,6 +36,9 @@ abstract class Quest extends World{
   }
   public String getTask(int index) {
     return this.objectives[index];
+  }
+  public int trackTask(int task) {
+    return 0;
   }
   
   public void setActive(Boolean active){

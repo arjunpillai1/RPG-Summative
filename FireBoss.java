@@ -7,18 +7,16 @@ class FireBoss extends Type{
   }
   
   
-  public void attack(int strength, int intelligence){
-    //if enemy hits the player, deal 25% damage to player(Tentative) and 
-    //deal a burn effect causing 2 damage over time for 5 hits
-    //once it attacks once it will wait 2 second to attack again
-  }
-  
-  
-  public void move(){
-    //The Volcano moves towards the enemy slowly
-    //if he is close to the player, he will melee attack
-    //if he is farther from the player, he will used a ranged attack
-    //only ranged attack applies burn effect
+  @Override
+  public void move(World[][] world, int coordX, int coordY){
+    for (int i=coordX-2; i < coordX+3; i++) {
+      for (int j=coordY-2; j < coordY+3; j++) {
+        if (world[i][j] instanceof Player) {
+          attack(world[i][j]);
+          return;
+        }
+      }
+    }
   }
 }
 

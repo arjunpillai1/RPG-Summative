@@ -6,11 +6,10 @@ class HuntQuest extends Quest {
   
   @Override
   void spawn(World[][] world) {
-    world[10][57] = new Peasant(10, "Hunter Alex", true, this);
+    world[10][57] = new NPC(10, "Hunter Alex", true, this);
   }
   @Override
   void initialize(World[][] world) {
-    System.out.println(getTask(0));
     enemyCount = 5;
     setActive(true);
   }

@@ -7,7 +7,7 @@ class HuntQuestE extends Quest {
   
   @Override
   void spawn(World[][] world) {
-    world[97][36] = new Peasant(10, "Master Hunter Jack", true, this);
+    world[97][36] = new NPC(10, "Master Hunter Jack", true, this);
   }
   @Override 
   void initialize(World[][] world) {
@@ -15,7 +15,6 @@ class HuntQuestE extends Quest {
     enemyCountA = 1;
     enemyCountB = 1;
     enemyCountC = 1;
-    System.out.println("Quest started: " + getName());
     setActive(true);
   }
   
@@ -34,8 +33,8 @@ class HuntQuestE extends Quest {
     }
     return false;
   }
-
-  public int trackTasks(int task) {
+  @Override
+  public int trackTask(int task) {
     if (task == 1) {
       return killsA;
     } else if (task == 2) {

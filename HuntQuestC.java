@@ -7,7 +7,7 @@ class HuntQuestC extends Quest {
   
   @Override
   void spawn(World[][] world) {
-    world[59][97] = new Peasant(10, "Hunter Zejak", true, this);
+    world[59][97] = new NPC(10, "Hunter Zejak", true, this);
   }
   @Override 
   void initialize(World[][] world) {
@@ -18,6 +18,7 @@ class HuntQuestC extends Quest {
     setActive(true);
   }
   
+  @Override
   Boolean updateObjective(int task) {
     if (task == 1) {
       killsA++;
@@ -31,8 +32,9 @@ class HuntQuestC extends Quest {
     }
     return false;
   }
-
-  public int trackTasks(int task) {
+  
+  @Override
+  public int trackTask(int task) {
     if (task == 1) {
       return killsA;
     } else if (task == 2) {

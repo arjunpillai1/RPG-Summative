@@ -29,7 +29,6 @@ abstract class Enemy extends CombatCharacter{
           attack(world[i][j]);
           return;
         }
-        
       }
     }
     

@@ -132,7 +132,7 @@ class StartingFrame extends JFrame {
         if (value.substring(j, j + 1).equals("S") || (value.substring(j, j + 1).equals("r"))) {
           world[i][j] = new Water();
         } else if (value.substring(j, j + 1).equals("E")) {
-          world[i][j] = new Grass();
+          world[i][j] = new NormalGrass();
           int enemyChance = rand.nextInt(5);
           if ((enemyChance == 1) && (noobEnemyCount > 0) && i > 8 && j > 8) {
             initialGround = world[i][j];
@@ -201,21 +201,47 @@ class StartingFrame extends JFrame {
           world[i][j] = new Grass();
         } else if (value.substring(j, j + 1).equals("L")) {
           world[i][j] = new Chest();
-        }  
+        }  else if (value.substring(j, j + 1).equals("X")) {
+          System.out.println("villager" + i + " " + j);
+        } 
       }
-      frostEnemyCount += 1;
-      noobEnemyCount += 1;
-      fireEnemyCount += 1;
-      poisonEnemyCount += 1;
+      if (i % 2 == 0) {
+        frostEnemyCount += 1;
+        noobEnemyCount += 1;
+        fireEnemyCount += 1;
+        poisonEnemyCount += 1;
+      }
     }
+    //spawn the villagers in
+    world[26][68] = new NPC(100, "Marcus", false);
+    world[29][46] = new NPC(100, "Amelia", false);
+    world[29][47] = new NPC(100, "Romeo", false);
+    world[33][36] = new NPC(100, "Tom", false);
+    world[33][54] = new NPC(100, "Andy", false);
+    world[38][46] = new NPC(100, "Lily", false);
+    world[46][35] = new NPC(100, "Eliza", false);
+    world[53][68] = new NPC(100, "Jerry", false);
+    world[53][69] = new NPC(100, "Thomas", false);
+    world[55][70] = new NPC(100, "Bianca", false);
+    world[55][72] = new NPC(100, "Bruce", false);
+    world[56][67] = new NPC(100, "Aiden", false);
+    world[56][76] = new NPC(100, "Arjun", false);
+    world[62][79] = new NPC(100, "Guy", false);
+    world[68][37] = new NPC(100, "Johann", false);
+    world[69][36] = new NPC(100, "Alphonso", false);
+    world[71][61] = new NPC(100, "Albert", false);
+    world[71][62] = new NPC(100, "Alberto", false);
+    world[71][65] = new NPC(100, "Mason", false);
+    world[71][70] = new NPC(100, "Jill", false);
+    
     
     // initial positions for certain objects
     world[23][21] = new Player(25,1,1,0,1,100, playerName, 23, 21);
     RustySword first = new RustySword();
     world[22][19] = new Chest(first);
-    world[8][83] = new PoisonBoss(1,1,1,1,1,1, "Poison Boss", 8, 83, world[8][83]);
-    world[91][89] = new FrostBoss(1,1,1,1,1,1, "Frost Boss", 92, 89, world[92][89] );
-    world[97][10] = new FireBoss(1,1,1,1,1,1, "Fire Boss", 97, 10, world[97][10]);
+    world[8][83] = new PoisonBoss(100,30,10,10,1,10, "Poison Boss", 8, 83, world[8][83]);
+    world[91][89] = new FrostBoss(300,30,30,12,1,15, "Frost Boss", 92, 89, world[92][89] );
+    world[97][10] = new FireBoss(500,30,60,15,1,20, "Fire Boss", 97, 10, world[97][10]);
     
     //add the main story content
     mainStory = createStory(mainStory);
@@ -243,7 +269,6 @@ class StartingFrame extends JFrame {
       "Defeat Mangat", "Speak with the counsellor"};
     KingsCrown kingsCrown = new KingsCrown(69);
     questline = new MainQuestA(100, "Awakening", objectives, kingsCrown);
-
     return questline;
   }
   public static Quest[] createSide(Quest[] quests) {
@@ -261,9 +286,9 @@ class StartingFrame extends JFrame {
     quests[2] = new HuntQuestC(1, "Frost Conquerer", objectivesC, item);
     quests[3] = new HuntQuestD(1, "Fire Conquerer", objectivesD, item);
     quests[4] = new HuntQuestE(1, "World Conquerer", objectivesE, item);
-    quests[5] = new FetchQuest(1, "Birthday Gift", objectivesF, item);
-    quests[6] = new FetchQuestB(1, "More Protection", objectivesG, item);
-    quests[7] = new FetchQuestC(1, "The Ultimate Prize", objectivesH, item);
+//    quests[5] = new FetchQuest(1, "Birthday Gift", objectivesF, item);
+//    quests[6] = new FetchQuestB(1, "More Protection", objectivesG, item);
+//    quests[7] = new FetchQuestC(1, "The Ultimate Prize", objectivesH, item);
     //objectives[0] = "Find the box";
     //quests[1] = new FetchQuest(1, "The Missing Box", objectives, item);
     
@@ -280,6 +305,7 @@ class StartingFrame extends JFrame {
     String value = fileIn.nextLine();
     int noobEnemyCount = 1, poisonEnemyCount = 2, frostEnemyCount = 2, fireEnemyCount = 1;
     int playerX, playerY, playerLevel, health, strength, intel, defence, accuracy;
+    int sideA, sideB, sideC, sideD, sideE, mainA;
     String name;
     
     for (int a = 0; a < world.length - 1; a++) { // draws first row of the map to avoid errors
@@ -367,22 +393,41 @@ class StartingFrame extends JFrame {
           world[i][j] = new Grass();
         } else if (value.substring(j, j + 1).equals("L")) {
           world[i][j] = new Chest();
-        }  
+        }   
       }
-//      if (i % 2 == 0) {
-//        frostEnemyCount += 1;
-//        noobEnemyCount += 1;
-//        fireEnemyCount += 1;
-//        poisonEnemyCount += 1;
-//      }
+      if (i % 2 == 0) {
+        frostEnemyCount += 1;
+        noobEnemyCount += 1;
+        fireEnemyCount += 1;
+        poisonEnemyCount += 1;
+      }
+      
     }
     
     fileIn.close();
-    
+    //spawn the villagers in
+    world[26][68] = new NPC(100, "Marcus", false);
+    world[29][46] = new NPC(100, "Amelia", false);
+    world[29][47] = new NPC(100, "Romeo", false);
+    world[33][36] = new NPC(100, "Tom", false);
+    world[33][54] = new NPC(100, "Andy", false);
+    world[38][46] = new NPC(100, "Lily", false);
+    world[46][35] = new NPC(100, "Eliza", false);
+    world[53][68] = new NPC(100, "Jerry", false);
+    world[53][69] = new NPC(100, "Thomas", false);
+    world[55][70] = new NPC(100, "Bianca", false);
+    world[55][72] = new NPC(100, "Bruce", false);
+    world[56][67] = new NPC(100, "Aiden", false);
+    world[56][76] = new NPC(100, "Arjun", false);
+    world[62][79] = new NPC(100, "Guy", false);
+    world[68][37] = new NPC(100, "Johann", false);
+    world[69][36] = new NPC(100, "Alphonso", false);
+    world[71][61] = new NPC(100, "Albert", false);
+    world[71][62] = new NPC(100, "Alberto", false);
+    world[71][65] = new NPC(100, "Mason", false);
+    world[71][70] = new NPC(100, "Jill", false);
     
     Scanner fileInput = new Scanner(player);
-   // playerX, playerY, playerLevel, health, strength, intel, name, defence
-   //  Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY)
     
     name = fileInput.nextLine();
     playerLevel = Integer.parseInt(fileInput.nextLine());
@@ -393,8 +438,17 @@ class StartingFrame extends JFrame {
     playerX = Integer.parseInt(fileInput.nextLine());
     playerY = Integer.parseInt(fileInput.nextLine());
     accuracy = Integer.parseInt(fileInput.nextLine());
+    sideA = Integer.parseInt(fileInput.nextLine());
+    sideB = Integer.parseInt(fileInput.nextLine());
+    sideC = Integer.parseInt(fileInput.nextLine());
+    sideD = Integer.parseInt(fileInput.nextLine());
+    sideE = Integer.parseInt(fileInput.nextLine());
     fileInput.close();
     world[playerY][playerX] = new Player(health, strength, intel, defence, playerLevel, accuracy, name, playerX, playerY);
+    //add the main story content
+    mainStory = createStory(mainStory);
+    //add the side quest content
+    sideQuests = createSide(sideQuests);
     
   }
   //Main method starts this application

@@ -7,16 +7,18 @@ class MainQuestA extends Quest {
 
   @Override
   void spawn(World[][] world) {
-    world[22][20] = new Peasant(10, "Bob", true, this);
+    world[22][20] = new NPC(10, "Bob", true, this);
   }
   
   @Override
   void initialize(World[][] world) {
     setCurrentTask(1);
-    world[8][14] = new Peasant(10, "Farmer", false, this);
-    world[54][40] = new Peasant(1000000, "King Mangat", false, this);
-    world[52][40] = new Peasant(1000000, "Chancellor", false, this);
-    world[63][70] = new Peasant(1000, "Ice Fisher", false, this);
+    world[8][14] = new NPC(10, "Farmer", false, this);
+    world[54][40] = new NPC(1000000, "King Mangat", false, this);
+    world[52][40] = new NPC(1000000, "Chancellor", false, this);
+    world[63][70] = new NPC(1000, "Ice Fisher", false, this);
+    world[91][73] = new NPC(1000, "Voltan", false, this);
+    world[91][74] = new NPC(1000, "Vivian", false, this);
     setActive(true);
   }
   
@@ -84,6 +86,7 @@ class MainQuestA extends Quest {
     }
     return false;
   }
+  @Override
   public int trackTask(int task) {
     if (task == 1) {
       return killsA;

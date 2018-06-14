@@ -7,14 +7,13 @@ class HuntQuestD extends Quest {
   
   @Override
   void spawn(World[][] world) {
-    world[67][62] = new Peasant(10, "Master Hunter Alek", true, this);
+    world[67][62] = new NPC(10, "Master Hunter Alek", true, this);
   }
   @Override 
   void initialize(World[][] world) {
     System.out.println(getTask(0));
     enemyCountA = 5;
     enemyCountB = 10;
-    System.out.println("Quest started: " + getName());
     setActive(true);
   }
   
@@ -31,8 +30,8 @@ class HuntQuestD extends Quest {
     }
     return false;
   }
-
-  public int trackTasks(int task) {
+  @Override
+  public int trackTask(int task) {
     if (task == 1) {
       return killsA;
     } else if (task == 2) {

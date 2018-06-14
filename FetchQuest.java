@@ -8,7 +8,7 @@ class FetchQuest extends Quest {
   
   @Override
   void spawn(World[][] world) {
-    world[10][10] = new Peasant(10, "John", true, this);
+    world[10][10] = new NPC(10, "John", true, this);
   }
   @Override
   void initialize(World[][] world) {
