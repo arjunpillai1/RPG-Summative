@@ -10,16 +10,19 @@ class NPC extends NonCombatCharacter{
   private Quest quest;
   Random rand = new Random();
   int dialogue;
+  private int imageChoice;
   
   NPC(int health, String name, Boolean isQuestGiver, Quest quest){
     super(health,name);
     this.questGiver= isQuestGiver;
     this.quest = quest;
+    imageChoice=((int)(Math.random()*3));
   }
   
   NPC(int health, String name, Boolean isQuestGiver){
     super(health,name);
     this.questGiver= isQuestGiver;
+    imageChoice=((int)(Math.random()*5));
   } 
   public Quest getQuest(){
     // construct the appropriate quest object and then somehow attribute it to the character
@@ -46,5 +49,9 @@ class NPC extends NonCombatCharacter{
   
   public Boolean getQuestGiver() {
     return this.questGiver;
+  }
+  
+  public int getImageChoice(){
+   return this.imageChoice; 
   }
 }

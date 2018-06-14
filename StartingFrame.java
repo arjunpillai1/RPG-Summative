@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 import java.io.File;
 import java.util.Scanner;
 import java.util.Random;
+
 import javax.swing.JTextField;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -39,13 +40,12 @@ class StartingFrame extends JFrame {
   static World[][] world = new World[106][106];
   static Quest[] sideQuests = new Quest[8];
   static Quest mainStory;
-
   
-  static File menuMusicFile;
-  static AudioInputStream menuMusicStream;
-  static DataLine.Info info ;
-  static Clip clip;
-  
+  //Music variables
+  static File menuMusicFile ;
+  static AudioInputStream menuMusicStream ;
+  static DataLine.Info info;
+  static Clip clip ;
   //Constructor - this runs first
    StartingFrame() { 
     super("Start Screen");
@@ -114,7 +114,6 @@ class StartingFrame extends JFrame {
       System.out.println("Starting new Game");
       thisFrame.dispose();
       clip.close();
-
       new GameFrame(world, sideQuests, mainStory, ((Player)world[23][21]));
       
     }
@@ -124,6 +123,7 @@ class StartingFrame extends JFrame {
     public void actionPerformed(ActionEvent event) {  
       System.out.println("Loading previous save");
       thisFrame.dispose();
+      clip.close();
       new GameFrame(world, sideQuests, mainStory, ((Player)world[23][21]));
     }
   }
@@ -569,6 +569,7 @@ class StartingFrame extends JFrame {
     
   
   //Main method starts this application
+
   
   /* All Jcomponents (buttons, fields, etc) that you want to access in the actionPerformed method
    * must be partially declared as class variable, otherwise they are only visible in the main method
@@ -584,6 +585,7 @@ class StartingFrame extends JFrame {
   public static void main(String[] args) {
   
     //Music
+
     try {
       menuMusicFile = new File("maskoff.wav");
       menuMusicStream = AudioSystem.getAudioInputStream(menuMusicFile);
@@ -650,8 +652,5 @@ class StartingFrame extends JFrame {
   
   } // *** end of main method
   
-  
-  
-
   
 }

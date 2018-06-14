@@ -61,13 +61,25 @@ class Inventory{
   public int amount(){
     return inventory.size();
   }
-  
-  public void pickUpItem(Item found, Object[][] map, int xSpot, int ySpot){
+  public boolean getState(int placement){
+    if ((inventory.get(placement)) instanceof Weapon){
+      Weapon weapon = (Weapon)(inventory.get(placement));
+      return(weapon.getEquipped());
+    } else if ((inventory.get(placement)) instanceof Armour){
+      Armour armour = (Armour)(inventory.get(placement));
+      return(armour.getEquipped());
+    } else {
+      return(false);
+    }
+  }
+  public void pickUpItem(Item found, World[][] map, int xSpot, int ySpot){
     int invNum = found.getInventoryNum();
     for (int i=0; i <= inventory.size(); i++){
       if (invNum == (inventory.get(i)).getInventoryNum()){
         inventory.add(i, found);
         return;
+      } else {
+        inventory.add(found);
       }
     }
     map[xSpot][ySpot] = map[xSpot+1][ySpot];

@@ -9,6 +9,7 @@ abstract class Enemy extends CombatCharacter{
   
   private World futureStep;
   private World previousStep;
+  private int direction=1;
   
   /*
    * 
@@ -72,6 +73,7 @@ abstract class Enemy extends CombatCharacter{
         world[coordX][coordY+1] = world[coordX][coordY];
         world[coordX][coordY] = previousStep;
         previousStep = futureStep;
+        direction=1;
       }
     }
     else if (decision == 4 && coordY >= getY() - 2) { // left
@@ -80,6 +82,8 @@ abstract class Enemy extends CombatCharacter{
         world[coordX][coordY-1] = world[coordX][coordY];
         world[coordX][coordY] = previousStep;
         previousStep = futureStep;
+        direction=0;
+
       }
     }
   }
@@ -89,5 +93,13 @@ abstract class Enemy extends CombatCharacter{
    */
   void death(Object[][] world, int coordX, int coordY) {
     world[coordX][coordY] = previousStep;
+  }
+  
+  public int getDirection(){
+    return direction;
+  }
+  
+  public World getFutureStep(){
+    return futureStep;
   }
 }

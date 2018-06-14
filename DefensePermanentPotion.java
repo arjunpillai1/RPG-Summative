@@ -4,10 +4,10 @@
  * Abstract class of all potions that boost your stats
 */  
 
-class  DefensePermanentPotion extends Consumable{
+class  DefensePermanentPotion extends PermanentPotion{
   private final int DEFENSEBOOST=5;
   DefensePermanentPotion(int cost){
-  super("Defense Permanent potion", cost);
+  super("Defense Permanenet potion", cost);
 }
   public int getDefenseBoost(){
     return DEFENSEBOOST;

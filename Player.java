@@ -228,12 +228,12 @@ class Player extends CombatCharacter {
     bag.tossItem(placement);
   }
 
+
   /*
    * 
    * 
    * 
    */
-
   public void equip(Inventory bag, int placement){
     if (bag.call(placement) instanceof Weapon){
       equipWeapon(bag, placement);
@@ -324,6 +324,15 @@ class Player extends CombatCharacter {
    */
   public int getExp(){
     return exp;
+  }
+  /*
+   * 
+   * 
+   * 
+   */
+  
+  public World getFutureStep(){
+    return this.futureStep;
   }
   /*
    * 
