@@ -738,7 +738,12 @@ class GameFrame extends JFrame {
     }
     allowRespawn = false;
   }
-
+  /*
+   * [Clock.class]
+   * Clock class
+   * @author Guy
+   * 06/14/2018
+   */
   class Clock {
     long elapsedTime;
     long lastTimeCheck;
