@@ -1,14 +1,13 @@
-class FrostGrass extends Floor{
- 
-  private int difficulty;
-  FrostGrass(){
-  }
+/*
+ * [FrostGrass.java]
+ * The frost grass that allows frost enemies to spawn on
+ * @author Albert 
+ * 05/30/2018
+ */
+class FrostGrass extends Grass{
+  /**
+   * Default constructor
+   */
+  FrostGrass(){}
 
-  FrostGrass(int num) {
-    this.difficulty = num;
-  }
-
-  public int getDifficulty() {
-    return this.difficulty;
-  }
 }

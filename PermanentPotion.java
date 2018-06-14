@@ -5,7 +5,10 @@
  */  
 
 abstract class  PermanentPotion extends Potion{
-  
+  /**
+   * Constructor for permanent potion
+   * @param name, cost
+   */
   PermanentPotion(String name, int cost){
     super(name, cost);
   }

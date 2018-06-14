@@ -5,6 +5,9 @@
  */ 
 
 abstract class Staff extends LongRangeWeapon{
+  /**
+   * Default constructor for staff class
+   */
   Staff(String name, int cost, int attackBoost, double speed, int range){
     super(name, cost, attackBoost, speed, range);
   }

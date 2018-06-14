@@ -4,8 +4,10 @@
  * An abstract class of the shortranged weapon sword
  */
 
-abstract class TinArmour extends Armour{
-  
+class TinArmour extends Armour{
+  /**
+   * Tin Armour default constructor
+   */
   TinArmour(){
     super("Tin armour", 10, 20, -0.5); //cost, defenseboost, speed
   }

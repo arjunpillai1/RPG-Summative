@@ -1,13 +1,13 @@
-class FireGrass extends Floor {
-
-  private int difficulty;
+/*
+ * [FireGrass.java]
+ * Fire grass that fire enemies spawn on
+ * @author Albert
+ * 05/30/2018
+ */
+class FireGrass extends Grass {
+  /**
+   * Default constructor
+   */
   FireGrass(){}
 
-  FireGrass(int num) {
-    this.difficulty = num;
-  }
-
-  public int getDifficulty() {
-    return this.difficulty;
-  }
 }

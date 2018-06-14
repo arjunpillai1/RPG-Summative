@@ -5,8 +5,11 @@
  * 05/25/2018
  */
 
-class Grass extends Floor {
+abstract class Grass extends Floor {
   
+  /**
+   * Default grass constructor
+   */
   Grass(){}
   
 

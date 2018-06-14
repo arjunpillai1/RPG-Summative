@@ -1,5 +1,15 @@
+/*
+ * [PoisonSpider.java]
+ * Poison spider enemy
+ * @author Aiden
+ * 05/30/2018
+ */
+
 class PoisonSpider extends Type{
-  
+  /**
+   * Poison spider constructor
+   * @param health, strength, intelligence, defence, level, accuracy, name, initial position x and y, initial spawn ground
+   */
   PoisonSpider(int health, int strength, int intelligence, int defence, int level, int accuracy, 
                String name,  int posX, int posY, World initialGround){
     super(health, strength, intelligence, defence, level, accuracy,"poison", name, posX, posY, initialGround);
@@ -8,9 +18,4 @@ class PoisonSpider extends Type{
   }
   
   
-  public void attack(int strength, int intelligence){
-    //if enemy hits the player, deal 10% damage to player(Tentative) and 
-    //deal a poison effect causing 1 damage over time for 5 hits
-    //once it attacks it will wait 1 second to attack again
-  }
 }

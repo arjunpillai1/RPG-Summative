@@ -7,5 +7,8 @@
 
 
 class World {
+  /**
+   * World constructor
+   */
   World(){}
 }

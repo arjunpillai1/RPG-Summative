@@ -5,11 +5,17 @@ class FetchQuest extends Quest {
     super(experience, name, objectives, itemReward);
     this.bag = bag;
   }
-  
+  /**
+   * 
+   */
   @Override
   void spawn(World[][] world) {
-    world[10][10] = new Peasant(10, "John", true, this);
+    world[10][10] = new NPC(10, "John", true, this);
   }
+  /**
+   * Initialize the quest
+   * @param the world array
+   */
   @Override
   void initialize(World[][] world) {
     System.out.println(getTask(0));
@@ -18,7 +24,7 @@ class FetchQuest extends Quest {
     //if((bag.getInventory()).contains(RustySword)){
     for (int i=0; i<(bag.amount()); i++){
       if (bag.call(i) instanceof RustySword){
-    System.out.println(getTask(1));
+        System.out.println(getTask(1));
       }
     }
   }
