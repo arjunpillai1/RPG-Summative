@@ -16,9 +16,15 @@ import java.io.File;
 import java.util.Random;
 import java.util.ArrayList;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+
 //import java.awt.*;
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.Image;
 
 //Keyboard imports
 import java.awt.event.KeyEvent;
@@ -451,10 +457,10 @@ class GameFrame extends JFrame {
             
             World characterImageBackground=null;
             if (world[i][j] instanceof Enemy){
-              characterImageBackground=((Enemy)world[i][j]).getFutureStep();
+              characterImageBackground=((Enemy)world[i][j]).getPreviousStep();
               enemyDirection=((Enemy)world[i][j]).getDirection();
             }else if(world[i][j] instanceof Player){
-              characterImageBackground=((Player)world[i][j]).getFutureStep();
+              characterImageBackground=((Player)world[i][j]).getPreviousStep();
             }
             
             if (characterImageBackground instanceof Grass) {  

@@ -23,12 +23,9 @@
       <file leaf-file-name="GameFrame.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GameFrame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="361">
-              <caret line="515" column="49" lean-forward="false" selection-start-line="515" selection-start-column="49" selection-end-line="515" selection-end-column="49" />
-              <folding>
-                <marker date="1528961329378" expanded="false" signature="34173:34180" ph="{}" />
-                <marker date="1528961329378" expanded="false" signature="34403:59177" ph="{...}" />
-              </folding>
+            <state relative-caret-position="760">
+              <caret line="519" column="49" lean-forward="false" selection-start-line="519" selection-start-column="49" selection-end-line="519" selection-end-column="49" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -196,12 +193,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1528940733840</updated>
-      <workItem from="1528940740361" duration="3658000" />
+      <workItem from="1528940740361" duration="4251000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3658000" />
+    <option name="totallyTimeSpent" value="4251000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1273" y="0" width="1294" height="1047" extended-state="0" />
@@ -256,12 +253,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GameFrame.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="515" column="49" lean-forward="false" selection-start-line="515" selection-start-column="49" selection-end-line="515" selection-end-column="49" />
-          <folding>
-            <marker date="1528961329378" expanded="false" signature="34173:34180" ph="{}" />
-            <marker date="1528961329378" expanded="false" signature="34403:59177" ph="{...}" />
-          </folding>
+        <state relative-caret-position="760">
+          <caret line="519" column="49" lean-forward="false" selection-start-line="519" selection-start-column="49" selection-end-line="519" selection-end-column="49" />
+          <folding />
         </state>
       </provider>
     </entry>
