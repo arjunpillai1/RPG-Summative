@@ -5,9 +5,11 @@
 */  
 
 class BasicAttackPotion extends AttackPotion{
-  
+  /**
+   * Constructor for basic attack potion
+   */
   BasicAttackPotion(){
-  super("Attack Potion", 50, 10, 10);
+  super("Attack Potion", 50, 10);
   }
   
   

@@ -6,6 +6,8 @@
  */
 
 class Bridge extends Floor {
-
+  /**
+   * Constructor for a bridge
+   */
   Bridge(){}
 }

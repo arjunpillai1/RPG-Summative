@@ -1,7 +1,8 @@
 /*
- * 
- * 
- * 
+ * [NPC.java]
+ * NPC class for peaceful characters
+ * @author Albert, Aiden, Arjun
+ * 05/30/2018
  */
 import java.util.Random;
 
@@ -11,24 +12,37 @@ class NPC extends NonCombatCharacter{
   Random rand = new Random();
   int dialogue;
   private int imageChoice;
-  
+  /**
+   * NPC constructor with quests
+   * @param health, name, boolean value of a quest giver, associated quest
+   */
   NPC(int health, String name, Boolean isQuestGiver, Quest quest){
     super(health,name);
     this.questGiver= isQuestGiver;
     this.quest = quest;
     imageChoice=((int)(Math.random()*3));
   }
-  
+  /** 
+   * NPC constructor with quests
+   * @param health, name, boolean value of a quest giver
+   */
   NPC(int health, String name, Boolean isQuestGiver){
     super(health,name);
     this.questGiver= isQuestGiver;
     imageChoice=((int)(Math.random()*5));
   } 
+  
+  /**
+   * Returns associated quest with the NPC
+   * @return the quest
+   */
   public Quest getQuest(){
-    // construct the appropriate quest object and then somehow attribute it to the character
     return this.quest;
   }
-  
+  /**
+   * NPC speak method
+   * @return a string of what NPCs say (without a quest associated with them)
+   */
   public String speak(){
     int dialogue = rand.nextInt(12);
     if (dialogue == 6) {

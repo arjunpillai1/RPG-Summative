@@ -5,11 +5,17 @@ class FetchQuest extends Quest {
     super(experience, name, objectives, itemReward);
     this.bag = bag;
   }
-  
+  /**
+   * 
+   */
   @Override
   void spawn(World[][] world) {
     world[10][10] = new NPC(10, "John", true, this);
   }
+  /**
+   * Initialize the quest
+   * @param the world array
+   */
   @Override
   void initialize(World[][] world) {
     System.out.println(getTask(0));

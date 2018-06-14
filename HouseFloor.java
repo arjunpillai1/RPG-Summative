@@ -6,6 +6,8 @@
  */
 
 class HouseFloor extends Floor {
-
+  /**
+   * Default constructor for house floor
+   */
   HouseFloor(){}
 }

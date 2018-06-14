@@ -4,8 +4,10 @@
  * fast sword
  */
 
-abstract class FalconSword extends Sword{
-  
+class FalconSword extends Sword{
+  /**
+   * Default constructor for the falcon sword
+   */
   FalconSword(){
     super("Falcon Sword",4000, 28, 2); //cost, attackBoost, speed
   }

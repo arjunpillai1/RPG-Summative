@@ -5,7 +5,10 @@
 */  
 abstract class Consumable extends Item{
   private boolean used;
-  
+  /**
+   * Constructor for the consumable class
+   * @param the name of the item, value
+   */
   Consumable(String name, int cost){
   super(name, cost, 3);
   

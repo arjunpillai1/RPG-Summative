@@ -1,3 +1,10 @@
+/*
+ * [Type.java]
+ * A superclass for enemies that have an element associated with them
+ * @author Aiden
+ * 05/30/2018
+ */
+
 abstract class Type extends Enemy{
   
   private String type;

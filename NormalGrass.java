@@ -6,7 +6,9 @@
  */
 
 class NormalGrass extends Grass {
-  
+  /**
+   * Normal grass constructor
+   */
   NormalGrass(){}
   
 }

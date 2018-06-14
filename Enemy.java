@@ -1,6 +1,8 @@
 /*
- * 
- * 
+ * [Enemy.java] 
+ * Enemy superclass for all enemies
+ * @author Albert, Aiden, Arjun, Guy
+ * 06/10/2018
  */
 // imports
 import java.util.Random;
@@ -11,9 +13,9 @@ abstract class Enemy extends CombatCharacter{
   private World previousStep;
   private int direction=1;
   
-  /*
-   * 
-   * 
+  /**
+   * Enemy constructor
+   * @param health, strength, intelligence, defence, level, accuracy, name, initial position x and y, initial object spawned on
    */
   Enemy(int health, int strength, int intelligence, int defence, int level, int accuracy,
         String name, int posX, int posY, World initialGround){
@@ -21,22 +23,23 @@ abstract class Enemy extends CombatCharacter{
     this.previousStep = initialGround;
   }
   
-  /*
-   * 
-   * 
+  /**
+   * Attack method for enemies
+   * @param the player
    */
   void attack(World player) {
     int damage = getStr() + getInt() * 2;
     ((Character)player).setHealth(((Character)player).getHealth()-damage);
   }
-  /*
-   * 
-   * 
+  /**
+   * Method that allows enemies to interact with the world, by moving or attacking
+   * @param world array, enemy position x and y
    */
   void move(World[][] world, int coordX, int coordY) {
     Random rand = new Random();
     int decision;
     
+    // attack radius
     for (int i=coordX-1; i < coordX+2; i++) {
       for (int j=coordY-1; j < coordY+2; j++) {
         if (world[i][j] instanceof Player) {
@@ -46,7 +49,6 @@ abstract class Enemy extends CombatCharacter{
       }
     }
     
-    // we can set a limit on their movement based on the original position that we save it as from initialization
 
     // this code is for random movement
     decision = rand.nextInt(5);
@@ -87,18 +89,24 @@ abstract class Enemy extends CombatCharacter{
       }
     }
   }
-  /*
-   * 
-   * 
+  /**
+   * Method that would be called when the death of an enemy has been called
+   * @param world array, enemy position x and y
    */
   void death(Object[][] world, int coordX, int coordY) {
     world[coordX][coordY] = previousStep;
   }
-  
+  /**
+   * Method that returns the direction that the player is facing
+   * @return the direction number
+   */
   public int getDirection(){
     return direction;
   }
-  
+  /**
+   * Method that returns the previous step that the player took
+   * @return the world object of the previous spot
+   */
   public World getPreviousStep(){
     return previousStep;
   }

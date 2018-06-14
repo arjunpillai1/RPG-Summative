@@ -6,7 +6,10 @@
 
 abstract class ShortRangeWeapon extends Weapon{
   
-  
+  /**
+   * Default short range weapon constructor
+   * @param name, value, attack boosted, speed, range
+   */
   ShortRangeWeapon(String name, int cost, int attackBoost, double speed, int range){
     
     super(name, cost, attackBoost, speed, range);

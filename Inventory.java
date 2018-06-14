@@ -5,13 +5,6 @@
  */  
 
 import java.util.ArrayList;
-/* class Inventory
- * Johann Muth
- * May 24 2018
- * Storage system of all items
- */  
-
-import java.util.ArrayList;
 
 class Inventory{
   ArrayList<Item> inventory = new ArrayList<Item>(30);
@@ -34,6 +27,10 @@ class Inventory{
     }
   }
   */
+  /**
+   * Discards an item based on location in inventory
+   * @param index
+   */
   public void tossItem(int placement){
     inventory.remove(placement);
   }
@@ -47,20 +44,39 @@ class Inventory{
 //    map[xSpot][ySpot] = map[xSpot+1][ySpot];
 //  }
   
+  /**
+   * Returns the item name at a specific index
+   * @return the item name
+   */
   public String getItemName(int placement){
     return (inventory.get(placement)).getName();
   }
-  
+  /**
+   * Adds an item to inventory
+   * @param the item to add
+   */
   public void find(Item object){
     inventory.add(object);
   }
-  
+  /**
+   * Finds a specific item at an index
+   * @returns the item at the index
+   */
   public Item call(int placement){
      return inventory.get(placement);
   }
+  /**
+   * The size of the inventory
+   * @return the inventory size
+   */
   public int amount(){
     return inventory.size();
   }
+  /**
+   * Finds what type of item in inventory
+   * @param the placement in inventory
+   * @return boolean value of being equippable
+   */
   public boolean getState(int placement){
     if ((inventory.get(placement)) instanceof Weapon){
       Weapon weapon = (Weapon)(inventory.get(placement));
@@ -72,6 +88,10 @@ class Inventory{
       return(false);
     }
   }
+  /**
+   * Picks up an item based on the position of the world
+   * @param the item found, world array, x and y position of the item
+   */
   public void pickUpItem(Item found, World[][] map, int xSpot, int ySpot){
     int invNum = found.getInventoryNum();
     for (int i=0; i <= inventory.size(); i++){

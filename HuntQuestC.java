@@ -6,25 +6,37 @@
  */
 class HuntQuestC extends Quest {
   int killsA=0, killsB=0, enemyCountA, enemyCountB, numTasks;
+  /**
+   * Makes quest available in the world
+   * @param the world array
+   */
   HuntQuestC(int experience, String name, String[] objectives, Item itemReward) {
     super(experience, name, objectives, itemReward);
     numTasks = objectives.length;
   }
-  
+  /**
+   * Makes quest available in the world
+   * @param the world array
+   */
   @Override
   void spawn(World[][] world) {
     world[59][97] = new NPC(10, "Hunter Zejak", true, this);
   }
+  /**
+   * Starts the quest in the world
+   * @param the world array
+   */
   @Override 
   void initialize(World[][] world) {
-    System.out.println(getTask(0));
     enemyCountA = 5;
     enemyCountB = 10;
-    System.out.println("Quest started: " + getName());
     setActive(true);
   }
-  
-  @Override
+  /**
+   * Updates objectives
+   * @param the task to update
+   * @return if quest is complete
+   */
   Boolean updateObjective(int task) {
     if (task == 1) {
       killsA++;
@@ -38,9 +50,12 @@ class HuntQuestC extends Quest {
     }
     return false;
   }
-  
-  @Override
-  public int trackTask(int task) {
+  /**
+   * Tracks the progress of tasks
+   * @param the task to return progress of
+   * @return the progress of task
+   */
+  public int trackTasks(int task) {
     if (task == 1) {
       return killsA;
     } else if (task == 2) {

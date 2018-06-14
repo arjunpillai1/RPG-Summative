@@ -1,9 +1,10 @@
+/*
+ * [GameFrame.java]
+ * The place where the game is active
+ * @author Albert, Guy, Arjun, Aiden, Johann
+ * 05/30/2018
+ */
 
-/**
- * This template can be used as reference or a starting point
- * for your final summative project
- * @author Mangat
- **/
 
 //Graphics &GUI imports
 import javax.swing.JFrame;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 
 
 //import music
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -40,23 +40,31 @@ import java.awt.event.MouseEvent;
 class GameFrame extends JFrame {
   private static JFrame frame;
   private static int maxX,maxY, GridToScreenRatio;
+  // World and Quests
   static World[][] world;
   Quest[] sideQuests = new Quest[8];
-  ArrayList<String> speechQueue = new ArrayList<String>();
   static Quest mainQuests;
   ArrayList<Quest> activeQuests = new ArrayList<Quest>();
+  //Keep track of speeches
+  ArrayList<String> speechQueue = new ArrayList<String>();
+  //To prevent player for attacking far
   int spaceX; //elon musk?
   int spaceY;
+  //Current dialogue
   int advanceDialogue = 0;
+  //Clock variables
   Clock clock = new Clock();
   Clock enemyDelay = new Clock();
   Clock total = new Clock();
   Clock bossTimer = new Clock();
   JPanel mainPanel = new JPanel();
+  //Boolean values to track active methods
   Boolean dialogue = false;
   boolean playerMove = true;
   Boolean allowRespawn = false;
+  //Inventory
   Inventory bag = new Inventory();
+  //For representing what image to draw
   int playerState=0;
 
   //class variable (non-static)
@@ -71,6 +79,10 @@ class GameFrame extends JFrame {
   static Clip clip ;
 
   //Constructor - this runs first
+  /**
+   * Constructor for Game Frame
+   * @param world array, array of side quests, main quest, player 
+   */
   GameFrame(World[][] world, Quest[] sideQuests, Quest mainQuests, Player player) {
     super("Epic Medieval Fantasy");
     this.world = world;
@@ -91,7 +103,7 @@ class GameFrame extends JFrame {
 
     clip.start();
 
-    System.out.println("Map size: "+world.length+" by "+world[0].length + "\nScreen size: "+ maxX +"x"+maxY+ " Ratio: " + GridToScreenRatio);
+    //System.out.println("Map size: "+world.length+" by "+world[0].length + "\nScreen size: "+ maxX +"x"+maxY+ " Ratio: " + GridToScreenRatio);
 
     frame = new JFrame("Map of World");
 
@@ -114,10 +126,12 @@ class GameFrame extends JFrame {
 
     //Set up the game panel (where we put our graphics)
     this.add(new GameAreaPanel());
-
+    
+    //keyboard
     MyKeyListener keyListener = new MyKeyListener();
     this.addKeyListener(keyListener);
-
+    
+    //mouse listener
     MyMouseListener mouseListener = new MyMouseListener();
     this.addMouseListener(mouseListener);
 
@@ -132,6 +146,9 @@ class GameFrame extends JFrame {
   } //End of Constructor
 
   //the main gameloop - this is where the game state is updated
+  /**
+   * Method that updates all data in the game
+   */
   public void animate() {
     boolean firstTime = true;
 
@@ -190,7 +207,10 @@ class GameFrame extends JFrame {
     }
   }
 
-
+  /**
+   * Method that saves the current game state
+   * @throws e
+   */
   public void saveGame() throws Exception{
     File saveGame = new File("saveGame.txt");
     File saveMap = new File("mapSave.txt");
@@ -266,12 +286,12 @@ class GameFrame extends JFrame {
   /** --------- INNER CLASSES ------------- **/
 
   // Inner class for the the game area - This is where all the drawing of the screen occurs
-
   private class GameAreaPanel extends JPanel {
     public void paintComponent(Graphics g) {
 
 
       super.paintComponent(g);
+      //variables for the player, images, and fonts
       maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
       maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
       int playerX = player.getX();
@@ -283,7 +303,7 @@ class GameFrame extends JFrame {
       Font questLogTitle = new Font("Verdana", Font.BOLD, 14);
       int imageChoice;
       int enemyDirection=1;
-
+      
       Image[] floorTextures={Toolkit.getDefaultToolkit().getImage("Grass Texture.png"),
         Toolkit.getDefaultToolkit().getImage("Poison Grass Texture.png"),
         Toolkit.getDefaultToolkit().getImage("Frost Grass Texture.png"),
@@ -378,25 +398,15 @@ class GameFrame extends JFrame {
       Image caveWallImage=Toolkit.getDefaultToolkit().getImage("cave wall tile.png");
 
       setDoubleBuffered(true);
-      Color myGreen = new Color(11, 215, 72);
-      Color myBeigeFemale = new Color(227, 220, 192);
-      Color myBrown = new Color(176, 102, 96);
-      Color myBlue = new Color(0, 168, 252);
-      Color mySaddleBrown = new Color(139,69,19);
+      //Colors
       Color questLog = new Color(205, 133, 63);
-      Color wood = new Color(102, 51, 0);
-      Color floor = new Color(20, 80, 40);
-      Color tree = new Color(20, 51, 6);
-      Color bandit = new Color(139, 60, 100);
-      Color archer = new Color(11, 110, 80);
       Color royalYellow = new Color(250, 218, 94);
-      Color farmer = new Color(176, 102, 84);
       Color speech = new Color(0,49,82);
       Color sideQuest = new Color(0, 128, 255);
 
 
 
-
+      // draw map
       for(int i =  playerX - 4; i <= playerX + 4;i=i+1)
       {
         for(int j =playerY - 4; j <= playerY + 4;j=j+1)
@@ -550,6 +560,7 @@ class GameFrame extends JFrame {
         }
         countX++;
       }
+      //player health bar
       g.setColor(Color.BLACK);
       g.fillRect((maxX/4) - 205 , maxY - 150, 410, 35);
       g.setColor(Color.RED);
@@ -557,7 +568,7 @@ class GameFrame extends JFrame {
       g.drawString(player.getHealth() + " / " + player.getMaxHealth(), maxX/5, maxY - 100);
 
       updateActiveQuests();
-
+      //draw the quest log
       g.setColor(questLog);
       if (activeQuests.size() > 3) {
         g.fillRect(0,0, (maxX/8) + 20, maxY/3);
@@ -568,6 +579,7 @@ class GameFrame extends JFrame {
       g.drawLine(0,28, maxX/8, 28);
       g.setFont(questLogTitle);
       g.drawString("Quest Log",10, 25);
+      // add the quests
       for (int i = 0; i < activeQuests.size(); i++) {
         if (activeQuests.get(i) instanceof MainQuestA) {
           g.setColor(Color.BLACK);

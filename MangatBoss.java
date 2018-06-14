@@ -1,7 +1,8 @@
 /*
- * 
- * 
- * 
+ * [MangatBoss.java]
+ * The Final enemy boss
+ * @author Albert
+ * 06/10/2018
  */
 class MangatBoss extends Type {
   MangatBoss(int health, int strength, int intelligence, int defence, int level, int accuracy, 
