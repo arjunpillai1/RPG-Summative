@@ -1,8 +1,10 @@
+
 /* [StartingFrame.java]
  * Starting menu 
  * @author Albert, Arjun, Guy, Aiden, Johann
  * 06/13/2018
  */
+
 
 
 //Imports
@@ -17,6 +19,11 @@ import javax.swing.SwingUtilities;
 import java.io.File;
 import java.util.Scanner;
 import java.util.Random;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
 import javax.swing.ImageIcon;
 import javax.swing.BoxLayout;
 import javax.swing.BorderFactory;
@@ -29,6 +36,13 @@ class StartingFrame extends JFrame {
   static World[][] world = new World[106][106];
   static Quest[] sideQuests = new Quest[8];
   static Quest mainStory;
+
+  
+  static File menuMusicFile;
+  static AudioInputStream menuMusicStream;
+  static DataLine.Info info ;
+  static Clip clip;
+  
   //Constructor - this runs first
    StartingFrame() { 
     super("Start Screen");
@@ -49,7 +63,6 @@ class StartingFrame extends JFrame {
     ImageIcon exitGame = new ImageIcon ( "ExitGame.png" );
     ImageIcon welcome = new ImageIcon ( "Medieval Fantasy.png" );
     ImageIcon background = new ImageIcon ( "backgorund.png" );
-    //JPanel startPanel = new JPanel();
     BoxLayout mainLayout = new BoxLayout(mainPanel,BoxLayout.Y_AXIS);
     mainPanel.setLayout(mainLayout);
     mainPanel.setBackground(Color.WHITE);
@@ -92,9 +105,13 @@ class StartingFrame extends JFrame {
   
   //This is an inner class that is used to detect a button press
   class StartButtonListener implements ActionListener {  //this is the required class definition
+
+
     public void actionPerformed(ActionEvent event) {  
       System.out.println("Starting new Game");
       thisFrame.dispose();
+      clip.close();
+
       new GameFrame(world, sideQuests, mainStory, ((Player)world[23][21]));
       
     }
@@ -114,11 +131,13 @@ class StartingFrame extends JFrame {
     }
   }
     
+
   /*
  * 
  * 
  * 
  */
+
   public static void mapInitialize(String playerName) throws Exception {
     File map = new File("map.txt");
     Scanner fileIn = new Scanner(map);
@@ -139,18 +158,22 @@ class StartingFrame extends JFrame {
         if (value.substring(j, j + 1).equals("S") || (value.substring(j, j + 1).equals("r"))) {
           world[i][j] = new Water();
         } else if (value.substring(j, j + 1).equals("E")) {
+
           world[i][j] = new NormalGrass();
+
           int enemyChance = rand.nextInt(5);
           if ((enemyChance == 1) && (noobEnemyCount > 0) && i > 8 && j > 8) {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
+
               world[i][j] = new Bandit(18,3,1,2,3,100,"Bandit", i, j, initialGround);
             }else {
               world[i][j] = new Archer(10,1,3,1,5,95,"Archer", i, j, initialGround);
             }
             noobEnemyCount--;
           }
+
         } else if (value.substring(j, j + 1).equals("M")) {
           world[i][j] = new PoisonGrass();
           int enemyChance = rand.nextInt(5);
@@ -158,12 +181,14 @@ class StartingFrame extends JFrame {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
+
               world[i][j] = new PoisonSnake(12,6,3,6,8,100,"Venom Snake", i, j, initialGround);
             }else {
               world[i][j] = new PoisonSpider(8,6,8,8,7,96,"Venom Spider", i, j, initialGround);
             }
             poisonEnemyCount--;
           } 
+
         } else if (value.substring(j, j + 1).equals("I")) {
           world[i][j] = new FrostGrass();
           int enemyChance = rand.nextInt(5);
@@ -171,6 +196,7 @@ class StartingFrame extends JFrame {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
+
               world[i][j] = new FrostSpider(24,14,7,10,13,100,"Frost Spider", i, j, initialGround);
             }else {
               world[i][j] = new FrostSnake(16,8,12,1,15,98,"Frost Snake", i, j, initialGround);
@@ -190,6 +216,7 @@ class StartingFrame extends JFrame {
             }
             fireEnemyCount--;
           }
+
         } else if (value.substring(j, j + 1).equals("B")) {
           world[i][j] = new Bridge();
         } else if (value.substring(j, j + 1).equals("c")) {
@@ -207,6 +234,7 @@ class StartingFrame extends JFrame {
         } else if (value.substring(j, j + 1).equals("E")) {
           world[i][j] = new Grass();
         } else if (value.substring(j, j + 1).equals("L")) {
+
           world[i][j] = new Chest();
         }  else if (value.substring(j, j + 1).equals("X")) {
           System.out.println("villager" + i + " " + j);
@@ -256,6 +284,7 @@ class StartingFrame extends JFrame {
     sideQuests = createSide(sideQuests);
     
     //start all side quests and first main quest 
+
     mainStory.spawn(world);
     for(int i = 0; i < sideQuests.length; i++) {
       if (sideQuests[i] != null) {
@@ -264,6 +293,7 @@ class StartingFrame extends JFrame {
     }
     fileIn.close();
   }
+
   /*
  * 
  * 
@@ -273,6 +303,7 @@ class StartingFrame extends JFrame {
     String[] objectives = {"Text to fix indexing","Kill 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", 
       "Kill 5 Spiders", "Kill 5 Snakes", "Talk to The Farmer", 
       "Go to the capital and meet The King", "Kill the poisonous creature",
+
       "Talk to King Tagnam", "Find the Ice Fisherman in the Frost Lands", "Kill 7 Snakes", "Kill 7 Spiders",
       "Talk to Fisherman James", "Go back to the capital and speak with King Tagnam", "Kill the Frost Boss",
       "Talk to Tagnam", "Find the Pyromaniac in the Firelands", "Defeat 10 Spiders", "Defeat 10 Snakes", "Talk to Vivian",
@@ -280,6 +311,7 @@ class StartingFrame extends JFrame {
       "Defeat Mangat", "Speak with the counsellor"};
     KingsCrown kingsCrown = new KingsCrown(69);
     questline = new MainQuestA(100, "Awakening", objectives, kingsCrown);
+
     return questline;
   }
   /*
@@ -287,6 +319,7 @@ class StartingFrame extends JFrame {
  * 
  * 
  */
+
   public static Quest[] createSide(Quest[] quests) {
     String[] objectivesA = {"Kill 5 Bandits"};
     String[] objectivesB = {"Kill 5 Poison Snakes", "Kill 10 Poison Spiders"};
@@ -302,9 +335,11 @@ class StartingFrame extends JFrame {
     quests[2] = new HuntQuestC(1, "Frost Conquerer", objectivesC, item);
     quests[3] = new HuntQuestD(1, "Fire Conquerer", objectivesD, item);
     quests[4] = new HuntQuestE(1, "World Conquerer", objectivesE, item);
+
 //    quests[5] = new FetchQuest(1, "Birthday Gift", objectivesF, item);
 //    quests[6] = new FetchQuestB(1, "More Protection", objectivesG, item);
 //    quests[7] = new FetchQuestC(1, "The Ultimate Prize", objectivesH, item);
+
     //objectives[0] = "Find the box";
     //quests[1] = new FetchQuest(1, "The Missing Box", objectives, item);
     
@@ -312,11 +347,13 @@ class StartingFrame extends JFrame {
   }
   
   
+
   /*
  * 
  * 
  * 
  */
+
   public static void loadGame() throws Exception{
     File map = new File("saveMap.txt");
     File player = new File("savePlayer.txt");
@@ -325,6 +362,7 @@ class StartingFrame extends JFrame {
     String value = fileIn.nextLine();
     int noobEnemyCount = 1, poisonEnemyCount = 2, frostEnemyCount = 2, fireEnemyCount = 1;
     int playerX, playerY, playerLevel, health, strength, intel, defence, accuracy;
+
     int task, mainA;
     Boolean active;
     String name;
@@ -460,6 +498,7 @@ class StartingFrame extends JFrame {
     //add the side quest content
     sideQuests = createSide(sideQuests);
     Scanner fileInput = new Scanner(player);
+
     
     name = fileInput.nextLine();
     playerLevel = Integer.parseInt(fileInput.nextLine());
@@ -470,6 +509,7 @@ class StartingFrame extends JFrame {
     playerX = Integer.parseInt(fileInput.nextLine());
     playerY = Integer.parseInt(fileInput.nextLine());
     accuracy = Integer.parseInt(fileInput.nextLine());
+
     active = Boolean.valueOf(fileInput.nextLine());
     task = Integer.parseInt(fileInput.nextLine());
     sideQuests[0].setComplete(active);
@@ -499,15 +539,118 @@ class StartingFrame extends JFrame {
     
     
   }
-  //Main method starts this application
-  public static void main(String[] args) throws Exception { 
-    Scanner keyInput = new Scanner(System.in);
-    System.out.println("enter player name");
-    String playerName = keyInput.nextLine();
-    keyInput.close();
-    new StartingFrame();
-    mapInitialize(playerName);
-    //saveGame(world);
+    
   }
+  //Main method starts this application
+  
+  /* All Jcomponents (buttons, fields, etc) that you want to access in the actionPerformed method
+   * must be partially declared as class variable, otherwise they are only visible in the main method
+   * the compnents are still initialized and set up in the main method 
+   * note - they must be declared as static variables in this part of the program
+  */
+  static JTextField nameField;
+  static JLabel messageLabel;
+  static JButton doneButton;
+  // ****
+  
+  
+  public static void main(String[] args) {
+  
+    //Music
+    try {
+      menuMusicFile = new File("maskoff.wav");
+      menuMusicStream = AudioSystem.getAudioInputStream(menuMusicFile);
+      info = new DataLine.Info(Clip.class, menuMusicStream.getFormat());
+      clip = (Clip) AudioSystem.getLine(info);
+      clip.open(menuMusicStream);
+    }catch (Exception e){};
+    
+    clip.start();
+      
+    
+    // **** Create a new Window and set it up
+    JFrame myWindow = new JFrame("This is the frame!"); //create a new window with a title
+     ImageIcon namePic = new ImageIcon ( "name.png" );
+      ImageIcon done = new ImageIcon ( "startName.png" );
+    
+    myWindow.setSize(700,500);  // set the size of my window to 700 by 500 pixels
+    myWindow.setResizable(true);  // set my window to allow the user to resize it
+    myWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // set the window up to end the program when closed
+    
+
+    myWindow.setLayout(new FlowLayout());  // <-- my frame is set up as a grid layout. 0 means unlimited rows    
+    // ****
+    
+    
+    // **** Create a some Panels and set their layouts
+    JPanel mainPanel = new JPanel();
+    mainPanel.setLayout(new GridLayout(0,1));  // set the layouts to grid 1 coloumn
+    // ****
+    
+    
+    // **** Create a button
+    doneButton = new JButton(done); 
+    doneButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    doneButton.setBackground(new Color(0, 0, 0, 0));
+    doneButton.setBorder(BorderFactory.createEmptyBorder());
+    doneButton.setFocusPainted(false);
+    
+    doneButton.addActionListener(new clickButtonListener(myWindow));  // add a listener to the button (makes the button active)
+    // ****
+    
+    // **** Create a label
+    messageLabel = new JLabel(namePic);
+    messageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    // ****
+    
+    // **** Creat a text field
+    nameField = new JTextField(10);  //size 10 in length, not initial text
+    // ****
+    
+    // **** Now adding all the components tot the panels 
+    mainPanel.add(messageLabel);
+    mainPanel.add(nameField);
+    mainPanel.add(doneButton);
+    // ****
+    
+    // **** Add the main panel to the frame, the order is important
+    myWindow.add(mainPanel);    
+    // ****
+    
+    // **** finally, display the window on the screen
+     myWindow.setVisible(true); // make the window visible on the screen
+        
+  
+  } // *** end of main method
+  
+  //****************** An internal class to repond to the button event ******
+  /*
+   * Each listener requires the code below in order to respond to an event. The name of this
+   * class much match the listener that was added to the JComponent. In our case, the button.
+   * Note - this is not in the main method, but is still within our class
+   *  
+   */
+  
+  static class clickButtonListener implements ActionListener {  //this is the required class definition
+    private JFrame nameFrame;
+          clickButtonListener(JFrame nameFrame){
+      this.nameFrame = nameFrame;
+      }
+    public void actionPerformed(ActionEvent event)  {     //this is the only method in this class and it will run automatically when the button is activated
+    // **** This is where the code to respond to the button event goes
+      try{
+    String name;
+    name = nameField.getText();
+       new StartingFrame();
+       mapInitialize(name);
+       nameFrame.dispose();
+    //saveGame(world);
+    
+    // ****
+      }catch (Exception E){};
+    }
+  } // ******* end of action listener
+  
+
   
 }

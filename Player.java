@@ -6,6 +6,7 @@
 
 class Player extends CombatCharacter {
   private int exp;
+
   
   private World futureStep;
   private World previousStep = new HouseFloor();
@@ -120,6 +121,7 @@ class Player extends CombatCharacter {
    * 
    * 
    */
+
   public void unequipWeapon(Inventory bag, int placement){
     if (getEquippedWeapon() == true){
       for (int i=0; i<bag.amount(); i++){
@@ -132,11 +134,13 @@ class Player extends CombatCharacter {
       }
     }
   }  
+
   /*
    * 
    * 
    * 
    */
+
   public void equipWeapon(Inventory bag, int placement){
     unequipWeapon(bag, placement);
     
@@ -146,11 +150,15 @@ class Player extends CombatCharacter {
     setEquippedWeapon(true);
     
   }
+
+  
+
   /*
    * 
    * 
    * 
    */
+
   public void unequipArmour(Inventory bag, int placement){
     if (getEquippedArmour() == true){
       for (int i=0; i<bag.amount(); i++){
@@ -163,11 +171,13 @@ class Player extends CombatCharacter {
       }
     }
   }
+
   /*
    * 
    * 
    * 
    */
+
   public void equipArmour(Inventory bag, int placement){
     unequipArmour(bag, placement);
     Armour armour =(Armour)( bag.call(placement));
@@ -176,12 +186,14 @@ class Player extends CombatCharacter {
     setEquippedArmour(true);
   }
   
+
   
   /*
    * 
    * 
    * 
    */
+
   public void useAttackPotion(Inventory bag, int placement){
     AttackPotion potion = (AttackPotion)(bag.call(placement));
     setWeaponBoost((weaponBoost + potion.getAttackBoost()));
@@ -191,31 +203,37 @@ class Player extends CombatCharacter {
     }
     setWeaponBoost((weaponBoost -= potion.getAttackBoost()));
   }
+
   /*
    * 
    * 
    * 
    */
+
   public void useAttackPermanentPotion(Inventory bag, int placement){
     AttackPermanentPotion potion = (AttackPermanentPotion)(bag.call(placement));
     setStr(getStr() + potion.getAttackBoost());
     bag.tossItem(placement);
   }
+
   /*
    * 
    * 
    * 
    */
+
   public void useDefensePermanentPotion(Inventory bag, int placement){
     DefensePermanentPotion potion = (DefensePermanentPotion)(bag.call(placement));
     setDef(getDef() + potion.getDefenseBoost());
     bag.tossItem(placement);
   }
+
   /*
    * 
    * 
    * 
    */
+
   public void equip(Inventory bag, int placement){
     if (bag.call(placement) instanceof Weapon){
       equipWeapon(bag, placement);
@@ -229,6 +247,15 @@ class Player extends CombatCharacter {
       useDefensePermanentPotion(bag, placement);
     }
   }
+  public void attack(CombatCharacter target) {
+    //target.setHealth((target.getHealth())- ((int) (Math.floor(( ( ( (2 * getLvl() + 2) * 60 * ( (getStr() + getWeaponBoost())/target.getDef() ) ) / 50 ) + 2) * ( ( (int)(Math.random()*16) + 85) / 100)))));
+    target.setHealth(-1);
+  }
+  
+ public void move(World[][] world, int value) {
+    if (value == 1) {
+
+
   /*
    * 
    * 
@@ -247,13 +274,13 @@ class Player extends CombatCharacter {
    */
   public void move(World[][] world, int value) {
     if (value == 1) {
-      
       if (world[getX() - 1][getY()] instanceof Floor) { //checks if spot is walkable
         futureStep = world[getX() - 1][getY()];
         world[getX() - 1][getY()] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
         setX(getX()-1);
+
         
       }
     } 
@@ -261,16 +288,19 @@ class Player extends CombatCharacter {
       
       if (world[getX()][getY() + 1] instanceof Floor) {
         
+
         futureStep = world[getX()][getY() + 1];
         world[getX()][getY() + 1] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
         setY(getY()+1);
+
         
       }
     }  
     else if (value == 2) {
       
+
       if (world[getX() + 1][getY()] instanceof Floor) {
         futureStep = world[getX() + 1][getY()];
         world[getX() + 1][getY()] = world[getX()][getY()];
@@ -282,12 +312,14 @@ class Player extends CombatCharacter {
     }
     else if (value == 3) {
       
+
       if (world[getX()][getY() - 1] instanceof Floor) {
         futureStep = world[getX()][getY() - 1];
         world[getX()][getY() - 1] = world[getX()][getY()];
         world[getX()][getY()] = previousStep;
         previousStep = futureStep;
         setY(getY()-1);
+
         
         
       }
@@ -367,6 +399,7 @@ class Player extends CombatCharacter {
     } else if (exp > 715) {
       setLvl(69);
     }
+
   }
   
   public void interact (Object interObj) {
@@ -379,3 +412,4 @@ class Player extends CombatCharacter {
   
   
 }
+
