@@ -1,4 +1,6 @@
 Our RPG contains a story about a former god, starting in a house. The story is based around his journey and the people around him into discovering his former godhood. The King is most jealous of this and tries to send the god on suicide missions. In the end, the King tries to finish him off but the former god triumphs! 
 
-In terms of functionality, our game contains code to add an inventory GUI, however, it is not integrated into our final project because Johann failed to fulfill his responsibilities. 
+In terms of functionality, our game contains code to add an inventory GUI, however, it is not integrated into our final project because Johann failed to fulfil his responsibilities. 
 There are display bugs with the main menu that seemed to be from weird interactions with graphics.
+
+For some odd reason, every other time the game is launched, the player will freeze after a few movements. We were unable to determine the cause of this problem. But the program can still run properly after being relaunched.
