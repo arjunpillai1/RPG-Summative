@@ -16,8 +16,4 @@ class Archer extends Normal{
    return this.imageChoice; 
   }
   
-  public void move(){
-    //enemy moves in a random way until it sees the player
-    //enemy stops(Tentative) to shoot at the player
-  }
 }

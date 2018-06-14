@@ -16,9 +16,19 @@ import java.io.File;
 import java.util.Random;
 import java.util.ArrayList;
 
+<<<<<<< HEAD
+//import music 
+=======
+>>>>>>> 63016944fc690d4323d2441c15aa1840ba01746c
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+
 //import java.awt.*;
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.Image;
 
 //Keyboard imports
 import java.awt.event.KeyEvent;
@@ -270,7 +280,7 @@ class GameFrame extends JFrame {
       int countX = 0;
       int countY = 0;
       Font questTitle = new Font("Arial", Font.BOLD, 16);
-      Font questTask = new Font("Berlin Sans FB", Font.PLAIN, 15);
+      Font questTask = new Font("Verdana", Font.PLAIN, 15);
       Font questLogTitle = new Font("Verdana", Font.BOLD, 14);
       int imageChoice;
       int enemyDirection=1;
@@ -451,10 +461,10 @@ class GameFrame extends JFrame {
             
             World characterImageBackground=null;
             if (world[i][j] instanceof Enemy){
-              characterImageBackground=((Enemy)world[i][j]).getFutureStep();
+              characterImageBackground=((Enemy)world[i][j]).getPreviousStep();
               enemyDirection=((Enemy)world[i][j]).getDirection();
             }else if(world[i][j] instanceof Player){
-              characterImageBackground=((Player)world[i][j]).getFutureStep();
+              characterImageBackground=((Player)world[i][j]).getPreviousStep();
             }
             
             if (characterImageBackground instanceof Grass) {  

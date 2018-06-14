@@ -563,8 +563,6 @@ class StartingFrame extends JFrame {
     fileInput.close();
     world[playerY][playerX] = new Player(health, strength, intel, defence, playerLevel, accuracy, name, playerX, playerY);
     
-    
-    
   }
     
   
@@ -598,9 +596,9 @@ class StartingFrame extends JFrame {
       
     
     // **** Create a new Window and set it up
-    JFrame myWindow = new JFrame("This is the frame!"); //create a new window with a title
-     ImageIcon namePic = new ImageIcon ( "name.png" );
-      ImageIcon done = new ImageIcon ( "startName.png" );
+    JFrame myWindow = new JFrame("Character Creation"); //create a new window with a title
+    ImageIcon namePic = new ImageIcon ( "name.png" );
+    ImageIcon done = new ImageIcon ( "startName.png" );
     
     myWindow.setSize(700,500);  // set the size of my window to 700 by 500 pixels
     myWindow.setResizable(true);  // set my window to allow the user to resize it

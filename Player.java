@@ -331,8 +331,8 @@ class Player extends CombatCharacter {
    * 
    */
   
-  public World getFutureStep(){
-    return this.futureStep;
+  public World getPreviousStep(){
+    return this.previousStep;
   }
   /*
    * 

@@ -11,18 +11,8 @@ class Bandit extends Normal{
     imageChoice=((int)(Math.random()*3))*4;//0,4,8
   }
   
-  
-  public void attack(int strength, int intelligence){
-    //if enemy hits the player, deal 10% damage to player(Tentative)
-    //once it attacks it will wait 0.5 second to attack again
-  }
-  
   public int getImageChoice(){
    return this.imageChoice; 
   }
   
-  public void move(){
-    //enemy moves in a random way until it sees the player
-    //the enemy chases after the player and attacks them
-  }
 }

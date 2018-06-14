@@ -99,7 +99,7 @@ abstract class Enemy extends CombatCharacter{
     return direction;
   }
   
-  public World getFutureStep(){
-    return futureStep;
+  public World getPreviousStep(){
+    return previousStep;
   }
 }
