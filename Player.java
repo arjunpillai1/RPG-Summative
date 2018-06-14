@@ -235,6 +235,8 @@ class Player extends CombatCharacter {
       } else if (exp >= 670) {
         setLvl(20);
       }
+    } else if (exp > 715) {
+      setLvl(69);
     }
   }
   

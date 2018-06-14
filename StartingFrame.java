@@ -208,15 +208,18 @@ class StartingFrame extends JFrame {
       poisonEnemyCount += 1;
     }
     
-    
-    //Set up Grid Panel
+    // initial positions for certain objects
     world[23][21] = new Player(25,1,1,0,1,100, playerName, 23, 21);
     RustySword first = new RustySword();
     world[22][19] = new Chest(first);
-    mainStory = createStory(mainStory);
+    world[8][83] = new PoisonBoss(1,1,1,1,1,1, "Poison Boss", 8, 83, world[8][83]);
+    world[91][89] = new FrostBoss(1,1,1,1,1,1, "Frost Boss", 92, 89, world[92][89] );
+    world[97][10] = new FireBoss(1,1,1,1,1,1, "Fire Boss", 97, 10, world[97][10]);
     
+    //add the main story content
+    mainStory = createStory(mainStory);
+    //add the side quest content
     sideQuests = createSide(sideQuests);
-     // all quests in here
     
     //start all side quests and first main quest 
     mainStory.spawn(world);
@@ -291,7 +294,7 @@ class StartingFrame extends JFrame {
         if (value.substring(j, j + 1).equals("S") || (value.substring(j, j + 1).equals("r"))) {
           world[i][j] = new Water();
         } else if (value.substring(j, j + 1).equals("E")) {
-          world[i][j] = new Grass();
+          world[i][j] = new NormalGrass();
           int enemyChance = rand.nextInt(5);
           if ((enemyChance == 1) && (noobEnemyCount > 0) && i > 8 && j > 8) {
             initialGround = world[i][j];

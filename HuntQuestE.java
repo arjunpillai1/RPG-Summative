@@ -35,4 +35,12 @@ class HuntQuestE extends Quest {
     return false;
   }
 
+  public int trackTasks(int task) {
+    if (task == 1) {
+      return killsA;
+    } else if (task == 2) {
+      return killsB;
+    }
+    return killsA;
+  }
 }

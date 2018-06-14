@@ -18,7 +18,7 @@ class FetchQuest extends Quest {
     //if((bag.getInventory()).contains(RustySword)){
     for (int i=0; i<(bag.amount()); i++){
       if (bag.call(i) instanceof RustySword){
-    System.out.println(getTask(1));
+        System.out.println(getTask(1));
       }
     }
   }

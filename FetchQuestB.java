@@ -10,7 +10,7 @@ class FetchQuestB extends Quest {
   }
   @Override
   void initialize(World[][] world/*, Inventory bag*/) {
-        System.out.println(getTask(0));
+    System.out.println(getTask(0));
     System.out.println("Quest started: " + getName());
     setActive(true);
     //if((bag.getInventory()).contains(RustySword)){

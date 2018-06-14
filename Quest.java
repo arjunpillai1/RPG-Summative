@@ -49,7 +49,7 @@ abstract class Quest extends World{
   public int getCurrentTask() {
     return this.currentTask;
   }
-  
+
   public void setCurrentTask(int task) {
     this.currentTask = task;
   }

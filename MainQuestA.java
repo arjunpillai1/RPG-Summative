@@ -84,26 +84,33 @@ class MainQuestA extends Quest {
     }
     return false;
   }
-  
+  public int trackTask(int task) {
+    if (task == 1) {
+      return killsA;
+    } else if (task == 2) {
+      return killsB;
+    }
+    return killsA;
+  }
   @Override
   public int getXPReward() {
-    if (getCurrentTask() < 3 && getCurrentTask() > 0) { //1,2
+    if (getCurrentTask() == 3) { //1,2
       return 10;
     }
-    else if (getCurrentTask() < 7 && getCurrentTask() > 4) { //5,6
+    else if (getCurrentTask() == 7) { //5,6
       return 25;
     }
-    else if (getCurrentTask() < 14 && (getCurrentTask() > 11)) { //12,13
+    else if (getCurrentTask() == 14) { //12,13
       return 50;
     }
-    else if (getCurrentTask() < 21 && getCurrentTask() > 18) { //19,20
-      return 1000;
+    else if (getCurrentTask() == 21) { //19,20
+      return 100;
     }
     else if (getCurrentTask() == 25) {
-      return 10000;
+      return 200;
     }
     else if (getCurrentTask() == 29) {
-      return 1000000;
+      return 500;
     }
     return 0;
   }

@@ -41,9 +41,11 @@ class GameFrame extends JFrame {
   Clock clock = new Clock();
   Clock enemyDelay = new Clock();
   Clock total = new Clock();
+  Clock bossTimer = new Clock();
   JPanel mainPanel = new JPanel();
   Boolean dialogue = false;
   boolean playerMove = true;
+  Boolean allowRespawn = false;
   Inventory bag = new Inventory();
   //class variable (non-static)
   static double x, y;
@@ -107,12 +109,18 @@ class GameFrame extends JFrame {
     boolean stamina = true;
     
     while(player.getHealth() > 0){
-      
+      System.out.println((int)clock.getElapsedTime());
       if (((int)clock.getElapsedTime()) == 15) {
         respawnEnemies();
-        System.out.println("respawn");
         clock.update();
       }
+      
+      
+          if (((int)bossTimer.getElapsedTime()) == 60) {
+            respawnBoss();
+            bossTimer.update();
+            
+          }
       
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
@@ -123,20 +131,14 @@ class GameFrame extends JFrame {
         }
       }
       
-      
-      for (int i = 0; i < world.length; i++) {
-        for (int j = 0; j < world.length; j++) {
-          // this is for when enemies are in vision range
-          
-          if (Math.round(total.getElapsedTime() * 10.0) / 10.0 == 0.1) {
+      if (Math.round(total.getElapsedTime() * 10.0) / 10.0 == 0.1) {
         playerMove = true;
         total.update();
       }
-      
-      if (((int)clock.getElapsedTime()) == 15) {
-        respawnEnemies();
-        clock.update();
-      }
+      System.out.println(player.getHealth());
+      for (int i = 0; i < world.length; i++) {
+        for (int j = 0; j < world.length; j++) {
+          // this is for when enemies are in vision range
           
           if (world[i][j] instanceof Player) {
             int playX = ((Player)world[i][j]).getX();
@@ -232,10 +234,11 @@ class GameFrame extends JFrame {
   /** --------- INNER CLASSES ------------- **/
   
   // Inner class for the the game area - This is where all the drawing of the screen occurs
+
   private class GameAreaPanel extends JPanel {
     public void paintComponent(Graphics g) {   
       
-      
+      System.out.println("works");
       super.paintComponent(g);
       maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
       maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -397,14 +400,12 @@ class GameFrame extends JFrame {
           g.setFont(questTitle);
           g.drawString(mainQuests.getName(), 15, 55 + i*30);
           g.setFont(questTask);
-          //System.out.println(mainQuests.getCurrentTask());
-          // need to change all tasks by reducing their numbers by 1 soon
           if (mainQuests.getCurrentTask() == 1 || mainQuests.getCurrentTask() == 5 || mainQuests.getCurrentTask() == 12 || 
               mainQuests.getCurrentTask() == 19) {
-            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 15, 55 + i*30 + 20);
-            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()+1), 15, 55 + i*30 + 40);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()) + " (" + ((MainQuestA)mainQuests).trackTask(1) + ")", 15, 55 + i*30 + 20);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()+1) + " (" + ((MainQuestA)mainQuests).trackTask(2) + ")", 15, 55 + i*30 + 40);
           } else {
-            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()), 15, 55 + i*30 + 20);
+            g.drawString("- " + mainQuests.getTask(mainQuests.getCurrentTask()) + " (" + ((MainQuestA)mainQuests).trackTask(1) + ")", 15, 55 + i*30 + 20);
           }
         } else {
           g.setColor(sideQuest);
@@ -439,8 +440,6 @@ class GameFrame extends JFrame {
           g.setColor(Color.WHITE);
           g.drawString(speechQueue.get(advanceDialogue), (maxX/4)-100, ((maxY - 250) + 142 / 2));
         }
-        
-        
       }
     }
   }
@@ -460,7 +459,22 @@ class GameFrame extends JFrame {
     }
   }
   
-  
+  void respawnBoss() {
+    if (!(world[8][83] instanceof PoisonBoss)) {
+      world[8][83] = new PoisonGrass();
+      world[8][83] = new PoisonBoss(1,1,1,1,1,1, "Poison Boss", 8, 83,world[8][83] );
+    }
+    
+    if (!(world[91][89] instanceof FrostBoss)) {
+      world[91][89] = new Bridge();
+      world[92][89] = new FrostBoss(1,1,1,1,1,1, "Frost Boss", 91, 89, world[91][89] );
+    }
+    
+    if (!(world[97][10] instanceof FireBoss)) {
+      world[97][10] = new FireGrass();
+      world[97][10] = new FireBoss(1,1,1,1,1,1, "Fire Boss", 97, 10, world[97][10]);
+    }
+  }
   
   void respawnEnemies() {
     int noobCount = 0, fireCount = 0, frostCount = 0, poisonCount = 0, totalCount = 0;
@@ -469,15 +483,13 @@ class GameFrame extends JFrame {
     int randX;
     int randY;
     
-    
-    
-    while (noobCount < 2 || fireCount < 1 || frostCount < 2 || poisonCount < 1) {
+    while ((noobCount < 2 || fireCount < 1 || frostCount < 2 || poisonCount < 1) && allowRespawn) {
       for (int i = 0; i < world.length; i++) {
         for (int j = 0; j < world.length; j++) {
           randX = rand.nextInt(97) + 4;
           randY = rand.nextInt(97) + 4;
           if (noobCount < 2) {
-            if (world[randX][randY] instanceof Grass) {
+            if (world[randX][randY] instanceof NormalGrass) {
               enemyType = rand.nextInt(2);
               if (enemyType == 1) {
                 noobCount++;
@@ -527,6 +539,7 @@ class GameFrame extends JFrame {
         }
       }
     }
+    allowRespawn = false;
   }
   
   class Clock {
@@ -563,7 +576,7 @@ class GameFrame extends JFrame {
       int playerY = player.getY();
       if (playerMove == true) {
         if (KeyEvent.getKeyText(e.getKeyCode()).equals("W")) {  //If 'W' is pressed
-          ((Player)world[playerX][playerY]).move(world,1);
+          ((Player)world[playerX][playerY]).move(world, 1);
         } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("S")) {  //If 'S' is pressed
           ((Player)world[playerX][playerY]).move(world, 2);
         } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("A")) {
@@ -610,6 +623,7 @@ class GameFrame extends JFrame {
         if (((Enemy)interactable).getHealth() <= 0) {
           int enemyLevel = ((CombatCharacter)interactable).getLvl();
           int giveXP = 0;
+          allowRespawn = true;
           Random randXP = new Random();
           if (enemyLevel <= 5) {
             giveXP = randXP.nextInt(3);
@@ -942,6 +956,8 @@ class GameFrame extends JFrame {
               speechQueue.add("There's bandits and archers everywhere!");
               speechQueue.add("I have stuff in this chest, take it!");
               speechQueue.add("Help me defeat these bandits and archers!");
+              speechQueue.add(mainQuest.getTask(1));
+              speechQueue.add(mainQuest.getTask(2));
             }
             else if (((NPC)interactable).getName() == "Bob" && mainQuest.getCurrentTask() == 3) {
               mainQuest.setCurrentTask(4);
