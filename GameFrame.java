@@ -47,6 +47,7 @@ class GameFrame extends JFrame {
   Clock enemyDelay = new Clock();
   JPanel mainPanel = new JPanel();
   Boolean dialogue = false;
+  int playerState=0;
   //class variable (non-static)
   static double x, y;
   static GameAreaPanel gamePanel;
@@ -257,6 +258,7 @@ class GameFrame extends JFrame {
       Font questTask = new Font("Berlin Sans FB", Font.PLAIN, 15);
       Font questLogTitle = new Font("Verdana", Font.BOLD, 14);
       int imageChoice;
+      int enemyDirection=1;
       
       Image[] floorTextures={Toolkit.getDefaultToolkit().getImage("Grass Texture.png"),
         Toolkit.getDefaultToolkit().getImage("Poison Grass Texture.png"),
@@ -300,30 +302,48 @@ class GameFrame extends JFrame {
         Toolkit.getDefaultToolkit().getImage("NPC 5.png")
       };
       
-      Image[] knights={Toolkit.getDefaultToolkit().getImage("Knight1 IDLE.png"),
-        Toolkit.getDefaultToolkit().getImage("Knight1 Attack.png"),
-        Toolkit.getDefaultToolkit().getImage("Knight2 IDLE.png"),
-        Toolkit.getDefaultToolkit().getImage("Knight2 Attack.png"),
-        Toolkit.getDefaultToolkit().getImage("Knight3 IDLE.png"),
-        Toolkit.getDefaultToolkit().getImage("Knight3 Attack.png")
+      Image[] knights={Toolkit.getDefaultToolkit().getImage("Knight1 IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight1 IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight1 Attack left.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight1 Attack right.png"),
+        Toolkit.getDefaultToolkit().getImage("knight2 IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("knight2 IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("knight2 Attack left.png"),
+        Toolkit.getDefaultToolkit().getImage("knight2 Attack right.png"),
+        Toolkit.getDefaultToolkit().getImage("knight3 IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("knight3 IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("knight3 Attack left.png"),
+        Toolkit.getDefaultToolkit().getImage("knight3 Attack right.png"),
       };
       
-      Image[] trolls={Toolkit.getDefaultToolkit().getImage("Troll1 IDLE.png"),
-        Toolkit.getDefaultToolkit().getImage("Troll1 Attack.png"),
-        Toolkit.getDefaultToolkit().getImage("Troll2 IDLE.png"),
-        Toolkit.getDefaultToolkit().getImage("Troll2 Attack.png"),
-        Toolkit.getDefaultToolkit().getImage("Troll3 IDLE.png"),
-        Toolkit.getDefaultToolkit().getImage("Troll3 Attack.png")
+      Image[] trolls={Toolkit.getDefaultToolkit().getImage("Troll1 IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll1 IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll1 Attack left.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll1 Attack right.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll2 IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll2 IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll2 Attack left.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll2 Attack right.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll3 IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll3 IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll3 Attack left.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll3 Attack right.png"),
       };
       
-      Image[] spider={Toolkit.getDefaultToolkit().getImage("Poison Spider IDLE.png"),
-      Toolkit.getDefaultToolkit().getImage("Frost Spider IDLE.png"),
-      Toolkit.getDefaultToolkit().getImage("Fire Spider IDLE.png")
+      Image[] spider={Toolkit.getDefaultToolkit().getImage("Poison Spider IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Poison Spider IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Frost Spider IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Frost Spider IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Fire Spider IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Fire Spider IDLE right.png")
       }; 
       
-      Image[] sorcerer={Toolkit.getDefaultToolkit().getImage("Poison sorcerer IDLE.png"),
-      Toolkit.getDefaultToolkit().getImage("Frost sorcerer IDLE.png"),
-      Toolkit.getDefaultToolkit().getImage("Fire sorcerer IDLE.png")
+      Image[] sorcerer={Toolkit.getDefaultToolkit().getImage("Poison sorcerer IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Poison sorcerer IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Frost sorcerer IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Frost sorcerer IDLE right.png"),
+        Toolkit.getDefaultToolkit().getImage("Fire sorcerer IDLE left.png"),
+        Toolkit.getDefaultToolkit().getImage("Fire sorcerer IDLE right.png"),
       }; 
       
       Image waterImage=Toolkit.getDefaultToolkit().getImage("Water.png");
@@ -424,12 +444,15 @@ class GameFrame extends JFrame {
           } 
           //Enemies
           if (world[i][j] instanceof Enemy || world[i][j] instanceof Player){
+            
             World characterImageBackground=null;
             if (world[i][j] instanceof Enemy){
               characterImageBackground=((Enemy)world[i][j]).getFutureStep();
+              enemyDirection=((Enemy)world[i][j]).getDirection();
             }else if(world[i][j] instanceof Player){
               characterImageBackground=((Player)world[i][j]).getFutureStep();
             }
+            
             if (characterImageBackground instanceof Grass) {  
               g.drawImage(floorTextures[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             
@@ -454,49 +477,57 @@ class GameFrame extends JFrame {
           }
           if (world[i][j] instanceof Bandit) {
             imageChoice=((Bandit)(world[i][j])).getImageChoice();
-            g.drawImage(knights[imageChoice],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.drawImage(knights[imageChoice+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           else if (world[i][j] instanceof Archer) {
             imageChoice=((Archer)(world[i][j])).getImageChoice();
-            g.drawImage(trolls[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.drawImage(trolls[imageChoice+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           else if (world[i][j] instanceof PoisonSpider) {
-            g.drawImage(spider[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.drawImage(spider[0+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           else if (world[i][j] instanceof FrostSpider) {
-            g.drawImage(spider[1],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.drawImage(spider[2+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           else if (world[i][j] instanceof FireSpider) {
-            g.drawImage(spider[2],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.drawImage(spider[4+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           else if (world[i][j] instanceof PoisonSnake) {
-            g.drawImage(sorcerer[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.drawImage(sorcerer[0+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           else if (world[i][j] instanceof FrostSnake) {
-            g.drawImage(sorcerer[1],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.drawImage(sorcerer[2+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           else if (world[i][j] instanceof FireSnake) {
-            g.drawImage(sorcerer[2],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            g.drawImage(sorcerer[4+enemyDirection],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           //Player
           else if (world[i][j] instanceof Player) {
-            g.drawImage(playerEmpty[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            if (((Player)(world[i][j])).getEquippedArmour()){
+              g.drawImage(playerArmour[playerState],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            } 
+            else if (((Player)(world[i][j])).getEquippedWeapon()){
+              g.drawImage(playerNoArmour[playerState],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            }
+            else{
+              g.drawImage(playerEmpty[playerState/2],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            }
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
             g.drawString("Lv:" + ((Player)world[i][j]).getLvl(), (j - (j - (countY %9))) * GridToScreenRatio + 30, (i - (i - countX)) * GridToScreenRatio + 30);
@@ -695,12 +726,16 @@ class GameFrame extends JFrame {
       
       if (KeyEvent.getKeyText(e.getKeyCode()).equals("W")) {  //If 'W' is pressed
         ((Player)world[playerX][playerY]).move(world,1);
+        playerState=6;
       } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("S")) {  //If 'S' is pressed
         ((Player)world[playerX][playerY]).move(world, 2);
+        playerState=4;
       } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("A")) {
-        ((Player)world[playerX][playerY]).move(world, 3);      
+        ((Player)world[playerX][playerY]).move(world, 3);
+        playerState=0;
       } else if (KeyEvent.getKeyText(e.getKeyCode()).equals("D")) {
         ((Player)world[playerX][playerY]).move(world, 4);
+        playerState=2;
       }
     }   
     

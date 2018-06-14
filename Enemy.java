@@ -5,6 +5,7 @@ abstract class Enemy extends CombatCharacter{
   
   private World futureStep;
   private World previousStep;
+  private int direction=1;
   
   Enemy(int health, int strength, int intelligence, int defence, int level, int accuracy,
         String name, int posX, int posY, World initialGround){
@@ -65,6 +66,7 @@ abstract class Enemy extends CombatCharacter{
         world[coordX][coordY+1] = world[coordX][coordY];
         world[coordX][coordY] = previousStep;
         previousStep = futureStep;
+        direction=1;
         //System.out.println("works");
       }
     }
@@ -74,12 +76,17 @@ abstract class Enemy extends CombatCharacter{
         world[coordX][coordY-1] = world[coordX][coordY];
         world[coordX][coordY] = previousStep;
         previousStep = futureStep;
+        direction=0;
        // System.out.println("works");
       }
     }
   }
   void death(Object[][] world, int coordX, int coordY) {
     world[coordX][coordY] = previousStep;
+  }
+  
+  public int getDirection(){
+    return direction;
   }
   
   public World getFutureStep(){

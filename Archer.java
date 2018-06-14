@@ -8,7 +8,7 @@ class Archer extends Normal{
     super(health, strength, intelligence, defence, level, accuracy, name, posX, posY, initialGround);
     newLvl = ((int)(Math.random()*2)+1);
     setLvl(newLvl);
-    imageChoice=((int)(Math.random()*3));
+    imageChoice=((int)(Math.random()*3))*4;//0,4,8
   }
   
   
