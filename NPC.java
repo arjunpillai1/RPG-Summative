@@ -1,6 +1,11 @@
+/*
+ * 
+ * 
+ * 
+ */
 import java.util.Random;
 
-abstract class NPC extends NonCombatCharacter{
+class NPC extends NonCombatCharacter{
   private Boolean questGiver;
   private Quest quest;
   Random rand = new Random();
