@@ -23,6 +23,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 
+
 //Keyboard imports
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -69,7 +70,7 @@ class GameFrame extends JFrame {
     
     //Music initalisation
     try {
-      menuMusicFile = new File("maskoff.wav");
+      menuMusicFile = new File("Skyrim Music - Dragonborn (Main Theme).wav");
       menuMusicStream = AudioSystem.getAudioInputStream(menuMusicFile);
       info = new DataLine.Info(Clip.class, menuMusicStream.getFormat());
       clip = (Clip) AudioSystem.getLine(info);
@@ -255,6 +256,7 @@ class GameFrame extends JFrame {
       Font questTitle = new Font("Arial", Font.BOLD, 16);
       Font questTask = new Font("Berlin Sans FB", Font.PLAIN, 15);
       Font questLogTitle = new Font("Verdana", Font.BOLD, 14);
+      int imageChoice;
       
       Image[] floorTextures={Toolkit.getDefaultToolkit().getImage("Grass Texture.png"),
         Toolkit.getDefaultToolkit().getImage("Poison Grass Texture.png"),
@@ -263,22 +265,6 @@ class GameFrame extends JFrame {
         Toolkit.getDefaultToolkit().getImage("dirt.png"),
         Toolkit.getDefaultToolkit().getImage("floor.jpg"),
         Toolkit.getDefaultToolkit().getImage("Bridge tile.png")
-      };
-      
-      Image[] knights={Toolkit.getDefaultToolkit().getImage("Knight1 IDLE.png"),
-        Toolkit.getDefaultToolkit().getImage("Knight1 Attack.png"),
-        Toolkit.getDefaultToolkit().getImage("Knight2 IDLE.png"),
-        Toolkit.getDefaultToolkit().getImage("Knight2 Attack.png"),
-        Toolkit.getDefaultToolkit().getImage("Knight3 IDLE.png"),
-        Toolkit.getDefaultToolkit().getImage("Knight3 Attack.png")
-      };
-      
-      Image[] trolls={Toolkit.getDefaultToolkit().getImage("Troll1 IDLE.png"),
-        Toolkit.getDefaultToolkit().getImage("Troll1 Attack.png"),
-        Toolkit.getDefaultToolkit().getImage("Troll2 IDLE.png"),
-        Toolkit.getDefaultToolkit().getImage("Troll2 Attack.png"),
-        Toolkit.getDefaultToolkit().getImage("Troll3 IDLE.png"),
-        Toolkit.getDefaultToolkit().getImage("Troll3 Attack.png")
       };
       
       Image[] playerEmpty={Toolkit.getDefaultToolkit().getImage("No Armour Character Sprite left.png"),
@@ -305,6 +291,29 @@ class GameFrame extends JFrame {
         Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger front attack.png"),
         Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger back idle.png"),
         Toolkit.getDefaultToolkit().getImage("Armoured Character Sprite with Dagger back attack.png")
+      };
+      
+      Image[] npcSprites={Toolkit.getDefaultToolkit().getImage("NPC 1.png"),
+        Toolkit.getDefaultToolkit().getImage("NPC 2.png"),
+        Toolkit.getDefaultToolkit().getImage("NPC 3.png"),
+        Toolkit.getDefaultToolkit().getImage("NPC 4.png"),
+        Toolkit.getDefaultToolkit().getImage("NPC 5.png")
+      };
+      
+      Image[] knights={Toolkit.getDefaultToolkit().getImage("Knight1 IDLE.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight1 Attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight2 IDLE.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight2 Attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight3 IDLE.png"),
+        Toolkit.getDefaultToolkit().getImage("Knight3 Attack.png")
+      };
+      
+      Image[] trolls={Toolkit.getDefaultToolkit().getImage("Troll1 IDLE.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll1 Attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll2 IDLE.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll2 Attack.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll3 IDLE.png"),
+        Toolkit.getDefaultToolkit().getImage("Troll3 Attack.png")
       };
       
       Image[] spider={Toolkit.getDefaultToolkit().getImage("Poison Spider IDLE.png"),
@@ -407,12 +416,10 @@ class GameFrame extends JFrame {
           }
           //NPCs  
           if (world[i][j] instanceof NPC) {
-            g.setColor(farmer); //sets colour for printing organism
-            g.fillRect((j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio);
+            imageChoice=((NPC)(world[i][j])).getImageChoice();
+            g.drawImage(npcSprites[imageChoice],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
-            
-          } else if (world[i][j] instanceof Enemy) {
             
           } 
           //Enemies
@@ -442,15 +449,17 @@ class GameFrame extends JFrame {
               g.drawImage(floorTextures[5],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
               
             }else if (characterImageBackground instanceof Bridge) {
-              g.drawImage(floorTextures[5],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+              g.drawImage(floorTextures[6],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             }
           }
           if (world[i][j] instanceof Bandit) {
-            g.drawImage(knights[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
+            imageChoice=((Bandit)(world[i][j])).getImageChoice();
+            g.drawImage(knights[imageChoice],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
           }
           else if (world[i][j] instanceof Archer) {
+            imageChoice=((Archer)(world[i][j])).getImageChoice();
             g.drawImage(trolls[0],(j - (j - (countY %9))) * GridToScreenRatio, (i - (i - countX)) * GridToScreenRatio,GridToScreenRatio,GridToScreenRatio,this);
             g.setColor(Color.WHITE);
             g.drawString(((Character)world[i][j]).getName(), (j - (j - (countY %9))) * GridToScreenRatio + 5, (i - (i - countX)) * GridToScreenRatio + 8);
