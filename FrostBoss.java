@@ -1,3 +1,10 @@
+/*
+ * 
+ * 
+ * 
+ */
+
+
 class FrostBoss extends Type{
 
 

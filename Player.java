@@ -15,59 +15,111 @@ class Player extends CombatCharacter {
   private boolean equippedWeapon = false;
   private boolean equippedArmour = false;
   private int maxHealth;
-  
+  /*
+   * 
+   * 
+   * 
+   */
   Player(int health, int strength, int intelligence, int defence, int level, int accuracy, String name, int posX, int posY) {
     super(health, strength, intelligence, defence, level, accuracy, name, posX, posY);
     this.maxHealth = 50;
     
   }
   
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public boolean getEquippedWeapon(){
     return equippedWeapon;
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void setEquippedWeapon(boolean state){
     equippedWeapon=state;
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public boolean getEquippedArmour(){
     return equippedArmour;
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void setEquippedArmour(boolean state){
     equippedArmour=state;
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public int getWeaponBoost(){
     return weaponBoost;
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void setWeaponBoost(int value){
     weaponBoost=value;
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public int getArmourBoost(){
     return armourBoost;
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void setArmourBoost(int value){
     armourBoost=value;
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void levelUp () {
     setMaxHealth(getMaxHealth() + 25);
     setHealth(getMaxHealth());
   }
-  
-  int getMaxHealth() {
+  /*
+   * 
+   * 
+   * 
+   */
+  public int getMaxHealth() {
     return maxHealth;
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   void setMaxHealth(int amount) {
     this.maxHealth = amount;
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void unequipWeapon(Inventory bag, int placement){
     if (getEquippedWeapon() == true){
       for (int i=0; i<bag.amount(); i++){
@@ -80,7 +132,11 @@ class Player extends CombatCharacter {
       }
     }
   }  
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void equipWeapon(Inventory bag, int placement){
     unequipWeapon(bag, placement);
     
@@ -90,7 +146,11 @@ class Player extends CombatCharacter {
     setEquippedWeapon(true);
     
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void unequipArmour(Inventory bag, int placement){
     if (getEquippedArmour() == true){
       for (int i=0; i<bag.amount(); i++){
@@ -103,7 +163,11 @@ class Player extends CombatCharacter {
       }
     }
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void equipArmour(Inventory bag, int placement){
     unequipArmour(bag, placement);
     Armour armour =(Armour)( bag.call(placement));
@@ -113,7 +177,11 @@ class Player extends CombatCharacter {
   }
   
   
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void useAttackPotion(Inventory bag, int placement){
     AttackPotion potion = (AttackPotion)(bag.call(placement));
     setWeaponBoost((weaponBoost + potion.getAttackBoost()));
@@ -123,18 +191,31 @@ class Player extends CombatCharacter {
     }
     setWeaponBoost((weaponBoost -= potion.getAttackBoost()));
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void useAttackPermanentPotion(Inventory bag, int placement){
     AttackPermanentPotion potion = (AttackPermanentPotion)(bag.call(placement));
     setStr(getStr() + potion.getAttackBoost());
     bag.tossItem(placement);
   }
+  /*
+   * 
+   * 
+   * 
+   */
   public void useDefensePermanentPotion(Inventory bag, int placement){
     DefensePermanentPotion potion = (DefensePermanentPotion)(bag.call(placement));
     setDef(getDef() + potion.getDefenseBoost());
     bag.tossItem(placement);
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void equip(Inventory bag, int placement){
     if (bag.call(placement) instanceof Weapon){
       equipWeapon(bag, placement);
@@ -148,11 +229,22 @@ class Player extends CombatCharacter {
       useDefensePermanentPotion(bag, placement);
     }
   }
+  /*
+   * 
+   * 
+   * 
+   */
   public void attack(CombatCharacter target) {
-    target.setHealth((target.getHealth())- ((int) (Math.floor(( ( ( (2 * getLvl() + 2) * 60 * ( (getStr() + getWeaponBoost())/target.getDef() ) ) / 50 ) + 2) * ( ( (int)(Math.random()*16) + 85) / 100)))));
-    //target.setHealth(-1);
+    System.out.println(target.getDef());
+    target.setHealth((target.getHealth())- (3 + ((int)(Math.floor(( ( ( (2 * getLvl() + 2) * 60 * ( (getStr() + getWeaponBoost())/target.getDef() ) ) / 50 ) + 2) * ( ( (int)(Math.random()*16) + 85) / 100))))));
+    
+    
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void move(World[][] world, int value) {
     if (value == 1) {
       
@@ -201,11 +293,19 @@ class Player extends CombatCharacter {
       }
     }
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public int getExp(){
     return exp;
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   public void setExp(int newExp){
     this.exp = newExp;
     // normal levels (1-5)

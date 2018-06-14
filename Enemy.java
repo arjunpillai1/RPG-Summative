@@ -18,8 +18,6 @@ abstract class Enemy extends CombatCharacter{
     ((Character)player).setHealth(((Character)player).getHealth()-damage);
   }
   void move(World[][] world, int coordX, int coordY) {
-    //System.out.println("works" + getX() + getY());
-    //System.out.println(coordX + " d" + coordY);
     Random rand = new Random();
     int decision;
     

@@ -1,15 +1,28 @@
 class MainQuestA extends Quest {
   int killsA = 0, killsB = 0, killsC = 0, currentTask;
   //items to fetch
+  /*
+   * 
+   * 
+   * 
+   */
   MainQuestA(int experience, String name, String[] objectives, Item itemReward) {
     super(experience, name, objectives, itemReward);
   }
-
+  /*
+   * 
+   * 
+   * 
+   */
   @Override
   void spawn(World[][] world) {
     world[22][20] = new NPC(10, "Bob", true, this);
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   @Override
   void initialize(World[][] world) {
     setCurrentTask(1);
@@ -21,16 +34,18 @@ class MainQuestA extends Quest {
     world[91][74] = new NPC(1000, "Vivian", false, this);
     setActive(true);
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   Boolean updateObjective(int task) {
     //update these conditions for the objectives
     if (task == 1) {
       killsA++;
-      //System.out.println("A:" + killsA);
     }
     if (task == 2) {
       killsB++;
-      //System.out.println("B:" + killsB);
     }
     if (task == 3) {
       killsC++;
@@ -87,6 +102,11 @@ class MainQuestA extends Quest {
     return false;
   }
   @Override
+  /**
+   * 
+   * 
+   * 
+   */
   public int trackTask(int task) {
     if (task == 1) {
       return killsA;
@@ -95,6 +115,11 @@ class MainQuestA extends Quest {
     }
     return killsA;
   }
+  /*
+   * 
+   * 
+   * 
+   */
   @Override
   public int getXPReward() {
     if (getCurrentTask() == 3) { //1,2

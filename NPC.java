@@ -1,3 +1,8 @@
+/*
+ * 
+ * 
+ * 
+ */
 import java.util.Random;
 
 class NPC extends NonCombatCharacter{

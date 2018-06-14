@@ -1,3 +1,8 @@
+/*
+ * 
+ * 
+ * 
+ */
 class FireBoss extends Type{
     
   FireBoss(int health, int strength, int intelligence, int defence, int level, int accuracy, 

@@ -1,3 +1,8 @@
+/*
+ * 
+ * 
+ * 
+ */
 class HuntQuestE extends Quest {
   int killsA=0, killsB=0,killsC=0, enemyCountA, enemyCountB, enemyCountC, numTasks;
   HuntQuestE(int experience, String name, String[] objectives, Item itemReward) {

@@ -15,9 +15,9 @@ import java.io.PrintWriter;
 import java.io.File;
 import java.util.Random;
 import java.util.ArrayList;
-import java.util.Collections;
-import javax.swing.*;
-import java.awt.*;
+//import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
 
 //Keyboard imports
 import java.awt.event.KeyEvent;
@@ -30,7 +30,7 @@ import java.awt.event.MouseEvent;
 class GameFrame extends JFrame { 
   private static JFrame frame;
   private static int maxX,maxY, GridToScreenRatio;
-  World[][] world;
+  static World[][] world;
   Quest[] sideQuests = new Quest[8];
   ArrayList<String> speechQueue = new ArrayList<String>();
   static Quest mainQuests;
@@ -164,7 +164,7 @@ class GameFrame extends JFrame {
   }
   
   
-  public static void saveGame(World[][] world, Quest[] sideQuests, Quest mainQuestA) throws Exception{
+  public static void saveGame() throws Exception{
     File saveGame = new File("saveGame.txt");
     File saveMap = new File("mapSave.txt");
     PrintWriter output = new PrintWriter(saveMap);
@@ -450,7 +450,11 @@ class GameFrame extends JFrame {
     }
   }
   
-  
+  /*
+   * 
+   * 
+   * 
+   */
   private void updateActiveQuests() {
     activeQuests.clear();
     if (mainQuests.getActive()) {
@@ -464,7 +468,11 @@ class GameFrame extends JFrame {
       }
     }
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   void respawnBoss() {
     if (!(world[8][83] instanceof PoisonBoss)) {
       world[8][83] = new PoisonGrass();
@@ -481,7 +489,11 @@ class GameFrame extends JFrame {
       world[97][10] = new FireBoss(1,1,1,1,1,1, "Fire Boss", 97, 10, world[97][10]);
     }
   }
-  
+  /*
+   * 
+   * 
+   * 
+   */
   void respawnEnemies() {
     System.out.println("respawn");
     int noobCount = 0, fireCount = 0, frostCount = 0, poisonCount = 0, totalCount = 0;
@@ -490,62 +502,60 @@ class GameFrame extends JFrame {
     int randX;
     int randY;
     
-    //while ((noobCount < 2 || fireCount < 1 || frostCount < 2 || poisonCount < 1) && allowRespawn) {
-      for (int i = 0; i < world.length; i++) {
-        for (int j = 0; j < world.length; j++) {
-          randX = rand.nextInt(97) + 4;
-          randY = rand.nextInt(97) + 4;
-          if (noobCount < 2) {
-            if (world[randX][randY] instanceof NormalGrass) {
-              enemyType = rand.nextInt(2);
-              if (enemyType == 1) {
-                noobCount++;
-                world[randX][randY] = new Bandit(24,3,1,1,3,100,"Bandit", randX, randY, world[randX][randY]);
-              } else {
-                noobCount++;
-                world[randX][randY] = new Archer(16,3,1,1,3,100,"Archer", randX, randY, world[randX][randY]);
-              }
-            } 
-          }
-          if (poisonCount < 1) { 
-            if (world[randX][randY] instanceof PoisonGrass) {
-              enemyType = rand.nextInt(2);
-              if (enemyType == 1) {
-                poisonCount++;
-                world[randX][randY] = new PoisonSnake(72,9,4,10,8,100,"PoisonSnake", randX, randY, world[randX][randY]);
-              } else {
-                poisonCount++;
-                world[randX][randY] = new PoisonSpider(48,3,9,6,10,96,"PoisonSpider", randX, randY, world[randX][randY]);
-              }
-            }
-          }
-          if (frostCount < 2) { 
-            if (world[randX][randY] instanceof FrostGrass) {
-              enemyType = rand.nextInt(2);
-              if (enemyType == 1) {
-                frostCount++;
-                world[randX][randY] = new FrostSnake(108,24,22,16,14,100,"FrostSnake", randX, randY, world[randX][randY]);
-              } else {
-                frostCount++;
-                world[randX][randY] = new FrostSpider(84,16,25,12,15,98,"FrostSpider", randX, randY, world[randX][randY]);
-              }
-            }
-          } 
-          if (fireCount < 1) {
-            if (world[randX][randY] instanceof FireGrass) {
-              enemyType = rand.nextInt(2);
-              if (enemyType == 1) {
-                fireCount++;
-                world[randX][randY] = new FireSnake(324,32,36,30,20,100,"FireSnake", randX, randY, world[randX][randY]);
-              } else {
-                fireCount++;
-                world[randX][randY] = new FireSpider(224,26,36,30,20,100,"FireSpider", randX, randY, world[randX][randY]);
-              }
+    for (int i = 0; i < world.length; i++) {
+      for (int j = 0; j < world.length; j++) {
+        randX = rand.nextInt(97) + 4;
+        randY = rand.nextInt(97) + 4;
+        if (noobCount < 2) {
+          if (world[randX][randY] instanceof NormalGrass) {
+            enemyType = rand.nextInt(2);
+            if (enemyType == 1) {
+              noobCount++;
+              world[randX][randY] = new Bandit(18,3,1,2,3,100,"Bandit", randX, randY, world[randX][randY]);
+            } else {
+              noobCount++;
+              world[randX][randY] = new Archer(10,3,1,1,3,94,"Archer", randX, randY, world[randX][randY]);
             }
           } 
         }
+        if (poisonCount < 1) { 
+          if (world[randX][randY] instanceof PoisonGrass) {
+            enemyType = rand.nextInt(2);
+            if (enemyType == 1) {
+              poisonCount++;
+              world[randX][randY] = new PoisonSnake(72,9,4,10,8,100,"PoisonSnake", randX, randY, world[randX][randY]);
+            } else {
+              poisonCount++;
+              world[randX][randY] = new PoisonSpider(48,3,9,6,10,96,"PoisonSpider", randX, randY, world[randX][randY]);
+            }
+          }
+        }
+        if (frostCount < 2) { 
+          if (world[randX][randY] instanceof FrostGrass) {
+            enemyType = rand.nextInt(2);
+            if (enemyType == 1) {
+              frostCount++;
+              world[randX][randY] = new FrostSnake(108,24,22,16,14,100,"FrostSnake", randX, randY, world[randX][randY]);
+            } else {
+              frostCount++;
+              world[randX][randY] = new FrostSpider(84,16,25,12,15,98,"FrostSpider", randX, randY, world[randX][randY]);
+            }
+          }
+        } 
+        if (fireCount < 1) {
+          if (world[randX][randY] instanceof FireGrass) {
+            enemyType = rand.nextInt(2);
+            if (enemyType == 1) {
+              fireCount++;
+              world[randX][randY] = new FireSnake(324,32,36,30,20,100,"FireSnake", randX, randY, world[randX][randY]);
+            } else {
+              fireCount++;
+              world[randX][randY] = new FireSpider(224,26,36,30,20,100,"FireSpider", randX, randY, world[randX][randY]);
+            }
+          }
+        } 
       }
-    //}
+    }
     allowRespawn = false;
   }
   
@@ -619,11 +629,11 @@ class GameFrame extends JFrame {
       spaceX = Math.abs(xToTile - player.getX());
       spaceY = Math.abs(yToTile - player.getY());
       
-      interact(((Player)world[player.getX()][player.getY()]), world[xToTile][yToTile], world);
+      interact(world[xToTile][yToTile]);
       
     }
     
-    public void interact(Player player, World interactable, World[][] world) {
+    public void interact(World interactable) {
       
       if (interactable instanceof Enemy) {
         if (spaceX <= 1 && spaceY <= 1) {

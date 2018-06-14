@@ -17,7 +17,9 @@ import javax.swing.SwingUtilities;
 import java.io.File;
 import java.util.Scanner;
 import java.util.Random;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -112,6 +114,11 @@ class StartingFrame extends JFrame {
     }
   }
     
+  /*
+ * 
+ * 
+ * 
+ */
   public static void mapInitialize(String playerName) throws Exception {
     File map = new File("map.txt");
     Scanner fileIn = new Scanner(map);
@@ -138,9 +145,9 @@ class StartingFrame extends JFrame {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new Bandit(6,1,1,1,3,100,"Bandit", i, j, initialGround);
+              world[i][j] = new Bandit(18,3,1,2,3,100,"Bandit", i, j, initialGround);
             }else {
-              world[i][j] = new Archer(4,1,3,0,5,95,"Archer", i, j, initialGround);
+              world[i][j] = new Archer(10,1,3,1,5,95,"Archer", i, j, initialGround);
             }
             noobEnemyCount--;
           }
@@ -257,7 +264,11 @@ class StartingFrame extends JFrame {
     }
     fileIn.close();
   }
-  
+  /*
+ * 
+ * 
+ * 
+ */
   public static Quest createStory(Quest questline) { 
     String[] objectives = {"Text to fix indexing","Kill 5 Archers", "Kill 5 Bandits", "Talk to Bob", "Find The Farmer in the Poison lands", 
       "Kill 5 Spiders", "Kill 5 Snakes", "Talk to The Farmer", 
@@ -271,6 +282,11 @@ class StartingFrame extends JFrame {
     questline = new MainQuestA(100, "Awakening", objectives, kingsCrown);
     return questline;
   }
+  /*
+ * 
+ * 
+ * 
+ */
   public static Quest[] createSide(Quest[] quests) {
     String[] objectivesA = {"Kill 5 Bandits"};
     String[] objectivesB = {"Kill 5 Poison Snakes", "Kill 10 Poison Spiders"};
@@ -296,7 +312,11 @@ class StartingFrame extends JFrame {
   }
   
   
-  
+  /*
+ * 
+ * 
+ * 
+ */
   public static void loadGame() throws Exception{
     File map = new File("saveMap.txt");
     File player = new File("savePlayer.txt");
@@ -305,7 +325,8 @@ class StartingFrame extends JFrame {
     String value = fileIn.nextLine();
     int noobEnemyCount = 1, poisonEnemyCount = 2, frostEnemyCount = 2, fireEnemyCount = 1;
     int playerX, playerY, playerLevel, health, strength, intel, defence, accuracy;
-    int sideA, sideB, sideC, sideD, sideE, mainA;
+    int task, mainA;
+    Boolean active;
     String name;
     
     for (int a = 0; a < world.length - 1; a++) { // draws first row of the map to avoid errors
@@ -327,9 +348,9 @@ class StartingFrame extends JFrame {
             initialGround = world[i][j];
             enemyChance = rand.nextInt(2);
             if (enemyChance == 1) {
-              world[i][j] = new Bandit(24,3,1,1,3,100,"Bandit", i, j, initialGround);
+              world[i][j] = new Bandit(18,3,1,2,3,100,"Bandit", i, j, initialGround);
             }else {
-              world[i][j] = new Archer(12,1,3,0,4,95,"Archer", i, j, initialGround);
+              world[i][j] = new Archer(10,1,3,1,4,95,"Archer", i, j, initialGround);
             }
             noobEnemyCount--;
           }
@@ -427,6 +448,17 @@ class StartingFrame extends JFrame {
     world[71][65] = new NPC(100, "Mason", false);
     world[71][70] = new NPC(100, "Jill", false);
     
+    //initial objects
+    RustySword first = new RustySword();
+    world[22][19] = new Chest(first);
+    world[8][83] = new PoisonBoss(100,30,10,10,1,10, "Poison Boss", 8, 83, world[8][83]);
+    world[91][89] = new FrostBoss(300,30,30,12,1,15, "Frost Boss", 92, 89, world[92][89] );
+    world[97][10] = new FireBoss(500,30,60,15,1,20, "Fire Boss", 97, 10, world[97][10]);
+    
+    //add the main story content
+    mainStory = createStory(mainStory);
+    //add the side quest content
+    sideQuests = createSide(sideQuests);
     Scanner fileInput = new Scanner(player);
     
     name = fileInput.nextLine();
@@ -438,17 +470,33 @@ class StartingFrame extends JFrame {
     playerX = Integer.parseInt(fileInput.nextLine());
     playerY = Integer.parseInt(fileInput.nextLine());
     accuracy = Integer.parseInt(fileInput.nextLine());
-    sideA = Integer.parseInt(fileInput.nextLine());
-    sideB = Integer.parseInt(fileInput.nextLine());
-    sideC = Integer.parseInt(fileInput.nextLine());
-    sideD = Integer.parseInt(fileInput.nextLine());
-    sideE = Integer.parseInt(fileInput.nextLine());
+    active = Boolean.valueOf(fileInput.nextLine());
+    task = Integer.parseInt(fileInput.nextLine());
+    sideQuests[0].setComplete(active);
+    sideQuests[0].setCurrentTask(task);
+    active = Boolean.valueOf(fileInput.nextLine());
+    task = Integer.parseInt(fileInput.nextLine());
+    sideQuests[1].setComplete(active);
+    sideQuests[1].setCurrentTask(task);
+    active = Boolean.valueOf(fileInput.nextLine());
+    task = Integer.parseInt(fileInput.nextLine());
+    sideQuests[2].setComplete(active);
+    sideQuests[2].setCurrentTask(task);
+    active = Boolean.valueOf(fileInput.nextLine());
+    task = Integer.parseInt(fileInput.nextLine());
+    sideQuests[3].setComplete(active);
+    sideQuests[3].setCurrentTask(task);
+    active = Boolean.valueOf(fileInput.nextLine());
+    task = Integer.parseInt(fileInput.nextLine());
+    sideQuests[4].setComplete(active);
+    sideQuests[4].setCurrentTask(task);
+    task = Integer.parseInt(fileInput.nextLine());
+    mainStory.setCurrentTask(task);
+
     fileInput.close();
     world[playerY][playerX] = new Player(health, strength, intel, defence, playerLevel, accuracy, name, playerX, playerY);
-    //add the main story content
-    mainStory = createStory(mainStory);
-    //add the side quest content
-    sideQuests = createSide(sideQuests);
+    
+    
     
   }
   //Main method starts this application
