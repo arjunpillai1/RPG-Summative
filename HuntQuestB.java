@@ -1,7 +1,8 @@
 /*
- * 
- * 
- * 
+ * [HuntQuestB.java]
+ * Hunt quest/side quest
+ * Albert Quon
+ * 06/14/2018
  */
 class HuntQuestB extends Quest {
   int killsA=0, killsB=0, enemyCountA, enemyCountB;

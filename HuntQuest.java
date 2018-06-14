@@ -1,7 +1,8 @@
 /*
- * 
- * 
- * 
+ * [HuntQuest.java]
+ * First hunt quest/side quest
+ * Albert Quon
+ * 06/14/2018
  */
 class HuntQuest extends Quest {
   int kills = 0, enemyCount;

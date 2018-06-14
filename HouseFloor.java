@@ -1,6 +1,6 @@
 /*
- * [Bridge.java]
- * Grass class to represent environment
+ * [HouseFloor.java]
+ * House floor to represent house floors
  * Albert Quon
  * 05/25/2018
  */

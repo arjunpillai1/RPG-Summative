@@ -1,6 +1,5 @@
 abstract class Potion extends Consumable{
 
-  int timer;
 
   private int timer;
 
@@ -14,8 +13,5 @@ abstract class Potion extends Consumable{
     super(name,cost);
   }
 
-  Potion(String name, int cost){
-    super(name, cost);
-   }
 
 }
